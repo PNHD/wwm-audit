@@ -40,9 +40,9 @@ const INITIAL_PANEL: PanelStats = {
   maxPz: 688,
   pzPen: 18.0,
   pzDmg: 9.0,
-  prec: 100,
-  crit: 80,
-  aff: 10.1,
+  prec: 116.9,
+  crit: 116.9,
+  aff: 14.7,
   dcrit: 4.6,
   daff: 0,
   critDmg: 54,
@@ -233,13 +233,86 @@ const BUILD_PROFILES = {
 };
 
 const ARMOR_SETS = {
-  "stars": { name: "Stars Align (连星)", bonus2pc: "+Min Phys ATK on spinning skills", bonus4pc: "Bamboocut spinning AoE DMG +20%", recommended: ["bamboocut-dust"] },
-  "eaglerise": { name: "Eaglerise (飞隼)", bonus2pc: "+Phys DEF +32", bonus4pc: "+Affinity Rate +10%, Phys ATK +10%", recommended: ["bamboocut-wind","stonesplit-might","stonesplit-scale"] },
-  "jadeware": { name: "Jadeware (玉器)", bonus2pc: "+Bellstrike ATK", bonus4pc: "Blood explosion +30% DMG", recommended: ["bellstrike-umbra","bellstrike-splendor"] },
-  "yixiang": { name: "Yixiang (衣香)", bonus2pc: "+Crit Rate on dodge", bonus4pc: "Sword energy DMG +25%", recommended: ["bellstrike-splendor","silkbind-jade"] },
-  "veil": { name: "Veil of Willow (柳絮)", bonus2pc: "+Bamboocut DMG %", bonus4pc: "Rat damage +40%", recommended: ["bamboocut-kite","bamboocut-wind"] },
-  "hawking": { name: "Hawking (鹰猎)", bonus2pc: "+Crit DMG after kill", bonus4pc: "Dual blade DMG +20%", recommended: ["bamboocut-wind","stonesplit-scale"] },
-  "none": { name: "No Set / Mixed", bonus2pc: "—", bonus4pc: "—", recommended: [] },
+  "stars": {
+    name: "Stars Align (连星)",
+    stat2pc: { minOuter: 106 },
+    desc2pc: "+Min Phys ATK (106 flat)",
+    desc4pc: "Additional +Min Phys ATK bonus on spinning weapon skills (per-hit bonus baked into skill modifiers)",
+    recommended: ["bamboocut-dust"],
+    note: "Best set for Bamboocut-Dust. The 4pc bonus applies to umbrella/rope spinning skills via per-skill modifiers (0.15–0.20 × Min ATK per hit)."
+  },
+  "eaglerise": {
+    name: "Eaglerise (飞隼)",
+    stat2pc: { aff: 6.1 },
+    desc2pc: "+6.1% Affinity Rate",
+    desc4pc: "+10% Physical Attack (multiplicative multiplier on all Phys ATK)",
+    recommended: ["bamboocut-wind", "stonesplit-might", "stonesplit-scale"],
+    note: "4pc gives a strong 10% ATK multiplier, good for high-ATK builds."
+  },
+  "jadeware": {
+    name: "Jadeware / Jade Bowl (玉斗)",
+    stat2pc: { maxOuter: 106 },
+    desc2pc: "+Max Phys ATK (106 flat)",
+    desc4pc: "+10% Affinity DMG Bonus (on Bellstrike builds) or +10% Crit DMG (on other builds)",
+    recommended: ["bellstrike-umbra", "bellstrike-splendor"],
+    note: "4pc applies different bonus depending on build path."
+  },
+  "stormrain": {
+    name: "Stormrain (时雨)",
+    stat2pc: { prec: 10.8 },
+    desc2pc: "+10.8% Precision Rate",
+    desc4pc: "+10% Critical DMG Bonus + +10% Critical Healing Bonus",
+    recommended: ["bamboocut-dust"],
+    note: "Good alternative if you need more precision."
+  },
+  "huanhua": {
+    name: "Blossom (浣花)",
+    stat2pc: { crit: 12.1 },
+    desc2pc: "+12.1% Critical Rate",
+    desc4pc: "+5% Critical Rate (additional) + +15% Critical Healing Bonus",
+    recommended: [],
+    note: "High crit rate. 4pc crit heal bonus only useful for healer builds."
+  },
+  "yangliu": {
+    name: "Willow (烟烟柳)",
+    stat2pc: { prec: 10.8 },
+    desc2pc: "+10.8% Precision Rate",
+    desc4pc: "+12% DMG on spinning/special-tagged skills",
+    recommended: [],
+    note: "DMG bonus only applies to skills with the 'yangliu' modifier tag."
+  },
+  "shakenhill": {
+    name: "Shakenhill (撼天)",
+    stat2pc: { minOuter: 106 },
+    desc2pc: "+Min Phys ATK (106 flat)",
+    desc4pc: "+5% Physical Attack (multiplicative multiplier)",
+    recommended: [],
+    note: "Weaker ATK multiplier than Eaglerise (5% vs 10%)."
+  },
+  "duanyue": {
+    name: "Duanyue (断岳)",
+    stat2pc: { minOuter: 106 },
+    desc2pc: "+Min Phys ATK (106 flat)",
+    desc4pc: "+5% Global DMG always active, +8% additional on skills with 'duanyue' modifier tag",
+    recommended: [],
+    note: "Always-on 5% DMG, strongest on specific tagged skills."
+  },
+  "yanggui": {
+    name: "Swallow Return (燕归)",
+    stat2pc: { minOuter: 106 },
+    desc2pc: "+Min Phys ATK (106 flat)",
+    desc4pc: "No additional 4pc effect recorded in source data",
+    recommended: [],
+    note: "Similar to Stars Align 2pc but no confirmed 4pc effect."
+  },
+  "none": {
+    name: "No Set / Mixed",
+    stat2pc: {},
+    desc2pc: "—",
+    desc4pc: "—",
+    recommended: [],
+    note: ""
+  },
 };
 
 const isMartialArtRecommended = (ma: any, buildKey: string) => {
@@ -981,6 +1054,17 @@ export default function App() {
     p.iwPzPen = iwStats.pzPen;
     p.iwPzDmg = iwStats.pzDmg;
 
+    // Apply Armor Set 2pc flat/percentage stat bonuses
+    const activeSet = ARMOR_SETS[p.set as keyof typeof ARMOR_SETS];
+    if (activeSet && activeSet.stat2pc) {
+      const s2 = (activeSet as any).stat2pc;
+      if (s2.minOuter) p.minOuter += s2.minOuter;
+      if (s2.maxOuter) p.maxOuter += s2.maxOuter;
+      if (s2.prec) p.prec += s2.prec;
+      if (s2.crit) p.crit += s2.crit;
+      if (s2.aff) p.aff += s2.aff;
+    }
+
     return p;
   }, [panel, bowSelect, food, script50, earlySeason, activeTier, iwStats, maStats]);
 
@@ -997,6 +1081,7 @@ export default function App() {
         set: adjustedPanel.set,
         datang,
         yishui,
+        buildKey: selectedBuild,
       });
       totalDmg += total;
       return {
@@ -1025,6 +1110,7 @@ export default function App() {
         set: p.set,
         datang,
         yishui,
+        buildKey: selectedBuild,
       });
       totalDmg += total;
     });
@@ -1045,6 +1131,7 @@ export default function App() {
         set: profPanel.set || "gold",
         datang,
         yishui,
+        buildKey: selectedBuild,
       });
       totalDmg += total;
     });
@@ -1637,13 +1724,18 @@ export default function App() {
                       </div>
                       
                       {panel.set !== "none" && (
-                        <div className="font-mono text-[10px] space-y-1 text-slate-400 border-t border-slate-900/60 pt-1.5">
+                        <div className="font-sans text-[11px] space-y-1.5 text-slate-400 border-t border-slate-900/60 pt-1.5 leading-normal">
                           <div>
-                            <span className="text-amber-500/90 font-bold">2pc:</span> {s.bonus2pc}
+                            <span className="text-amber-500 font-bold">2pc:</span> {s.desc2pc || "—"}
                           </div>
                           <div>
-                            <span className="text-amber-500/90 font-bold">4pc:</span> {s.bonus4pc}
+                            <span className="text-amber-500 font-bold">4pc:</span> {s.desc4pc || "—"}
                           </div>
+                          {s.note && (
+                            <div className="text-[10px] text-slate-500 italic mt-1 bg-slate-950 p-1.5 rounded border border-slate-900/60">
+                              Note: {s.note}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -1883,15 +1975,20 @@ export default function App() {
                   Hit and Critical Rates
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
-                    <span className="text-slate-400">Precision Rate %</span>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={panel.prec}
-                      onChange={(e) => handleStatChange("prec", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
-                    />
+                  <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-900/60">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate-400">Precision Rate %</span>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={panel.prec}
+                        onChange={(e) => handleStatChange("prec", parseFloat(e.target.value) || 0)}
+                        className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      />
+                    </div>
+                    <div className="text-[9.5px] text-slate-500 mt-1 leading-normal font-sans border-t border-slate-900/40 pt-1">
+                      Enter your actual panel value (e.g. 103.7%). Base 65% is not reduced by boss resistance.
+                    </div>
                   </div>
                   <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
                     <span className="text-slate-400">Critical Rate %</span>
@@ -2630,11 +2727,16 @@ export default function App() {
                   <TrendingUp className="w-4 h-4" /> Calculated Hit Probabilities
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs">
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Precision Rate</span>
-                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
-                      {effPrecision.toFixed(1)}%
-                    </strong>
+                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900 flex flex-col justify-between">
+                    <div>
+                      <span className="text-slate-500 block font-mono text-[10px]">Precision Rate</span>
+                      <strong className="text-slate-100 text-sm font-mono mt-1 block">
+                        {effPrecision.toFixed(1)}%
+                      </strong>
+                    </div>
+                    <div className="text-[9.5px] text-slate-500 mt-2 leading-snug border-t border-slate-900/40 pt-1.5 font-sans">
+                      Base 65% is not affected by Judgment Resistance. Only the portion above 65% is reduced by ÷1.45.
+                    </div>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[10px]">Critical</span>

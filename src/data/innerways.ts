@@ -12,6 +12,7 @@ export interface InnerWayTier {
     crit?: number;
     aff?: number;
     dcrit?: number;
+    prec?: number;
   };
 }
 
@@ -26,492 +27,565 @@ export interface InnerWay {
 }
 
 export const INNER_WAYS: InnerWay[] = [
+  // ── BAMBOOCUT-DUST ──
+  {
+    id: "phantom_rally", name: "Phantom Rally", cat: "BAMBOOCUT-DUST",
+    desc: "The First Umbrella from Scarlet Spin summons a Phantom Umbrella, then every 3rd throw summons another. Perfect Catch or summoning a Phantom Umbrella triggers Resonance on all Phantom Umbrellas, dealing area damage.",
+    tiers: [
+      { tier: 1, effect: "Phantom Resonance deal area DMG: +2% General DMG", stat: { generalDmg: 2 } },
+      { tier: 2, effect: "Phantom Resonance deal area DMG: +4% General DMG", stat: { generalDmg: 4 } },
+      { tier: 3, effect: "Phantom Resonance deal area DMG: +5.5% General DMG", stat: { generalDmg: 5.5 } },
+      { tier: 4, effect: "Phantom Resonance deal area DMG: +7% General DMG", stat: { generalDmg: 7 } },
+      { tier: 5, effect: "Phantom Resonance deal area DMG: +8% General DMG", stat: { generalDmg: 8 } },
+      { tier: 6, effect: "Area resonance range +20%, damage +8% General DMG", stat: { generalDmg: 8 } },
+    ],
+    recommended: true, note: "Top recommendation for Bamboocut-Dust AoE clearing capability."
+  },
+  {
+    id: "song_of_tang", name: "Song of Tang", cat: "BAMBOOCUT-DUST",
+    desc: "Hitting with Martial Art Skills applies Tang Song for 4s (max 5 stacks, 1 per second). Each stack: +2% Crit DMG above 50% HP, or +2% Life Drain below 50% HP.",
+    tiers: [
+      { tier: 1, effect: "Each stack: +0.5% Crit DMG (effectively +2.5% Crit DMG)", stat: { critDmg: 2.5 } },
+      { tier: 2, effect: "Each stack: +1% Crit DMG (effectively +5% Crit DMG)", stat: { critDmg: 5 } },
+      { tier: 3, effect: "Each stack: +1.5% Crit DMG (effectively +7.5% Crit DMG)", stat: { critDmg: 7.5 } },
+      { tier: 4, effect: "Each stack: +1.8% Crit DMG (effectively +9% Crit DMG)", stat: { critDmg: 9 } },
+      { tier: 5, effect: "Each stack: +2% Crit DMG above 50% HP (effectively +10% Crit DMG)", stat: { critDmg: 10 } },
+      { tier: 6, effect: "Yi River resonance triggers: +10% Crit DMG + 3% Life Drain below 50% HP", stat: { critDmg: 10 } },
+    ],
+    recommended: true, note: "Extremely strong Crit DMG scaling above 50% HP for Bamboocut-Dust."
+  },
+  {
+    id: "light_anew", name: "Light Anew", cat: "BAMBOOCUT-DUST",
+    desc: "When hitting 3+ enemies at once, apply Candle Flicker for 3s (max 5 stacks): -4% enemy Move Speed, +2% damage taken per stack.",
+    tiers: [
+      { tier: 1, effect: "Each stack: +0.5% enemy damage taken (effectively +2.5% General DMG)", stat: { generalDmg: 2.5 } },
+      { tier: 2, effect: "Each stack: +1% enemy damage taken (effectively +5% General DMG)", stat: { generalDmg: 5 } },
+      { tier: 3, effect: "Each stack: +1.5% enemy damage taken (effectively +7.5% General DMG)", stat: { generalDmg: 7.5 } },
+      { tier: 4, effect: "Each stack: +1.8% enemy damage taken (effectively +9% General DMG)", stat: { generalDmg: 9 } },
+      { tier: 5, effect: "Each stack: +2% enemy damage taken (effectively +10% General DMG)", stat: { generalDmg: 10 } },
+      { tier: 6, effect: "Each stack: +2% enemy damage taken + enemy ATK reduced by 5%", stat: { generalDmg: 10 } },
+    ],
+    recommended: true, note: "Great force-multiplier in mob scenarios and multiple boss targets."
+  },
+  {
+    id: "towline_sweep", name: "Towline Sweep", cat: "BAMBOOCUT-DUST",
+    desc: "Gain 50 Tokens of Gratitude after Soul Sweep. In Soulbound state, each Piercing Dart sweeping combo hit applies 2 stacks Soulbreak, and first hit pulls enemies forward.",
+    tiers: [
+      { tier: 1, effect: "Gain 10 Tokens after Soul Sweep", stat: {} },
+      { tier: 2, effect: "Gain 20 Tokens after Soul Sweep", stat: {} },
+      { tier: 3, effect: "Gain 30 Tokens after Soul Sweep", stat: {} },
+      { tier: 4, effect: "Gain 40 Tokens after Soul Sweep", stat: {} },
+      { tier: 5, effect: "Gain 50 Tokens of Gratitude after Soul Sweep", stat: {} },
+      { tier: 6, effect: "Gain 50 Tokens + pulling power threshold increased by 100%", stat: {} },
+    ],
+    recommended: false, note: "Utility and combo accelerator — no standalone offensive stat."
+  },
+
   // ── BAMBOOCUT-WIND ──
   {
     id: "echoes_of_oblivion", name: "Echoes of Oblivion", cat: "BAMBOOCUT-WIND",
     desc: "Infernal Twinblades Light Attacks apply Sin/Karma. Ignore target's Phys Def and Bamboocut Resistance on affected targets.",
     tiers: [
-      { tier:1, effect:"Ignore 2% Phys Def and 2% Bamboocut Res", stat:{outerPen:2, pzPen:2} },
-      { tier:2, effect:"Ignore 4% Phys Def and 4% Bamboocut Res", stat:{outerPen:4, pzPen:4} },
-      { tier:3, effect:"Ignore 6% Phys Def and 6% Bamboocut Res", stat:{outerPen:6, pzPen:6} },
-      { tier:4, effect:"Ignore 8% Phys Def and 8% Bamboocut Res", stat:{outerPen:8, pzPen:8} },
-      { tier:5, effect:"Ignore 10% Phys Def and 10% Bamboocut Res", stat:{outerPen:10, pzPen:10} },
-      { tier:6, effect:"Ignore 10% Phys Def and 10% Bamboocut Res + Sin/Karma spread on AoE", stat:{outerPen:10, pzPen:10} },
+      { tier: 1, effect: "Ignore 2% Phys Def and 2% Bamboocut Res", stat: { outerPen: 2, pzPen: 2 } },
+      { tier: 2, effect: "Ignore 4% Phys Def and 4% Bamboocut Res", stat: { outerPen: 4, pzPen: 4 } },
+      { tier: 3, effect: "Ignore 6% Phys Def and 6% Bamboocut Res", stat: { outerPen: 6, pzPen: 6 } },
+      { tier: 4, effect: "Ignore 8% Phys Def and 8% Bamboocut Res", stat: { outerPen: 8, pzPen: 8 } },
+      { tier: 5, effect: "Ignore 10% Phys Def and 10% Bamboocut Res", stat: { outerPen: 10, pzPen: 10 } },
+      { tier: 6, effect: "Ignore 10% Def/Res + spread Sin across nearby targets on defeat", stat: { outerPen: 10, pzPen: 10 } },
     ],
-    recommended: false, note: "Bamboocut-Wind core (Infernal Twinblades). Not for Bamboocut-Dust."
+    recommended: false, note: "Bamboocut-Wind specific core inner way."
   },
   {
     id: "riptide_reflex", name: "Riptide Reflex", cat: "BAMBOOCUT-WIND",
     desc: "Hitting enemy with Control Skill reduces current MA Skill CD by 1s (once per 10s).",
     tiers: [
-      { tier:1, effect:"-0.5s CD on control hit (15s CD)", stat:{} },
-      { tier:2, effect:"-0.7s CD on control hit (12s CD)", stat:{} },
-      { tier:3, effect:"-1s CD on control hit (10s CD)", stat:{} },
-      { tier:4, effect:"-1s CD on control hit (10s CD), affects 1 more skill type", stat:{} },
-      { tier:5, effect:"-1s CD on control hit (10s CD), affects 2 more skill types", stat:{} },
-      { tier:6, effect:"-1s CD on control hit (8s CD), full skill type coverage", stat:{} },
+      { tier: 1, effect: "-0.5s CD on control hit", stat: {} },
+      { tier: 2, effect: "-0.7s CD on control hit", stat: {} },
+      { tier: 3, effect: "-1s CD on control hit", stat: {} },
+      { tier: 4, effect: "-1s CD on control hit (10s CD), plus secondary slot CD reduced", stat: {} },
+      { tier: 5, effect: "-1s CD on control hit, secondary slots CD reduced by 1.5s", stat: {} },
+      { tier: 6, effect: "-1s CD on control hit (8s CD), full skill slot coverage", stat: {} },
     ],
-    recommended: false, note: "Rotation speed buff, no direct damage stat."
+    recommended: false, note: "Great rotation accelerator but provides no flat raw stats."
   },
   {
     id: "breaking_point", name: "Breaking Point", cat: "BAMBOOCUT-WIND",
-    desc: "Crit hit on Exhausted enemy → stack Disintegration (3s, max 3): +Phys Pen and +Crit DMG per stack.",
+    desc: "Crit hit on Exhausted enemy → stack Disintegration (3s, max 3): +5 Physical Penetration and +5% Critical Damage per Collapse stack.",
     tiers: [
-      { tier:1, effect:"Each stack: +3 Phys Pen, +1.5% Crit DMG (max 3)", stat:{outerPen:3, critDmg:1.5} },
-      { tier:2, effect:"Each stack: +5 Phys Pen, +2.5% Crit DMG (max 3)", stat:{outerPen:5, critDmg:2.5} },
-      { tier:3, effect:"Each stack: +7 Phys Pen, +3.5% Crit DMG (max 3)", stat:{outerPen:7, critDmg:3.5} },
-      { tier:4, effect:"Each stack: +8 Phys Pen, +4% Crit DMG (max 3)", stat:{outerPen:8, critDmg:4} },
-      { tier:5, effect:"Each stack: +10 Phys Pen, +5% Crit DMG (max 3)", stat:{outerPen:10, critDmg:5} },
-      { tier:6, effect:"Each stack: +10 Phys Pen, +5% Crit DMG (max 3) + 4th stack triggers bonus damage", stat:{outerPen:10, critDmg:5} },
+      { tier: 1, effect: "Each stack: +1.5 Phys Pen, +1.5% Crit DMG (effectively +4.5 / +4.5% max)", stat: { outerPen: 4.5, critDmg: 4.5 } },
+      { tier: 2, effect: "Each stack: +2.5 Phys Pen, +2.5% Crit DMG (effectively +7.5 / +7.5% max)", stat: { outerPen: 7.5, critDmg: 7.5 } },
+      { tier: 3, effect: "Each stack: +3.5 Phys Pen, +3.5% Crit DMG (effectively +10.5 / +10.5% max)", stat: { outerPen: 10.5, critDmg: 10.5 } },
+      { tier: 4, effect: "Each stack: +4 Phys Pen, +4% Crit DMG (effectively +12 / +12% max)", stat: { outerPen: 12, critDmg: 12 } },
+      { tier: 5, effect: "Each stack: +5 Phys Pen, +5% Crit DMG (effectively +15 / +15% max)", stat: { outerPen: 15, critDmg: 15 } },
+      { tier: 6, effect: "Each stack: +5 Phys Pen, +5% Crit DMG + Collapse duration +2s", stat: { outerPen: 15, critDmg: 15 } },
     ],
-    recommended: true, note: "Best T91 inner way for Bamboocut-Dust. Stack on boss Exhausted state."
+    recommended: true, note: "Strong physical pen and crit scaling upon target exhaustion."
   },
   {
     id: "vendetta", name: "Vendetta", cat: "BAMBOOCUT-WIND",
     desc: "Guided Blade Vendetta Token lasts longer and restores Token of Gratitude.",
     tiers: [
-      { tier:1, effect:"Token +1s duration, +4 Token of Gratitude", stat:{} },
-      { tier:2, effect:"Token +2s duration, +8 Token of Gratitude", stat:{} },
-      { tier:3, effect:"Token +3s duration, +12 Token of Gratitude", stat:{} },
-      { tier:4, effect:"Token +4s duration, +16 Token of Gratitude", stat:{} },
-      { tier:5, effect:"Token +5s duration, +20 Token of Gratitude", stat:{} },
-      { tier:6, effect:"Token +5s duration, +20 Token of Gratitude + bonus on token expiry", stat:{} },
+      { tier: 1, effect: "Token lasts +1.0s, +4 Gratitude", stat: {} },
+      { tier: 2, effect: "Token lasts +2.0s, +8 Gratitude", stat: {} },
+      { tier: 3, effect: "Token lasts +3.0s, +12 Gratitude", stat: {} },
+      { tier: 4, effect: "Token lasts +4.0s, +16 Gratitude", stat: {} },
+      { tier: 5, effect: "Token lasts +5.0s, +20 Gratitude", stat: {} },
+      { tier: 6, effect: "Token lasts +5.0s, +20 Gratitude, first slash ignores defenses", stat: {} },
     ],
-    recommended: false, note: "Guided Blade specific kit only."
+    recommended: false, note: "Mainly utility for Guided Blade wind layouts."
   },
+
   // ── BELLSTRIKE-SPLENDOR ──
   {
     id: "sword_morph", name: "Sword Morph", cat: "BELLSTRIKE-SPLENDOR",
     desc: "Noname Sword Charged Skill: extra sword energy at 2nd stage. Each Endurance consumed = +1% DMG, max 20%.",
     tiers: [
-      { tier:1, effect:"+1% DMG per Endurance, max 8%", stat:{generalDmg:8} },
-      { tier:2, effect:"+1% DMG per Endurance, max 10%", stat:{generalDmg:10} },
-      { tier:3, effect:"+1% DMG per Endurance, max 12%", stat:{generalDmg:12} },
-      { tier:4, effect:"+1% DMG per Endurance, max 15%", stat:{generalDmg:15} },
-      { tier:5, effect:"+1% DMG per Endurance, max 20%", stat:{generalDmg:20} },
-      { tier:6, effect:"+1% DMG per Endurance, max 20% + sword energy hits twice", stat:{generalDmg:20} },
+      { tier: 1, effect: "Max +8% General DMG based on stamina spent", stat: { generalDmg: 8 } },
+      { tier: 2, effect: "Max +10% General DMG based on stamina spent", stat: { generalDmg: 10 } },
+      { tier: 3, effect: "Max +12% General DMG based on stamina spent", stat: { generalDmg: 12 } },
+      { tier: 4, effect: "Max +15% General DMG based on stamina spent", stat: { generalDmg: 15 } },
+      { tier: 5, effect: "Max +20% General DMG based on stamina spent", stat: { generalDmg: 20 } },
+      { tier: 6, effect: "Stamina penalty reduced + max +20% General DMG", stat: { generalDmg: 20 } },
     ],
-    recommended: false, note: "Bellstrike-Splendor only."
+    recommended: false, note: "Core for Bellstrike Splendor charged build rotation."
   },
   {
     id: "battle_anthem", name: "Battle Anthem", cat: "BELLSTRIKE-SPLENDOR",
     desc: "Charged Skills deal bonus damage against all bosses.",
     tiers: [
-      { tier:1, effect:"Charged Skills +2% DMG vs bosses", stat:{generalDmg:2} },
-      { tier:2, effect:"Charged Skills +4% DMG vs bosses", stat:{generalDmg:4} },
-      { tier:3, effect:"Charged Skills +6% DMG vs bosses", stat:{generalDmg:6} },
-      { tier:4, effect:"Charged Skills +8% DMG vs bosses", stat:{generalDmg:8} },
-      { tier:5, effect:"Charged Skills +10% DMG vs bosses", stat:{generalDmg:10} },
-      { tier:6, effect:"Charged Skills +10% DMG vs bosses + AoE splash on hit", stat:{generalDmg:10} },
+      { tier: 1, effect: "Charged Skills +2% DMG vs Bosses", stat: { generalDmg: 2 } },
+      { tier: 2, effect: "Charged Skills +4% DMG vs Bosses", stat: { generalDmg: 4 } },
+      { tier: 3, effect: "Charged Skills +6% DMG vs Bosses", stat: { generalDmg: 6 } },
+      { tier: 4, effect: "Charged Skills +8% DMG vs Bosses", stat: { generalDmg: 8 } },
+      { tier: 5, effect: "Charged Skills +10% DMG vs Bosses", stat: { generalDmg: 10 } },
+      { tier: 6, effect: "Charged Skills +10% DMG + parry rate +10%", stat: { generalDmg: 10 } },
     ],
-    recommended: false, note: "Good for charge-heavy rotations."
+    recommended: false, note: "Pure PvE damage multiplier for heavier sword rotations."
   },
   {
     id: "wildfire_spark", name: "Wildfire Spark", cat: "BELLSTRIKE-SPLENDOR",
-    desc: "Refunds a portion of Endurance consumed by skills.",
+    desc: "Consuming Endurance with Sword morph triggers explosion dealing Bamboocut damage and boosts elemental attack.",
     tiers: [
-      { tier:1, effect:"Refund 1% Endurance consumed", stat:{} },
-      { tier:2, effect:"Refund 1.5% Endurance consumed", stat:{} },
-      { tier:3, effect:"Refund 2% Endurance consumed", stat:{} },
-      { tier:4, effect:"Refund 2.5% Endurance consumed", stat:{} },
-      { tier:5, effect:"Refund 3.5% Endurance consumed", stat:{} },
-      { tier:6, effect:"Refund 3.5% + bonus Endurance on kill", stat:{} },
+      { tier: 1, effect: "+3% Bamboocut (PZ) DMG Bonus", stat: { pzDmg: 3 } },
+      { tier: 2, effect: "+6% Bamboocut (PZ) DMG Bonus", stat: { pzDmg: 6 } },
+      { tier: 3, effect: "+9% Bamboocut (PZ) DMG Bonus", stat: { pzDmg: 9 } },
+      { tier: 4, effect: "+12% Bamboocut (PZ) DMG Bonus", stat: { pzDmg: 12 } },
+      { tier: 5, effect: "+15% Bamboocut (PZ) DMG Bonus", stat: { pzDmg: 15 } },
+      { tier: 6, effect: "Explosion radius +25% + +15% PZ DMG Bonus", stat: { pzDmg: 15 } },
     ],
-    recommended: false, note: "Endurance sustain only, no damage."
+    recommended: false, note: "Bellstrike-Splendor element booster."
   },
   {
     id: "mountains_might", name: "Mountain's Might", cat: "BELLSTRIKE-SPLENDOR",
-    desc: "Noname Spear Qiankun's Lock grants Endless Gale: Endurance cost reduction for skills.",
+    desc: "Increase Critical Damage when health is above 70%.",
     tiers: [
-      { tier:1, effect:"Endless Gale: -5% Endurance cost for 3s", stat:{} },
-      { tier:2, effect:"Endless Gale: -8% Endurance cost for 4s", stat:{} },
-      { tier:3, effect:"Endless Gale: -12% Endurance cost for 4s", stat:{} },
-      { tier:4, effect:"Endless Gale: -16% Endurance cost for 5s", stat:{} },
-      { tier:5, effect:"Endless Gale: -20% Endurance cost for 5s", stat:{} },
-      { tier:6, effect:"Endless Gale: -20% Endurance cost for 5s + Endurance regen on skill hit", stat:{} },
+      { tier: 1, effect: "+5% Crit DMG above 70% Max HP", stat: { critDmg: 5 } },
+      { tier: 2, effect: "+7% Crit DMG above 70% Max HP", stat: { critDmg: 7 } },
+      { tier: 3, effect: "+10% Crit DMG above 70% Max HP", stat: { critDmg: 10 } },
+      { tier: 4, effect: "+12% Crit DMG above 70% Max HP", stat: { critDmg: 12 } },
+      { tier: 5, effect: "+15% Crit DMG above 70% Max HP", stat: { critDmg: 15 } },
+      { tier: 6, effect: "+15% Crit DMG + threshold reduced physically to 60% HP", stat: { critDmg: 15 } },
     ],
-    recommended: false, note: "Spear Endurance sustain."
+    recommended: false, note: "Good for maintaining high health thresholds."
   },
+  {
+    id: "sandswirl_tail", name: "Sandswirl Tail", cat: "BELLSTRIKE-SPLENDOR",
+    desc: "When in Brocade Carp form (Moonleap Morph), sprinting and jumping consume less endurance.",
+    tiers: [
+      { tier: 1, effect: "Sprinting cost -10% in Carp form", stat: {} },
+      { tier: 2, effect: "Sprinting cost -15% in Carp form", stat: {} },
+      { tier: 3, effect: "Sprinting cost -20% in Carp form", stat: {} },
+      { tier: 4, effect: "Sprinting and jumping cost -20% in Carp form", stat: {} },
+      { tier: 5, effect: "Sprinting and jumping cost -30% in Carp form", stat: {} },
+      { tier: 6, effect: "Endurance costs minimized + jump height increased by 15%", stat: {} },
+    ],
+    recommended: false, note: "Purely mobility and stamina utility."
+  },
+
   // ── BELLSTRIKE-UMBRA ──
   {
     id: "sword_horizon", name: "Sword Horizon", cat: "BELLSTRIKE-UMBRA",
-    desc: "After Strategic Sword MA/Special/Charged Skill, perfect timing → follow-up Crisscrossing Swords. At 5 Bleed stacks: remove all, deal high Bleed DMG.",
+    desc: "Noname Sword Art skills gain physical penetration.",
     tiers: [
-      { tier:1, effect:"Follow-up hits at 60% power, 5-stack Bleed burst deals 80% bonus", stat:{generalDmg:4} },
-      { tier:2, effect:"Follow-up hits at 75% power, 5-stack Bleed burst deals 120% bonus", stat:{generalDmg:6} },
-      { tier:3, effect:"Follow-up hits at 90% power, 5-stack Bleed burst deals 160% bonus", stat:{generalDmg:8} },
-      { tier:4, effect:"Follow-up hits at 100% power, 5-stack Bleed burst deals 200% bonus", stat:{generalDmg:10} },
-      { tier:5, effect:"Full power + reduced timing window for follow-up", stat:{generalDmg:12} },
-      { tier:6, effect:"Full power + guaranteed follow-up if timed + Bleed burst AoE splash", stat:{generalDmg:12} },
+      { tier: 1, effect: "+2 Physical Penetration", stat: { outerPen: 2 } },
+      { tier: 2, effect: "+4 Physical Penetration", stat: { outerPen: 4 } },
+      { tier: 3, effect: "+6 Physical Penetration", stat: { outerPen: 6 } },
+      { tier: 4, effect: "+8 Physical Penetration", stat: { outerPen: 8 } },
+      { tier: 5, effect: "+10 Physical Penetration", stat: { outerPen: 10 } },
+      { tier: 6, effect: "+10 Physical Penetration + physical damage range broadened", stat: { outerPen: 10 } },
     ],
-    recommended: false, note: "Core for Bellstrike-Umbra."
-  },
-  {
-    id: "insightful_strike", name: "Insightful Strike", cat: "BELLSTRIKE-UMBRA",
-    desc: "Affinity DMG generates Focus. Full Focus → Concentration 10s: +Affinity DMG, 5% chance to reduce DMG taken by 40%.",
-    tiers: [
-      { tier:1, effect:"Concentration: +4% Affinity DMG", stat:{affDmg:4} },
-      { tier:2, effect:"Concentration: +6% Affinity DMG", stat:{affDmg:6} },
-      { tier:3, effect:"Concentration: +8% Affinity DMG", stat:{affDmg:8} },
-      { tier:4, effect:"Concentration: +10% Affinity DMG", stat:{affDmg:10} },
-      { tier:5, effect:"Concentration: +10% Affinity DMG, 5% chance -40% DMG taken", stat:{affDmg:10} },
-      { tier:6, effect:"Concentration: +10% Affinity DMG, 8% chance -40% DMG taken + longer duration", stat:{affDmg:10} },
-    ],
-    recommended: false, note: "Only useful for Affinity-focused builds."
+    recommended: false, note: "Penetration supplement for dark sword layouts."
   },
   {
     id: "adaptive_steel", name: "Adaptive Steel", cat: "BELLSTRIKE-UMBRA",
-    desc: "Gain a passive Martial Skill based on current blade weapon (Sword 10s CD, Dual Blades 25s CD).",
+    desc: "Successfully counter-attacking or parrying increases Critical Damage for 5s.",
     tiers: [
-      { tier:1, effect:"Martial Skill deals 60% weapon DMG", stat:{} },
-      { tier:2, effect:"Martial Skill deals 80% weapon DMG", stat:{} },
-      { tier:3, effect:"Martial Skill deals 100% weapon DMG", stat:{} },
-      { tier:4, effect:"Martial Skill deals 120% weapon DMG", stat:{} },
-      { tier:5, effect:"Martial Skill deals 140% weapon DMG, CD -2s", stat:{} },
-      { tier:6, effect:"Martial Skill deals 150% weapon DMG, CD -2s + applies bleed", stat:{} },
+      { tier: 1, effect: "+5% Crit DMG after counters", stat: { critDmg: 5 } },
+      { tier: 2, effect: "+7% Crit DMG after counters", stat: { critDmg: 7 } },
+      { tier: 3, effect: "+10% Crit DMG after counters", stat: { critDmg: 10 } },
+      { tier: 4, effect: "+12% Crit DMG after counters", stat: { critDmg: 12 } },
+      { tier: 5, effect: "+15% Crit DMG after counters", stat: { critDmg: 15 } },
+      { tier: 6, effect: "Crit DMG +15% and counter CD reduced by 1.5s", stat: { critDmg: 15 } },
     ],
-    recommended: false, note: "Generic blade bonus."
+    recommended: false, note: "Sustained crit booster for active gameplay."
+  },
+  {
+    id: "insightful_strike", name: "Insightful Strike", cat: "BELLSTRIKE-UMBRA",
+    desc: "Reveals boss weakness, increasing precision rate.",
+    tiers: [
+      { tier: 1, effect: "+2% Precision Rate", stat: { prec: 2 } },
+      { tier: 2, effect: "+4% Precision Rate", stat: { prec: 4 } },
+      { tier: 3, effect: "+6% Precision Rate", stat: { prec: 6 } },
+      { tier: 4, effect: "+8% Precision Rate", stat: { prec: 8 } },
+      { tier: 5, effect: "+10% Precision Rate", stat: { prec: 10 } },
+      { tier: 6, effect: "+10% Precision Rate + boss weakness visible longer", stat: { prec: 10 } },
+    ],
+    recommended: false, note: "Accuracy calibration for hard PvE fights."
   },
   {
     id: "wolfchasers_art", name: "Wolfchaser's Art", cat: "BELLSTRIKE-UMBRA",
-    desc: "Reduces Sorrow Without Wine combo requirement. Bleed hits on boss increase combo count.",
+    desc: "Combo requirement reduced to 4/8 (previously 5/10). 60%/70%/80%/90%/100% chance to +1 combo count based on Bleed stacks.",
     tiers: [
-      { tier:1, effect:"Combo req reduced from 5/10 to 5/9", stat:{} },
-      { tier:2, effect:"Combo req reduced to 5/8", stat:{} },
-      { tier:3, effect:"Combo req reduced to 4/8", stat:{} },
-      { tier:4, effect:"Combo req reduced to 4/8 + 40% chance to +1 combo on Bleed hit", stat:{} },
-      { tier:5, effect:"Combo req 4/8 + 20-100% chance based on Bleed stacks", stat:{} },
-      { tier:6, effect:"Combo req 4/8 + guaranteed +1 combo at 5 Bleed stacks", stat:{} },
+      { tier: 1, effect: "Combo caps 4/8, 60% chance for extra stack", stat: {} },
+      { tier: 2, effect: "Combo caps 4/8, 70% chance for extra stack", stat: {} },
+      { tier: 3, effect: "Combo caps 4/8, 80% chance for extra stack", stat: {} },
+      { tier: 4, effect: "Combo caps 4/8, 90% chance for extra stack", stat: {} },
+      { tier: 5, effect: "Combo caps 4/8, 100% chance for extra stack", stat: {} },
+      { tier: 6, effect: "Combo caps 4/8, 100% chance for extra stack + Bleed damage +10%", stat: {} },
     ],
-    recommended: false, note: "Heavenquaker Spear + Bleed kit specific."
+    recommended: false, note: "Greatly optimizes bleed stacks and synergy."
   },
-  // ── SILKBIND-DELUGE ──
-  {
-    id: "royal_remedy", name: "Royal Remedy", cat: "SILKBIND-DELUGE",
-    desc: "Panacea Fan Cloudburst Healing effect increased. Gain Dewdrop per HoT tick in range.",
-    tiers: [
-      { tier:1, effect:"Cloudburst Healing +2%, +0.5 Dewdrop per tick", stat:{} },
-      { tier:2, effect:"Cloudburst Healing +4%, +1 Dewdrop per tick", stat:{} },
-      { tier:3, effect:"Cloudburst Healing +6%, +1 Dewdrop per tick", stat:{} },
-      { tier:4, effect:"Cloudburst Healing +8%, +1 Dewdrop per tick", stat:{} },
-      { tier:5, effect:"Cloudburst Healing +10%, +1 Dewdrop per tick", stat:{} },
-      { tier:6, effect:"Cloudburst Healing +10%, +1 Dewdrop per tick + AoE pulse on full Dewdrop", stat:{} },
-    ],
-    recommended: false, note: "Healer path only."
-  },
-  {
-    id: "mending_loom", name: "Mending Loom", cat: "SILKBIND-DELUGE",
-    desc: "Soulshade Umbrella Echoing Grow: restore Dewdrop and heal HP per 100 Dewdrop consumed.",
-    tiers: [
-      { tier:1, effect:"Restore 1 Dewdrop, heal 2% Max HP per 100 Dewdrop", stat:{} },
-      { tier:2, effect:"Restore 2 Dewdrop, heal 4% Max HP per 100 Dewdrop", stat:{} },
-      { tier:3, effect:"Restore 3 Dewdrop, heal 6% Max HP per 100 Dewdrop", stat:{} },
-      { tier:4, effect:"Restore 4 Dewdrop, heal 8% Max HP per 100 Dewdrop", stat:{} },
-      { tier:5, effect:"Restore 5 Dewdrop, heal 10% Max HP per 100 Dewdrop", stat:{} },
-      { tier:6, effect:"Restore 5 Dewdrop, heal 10% Max HP + bonus team shield", stat:{} },
-    ],
-    recommended: false, note: "Healer path only."
-  },
-  {
-    id: "esoteric_revival", name: "Esoteric Revival", cat: "SILKBIND-DELUGE",
-    desc: "Panacea Fan Resurrection healing on revived target increased.",
-    tiers: [
-      { tier:1, effect:"Resurrection heal +10%", stat:{} },
-      { tier:2, effect:"Resurrection heal +20%", stat:{} },
-      { tier:3, effect:"Resurrection heal +30%", stat:{} },
-      { tier:4, effect:"Resurrection heal +40%", stat:{} },
-      { tier:5, effect:"Resurrection heal +50%", stat:{} },
-      { tier:6, effect:"Resurrection heal +50% + brief invincibility on revive", stat:{} },
-    ],
-    recommended: false, note: "Healer path only."
-  },
-  {
-    id: "restoring_blossom", name: "Restoring Blossom", cat: "SILKBIND-DELUGE",
-    desc: "Critical heal → stack Nurturing (3s, max 3): +% healing received per stack.",
-    tiers: [
-      { tier:1, effect:"+0.5% healing received per stack (max 3)", stat:{} },
-      { tier:2, effect:"+1% healing received per stack (max 3)", stat:{} },
-      { tier:3, effect:"+1.5% healing received per stack (max 3)", stat:{} },
-      { tier:4, effect:"+2% healing received per stack (max 3)", stat:{} },
-      { tier:5, effect:"+2% healing received per stack (max 3)", stat:{} },
-      { tier:6, effect:"+2% per stack + Nurturing spreads to nearby allies", stat:{} },
-    ],
-    recommended: false, note: "Healer path only."
-  },
-  // ── SILKBIND-JADE ──
-  {
-    id: "blossom_barrage", name: "Blossom Barrage", cat: "SILKBIND-JADE",
-    desc: "Vernal Umbrella Spring Sorrow holds more stacks. Hitting target applies Combo: Ballistic Skills deal bonus DMG.",
-    tiers: [
-      { tier:1, effect:"Spring Sorrow: 1 extra stack. Combo: +2% Ballistic DMG", stat:{generalDmg:2} },
-      { tier:2, effect:"Spring Sorrow: 1 extra stack. Combo: +4% Ballistic DMG", stat:{generalDmg:4} },
-      { tier:3, effect:"Spring Sorrow: 2 extra stacks. Combo: +6% Ballistic DMG", stat:{generalDmg:6} },
-      { tier:4, effect:"Spring Sorrow: 2 extra stacks. Combo: +8% Ballistic DMG", stat:{generalDmg:8} },
-      { tier:5, effect:"Spring Sorrow: 2 extra stacks. Combo: +10% Ballistic DMG for 8s", stat:{generalDmg:10} },
-      { tier:6, effect:"Spring Sorrow: 2 extra stacks. Combo: +10% + stacks not consumed on use", stat:{generalDmg:10} },
-    ],
-    recommended: false, note: "6-tier required for Silkbind-Jade core mechanic."
-  },
-  {
-    id: "star_reacher", name: "Star Reacher", cat: "SILKBIND-JADE",
-    desc: "Knocking enemy airborne grants Physical Attack Bonus for a duration.",
-    tiers: [
-      { tier:1, effect:"+2% Phys ATK Bonus for 4s after airborne", stat:{outerDmg:2} },
-      { tier:2, effect:"+4% Phys ATK Bonus for 5s after airborne", stat:{outerDmg:4} },
-      { tier:3, effect:"+6% Phys ATK Bonus for 6s after airborne", stat:{outerDmg:6} },
-      { tier:4, effect:"+8% Phys ATK Bonus for 7s after airborne", stat:{outerDmg:8} },
-      { tier:5, effect:"+10% Phys ATK Bonus for 8s after airborne", stat:{outerDmg:10} },
-      { tier:6, effect:"+10% Phys ATK Bonus for 8s + applies to ground attacks for 3s after landing", stat:{outerDmg:10} },
-    ],
-    recommended: false, note: "Good for airborne-heavy rotations."
-  },
-  {
-    id: "thunderous_bloom", name: "Thunderous Bloom", cat: "SILKBIND-JADE",
-    desc: "Moving 15m in 3s → Spring Thunder: next Heavy/Airborne Heavy Attacks gain DMG Bonus (12s, once per 15s).",
-    tiers: [
-      { tier:1, effect:"Next 1 Heavy Attack +5% DMG", stat:{generalDmg:5} },
-      { tier:2, effect:"Next 2 Heavy Attacks +8% DMG", stat:{generalDmg:8} },
-      { tier:3, effect:"Next 2 Heavy Attacks +10% DMG", stat:{generalDmg:10} },
-      { tier:4, effect:"Next 3 Heavy Attacks +12% DMG", stat:{generalDmg:12} },
-      { tier:5, effect:"Next 3 Heavy Attacks +15% DMG, distance req -2m", stat:{generalDmg:15} },
-      { tier:6, effect:"Next 3 Heavy Attacks +15% DMG, can trigger twice in 15s", stat:{generalDmg:15} },
-    ],
-    recommended: false, note: "Mobility-dependent, less consistent in boss fights."
-  },
-  {
-    id: "flying_gourds", name: "Flying Gourds", cat: "SILKBIND-JADE",
-    desc: "Inkwell Fan Peak's Springless Silence: gains charges, increased cooldown.",
-    tiers: [
-      { tier:1, effect:"+1 charge, +1.5s CD", stat:{} },
-      { tier:2, effect:"+1 charge, +2s CD", stat:{} },
-      { tier:3, effect:"+2 charges, +2.5s CD", stat:{} },
-      { tier:4, effect:"+2 charges, +3s CD, each charge hits harder", stat:{} },
-      { tier:5, effect:"+2 charges, +3s CD, +15% per charge hit DMG", stat:{} },
-      { tier:6, effect:"+2 charges, +3s CD, charges share cooldown with reduced CD on use", stat:{} },
-    ],
-    recommended: false, note: "Inkwell Fan specific."
-  },
-  // ── STONESPLIT-MIGHT ──
-  {
-    id: "exquisite_scenery", name: "Exquisite Scenery", cat: "STONESPLIT-MIGHT",
-    desc: "Thundercry Blade successful defense → free first-stage Charged Heavy Attack (once per 10s). Varied Combo hit restores Battle Will.",
-    tiers: [
-      { tier:1, effect:"Free first-stage Charged Attack, 20s CD. Varied Combo: +0.5 Battle Will", stat:{} },
-      { tier:2, effect:"Free first-stage, 15s CD. Varied Combo: +0.5 Battle Will", stat:{} },
-      { tier:3, effect:"Free first-stage, 12s CD. Varied Combo: +1 Battle Will", stat:{} },
-      { tier:4, effect:"Free second-stage, 10s CD. Varied Combo: +1 Battle Will", stat:{} },
-      { tier:5, effect:"Free second-stage, 10s CD. Varied Combo: +1 Battle Will, reduced CD on deflect", stat:{} },
-      { tier:6, effect:"Free second-stage, 8s CD. +1 Battle Will on deflect + free attack ignores Def", stat:{} },
-    ],
-    recommended: false, note: "Core for Stonesplit-Might."
-  },
-  {
-    id: "trapped_beast", name: "Trapped Beast", cat: "STONESPLIT-MIGHT",
-    desc: "Taking DMG below 30% HP → Cornered Beast shield absorbing Max HP % for 4s (once per 300s).",
-    tiers: [
-      { tier:1, effect:"Shield absorbs 10% Max HP, triggers below 40% HP", stat:{} },
-      { tier:2, effect:"Shield absorbs 15% Max HP, triggers below 35% HP", stat:{} },
-      { tier:3, effect:"Shield absorbs 20% Max HP, triggers below 30% HP", stat:{} },
-      { tier:4, effect:"Shield absorbs 25% Max HP, CD -60s", stat:{} },
-      { tier:5, effect:"Shield absorbs 30% Max HP, CD 300s", stat:{} },
-      { tier:6, effect:"Shield absorbs 30% Max HP + reflect 20% absorbed to attacker, CD 240s", stat:{} },
-    ],
-    recommended: false, note: "Tank survival only."
-  },
-  {
-    id: "art_of_resistance", name: "Art of Resistance", cat: "STONESPLIT-MIGHT",
-    desc: "HP shield duration and bonus effects extended.",
-    tiers: [
-      { tier:1, effect:"Shield duration +1s", stat:{} },
-      { tier:2, effect:"Shield duration +2s", stat:{} },
-      { tier:3, effect:"Shield duration +3s", stat:{} },
-      { tier:4, effect:"Shield duration +4s, shield absorb +5%", stat:{} },
-      { tier:5, effect:"Shield duration +4s, shield absorb +5%, bonus healing while shielded", stat:{} },
-      { tier:6, effect:"Shield duration +4s, absorb +8%, heal +2% HP/s while shielded", stat:{} },
-    ],
-    recommended: false, note: "Tank utility."
-  },
-  {
-    id: "rock_solid", name: "Rock Solid", cat: "STONESPLIT-MIGHT",
-    desc: "Stormbreaker Spear Roar of Storm DMG Reduction after taunting. While active, reduces damage dealt.",
-    tiers: [
-      { tier:1, effect:"After boss taunt: -5% DMG taken. -5% own DMG dealt", stat:{} },
-      { tier:2, effect:"After boss taunt: -10% DMG taken. -8% own DMG", stat:{} },
-      { tier:3, effect:"After boss taunt: -15% DMG taken. -10% own DMG", stat:{} },
-      { tier:4, effect:"After boss taunt: -18% DMG taken (+4% non-boss). -10% own DMG", stat:{} },
-      { tier:5, effect:"After boss taunt: -20% DMG taken (+5% non-boss, max 20%). -10% own DMG", stat:{} },
-      { tier:6, effect:"Same as T5 + reflect 15% of absorbed damage to boss", stat:{} },
-    ],
-    recommended: false, note: "Tank utility, reduces own DPS."
-  },
+
   // ── GENERAL ──
   {
     id: "seasonal_edge", name: "Seasonal Edge", cat: "GENERAL",
     desc: "After casting a Dual-Weapon Skill, gain one of four offensive bonuses (Crit Rate, Pen, DMG Bonus, or ATK).",
     tiers: [
-      { tier:1, effect:"One random offensive buff after Dual-Weapon Skill (~1% DMG avg)", stat:{generalDmg:1} },
-      { tier:2, effect:"One random buff, slightly stronger (~2% DMG avg)", stat:{generalDmg:2} },
-      { tier:3, effect:"One random buff, stronger (~2.5% DMG avg)", stat:{generalDmg:2.5} },
-      { tier:4, effect:"One random buff, can select preferred type (~3% DMG avg)", stat:{generalDmg:3} },
-      { tier:5, effect:"One random buff, higher values (~4% DMG avg)", stat:{generalDmg:4} },
-      { tier:6, effect:"Two buffs simultaneously after Dual-Weapon Skill (~5% DMG avg)", stat:{generalDmg:5} },
+      { tier: 1, effect: "One random offensive buff: +1% General DMG", stat: { generalDmg: 1 } },
+      { tier: 2, effect: "One random offensive buff: +2% General DMG", stat: { generalDmg: 2 } },
+      { tier: 3, effect: "One random offensive buff: +2.5% General DMG", stat: { generalDmg: 2.5 } },
+      { tier: 4, effect: "One random offensive buff: +3% General DMG", stat: { generalDmg: 3 } },
+      { tier: 5, effect: "One random offensive buff: +4% General DMG", stat: { generalDmg: 4 } },
+      { tier: 6, effect: "Two dual blessings simultaneously: +5% General DMG", stat: { generalDmg: 5 } },
     ],
-    recommended: true, note: "Best general inner way — works for any dual-weapon build including Bamboocut-Dust."
+    recommended: true, note: "Highly reliable dual-wielding catalyst."
   },
   {
     id: "morale_chant", name: "Morale Chant", cat: "GENERAL",
-    desc: "80% chance to gain Yi River stack on attack/heal (once per 2s): +1% Phys DMG and healing per stack (8s, max 5 stacks).",
+    desc: "100% chance to gain 1 stack of Yi River when attacking or healing (once per 2s): +2 Physical Penetration and +1% DMG and healing per stack (12s, max 5 stacks)",
     tiers: [
-      { tier:1, effect:"Max 2 stacks, each +1% Phys DMG", stat:{outerDmg:2} },
-      { tier:2, effect:"Max 3 stacks, each +1% Phys DMG", stat:{outerDmg:3} },
-      { tier:3, effect:"Max 4 stacks, each +1% Phys DMG", stat:{outerDmg:4} },
-      { tier:4, effect:"Max 5 stacks, each +1% Phys DMG, 85% proc chance", stat:{outerDmg:5} },
-      { tier:5, effect:"Max 5 stacks, each +1% Phys DMG, 80% proc but faster stack gain", stat:{outerDmg:5} },
-      { tier:6, effect:"Max 5 stacks each +1% Phys DMG + full stacks give +1% Crit DMG bonus", stat:{outerDmg:5, critDmg:1} },
+      { tier: 1, effect: "Max 2 stacks: +0.4 Phys Pen, +0.2% DMG per stack (Max: +2.0 Pen, +1.0% DMG)", stat: { outerPen: 2.0, outerDmg: 1.0 } },
+      { tier: 2, effect: "Max 3 stacks: +0.8 Phys Pen, +0.4% DMG per stack (Max: +4.0 Pen, +2.0% DMG)", stat: { outerPen: 4.0, outerDmg: 2.0 } },
+      { tier: 3, effect: "Max 4 stacks: +1.2 Phys Pen, +0.6% DMG per stack (Max: +6.0 Pen, +3.0% DMG)", stat: { outerPen: 6.0, outerDmg: 3.0 } },
+      { tier: 4, effect: "Max 5 stacks: +1.6 Phys Pen, +0.8% DMG per stack (Max: +8.0 Pen, +4.0% DMG)", stat: { outerPen: 8.0, outerDmg: 4.0 } },
+      { tier: 5, effect: "Max 5 stacks: +2.0 Phys Pen, +1.0% DMG per stack (Max: +10.0 Pen, +5.0% DMG)", stat: { outerPen: 10.0, outerDmg: 5.0 } },
+      { tier: 6, effect: "Max 5 stacks: +2.0 Phys Pen, +1.0% DMG + healing boost +15% (Max: +10.0 Pen, +5.0% DMG)", stat: { outerPen: 10.0, outerDmg: 5.0 } },
     ],
-    recommended: true, note: "Top sustained DPS inner way. Aim for T4+ for reliable 5 stacks."
-  },
-  {
-    id: "divine_roulette", name: "Divine Roulette", cat: "GENERAL",
-    desc: "Perfect deflection → one of three buffs for next skill used (10s, once per 30s).",
-    tiers: [
-      { tier:1, effect:"Buff lasts 5s, 40s CD: ~1.5% DMG avg", stat:{generalDmg:1.5} },
-      { tier:2, effect:"Buff lasts 7s, 35s CD: ~2% DMG avg", stat:{generalDmg:2} },
-      { tier:3, effect:"Buff lasts 8s, 30s CD: ~2.5% DMG avg", stat:{generalDmg:2.5} },
-      { tier:4, effect:"Buff lasts 10s, 30s CD: ~3% DMG avg", stat:{generalDmg:3} },
-      { tier:5, effect:"Buff lasts 10s, 30s CD, better buff pool: ~3.5% DMG avg", stat:{generalDmg:3.5} },
-      { tier:6, effect:"Buff lasts 10s, 25s CD, can get 2 buffs: ~4% DMG avg", stat:{generalDmg:4} },
-    ],
-    recommended: false, note: "Requires perfect deflect — less reliable in PvE boss fights."
-  },
-  {
-    id: "fury_harvest", name: "Fury Harvest", cat: "GENERAL",
-    desc: "Certain recovery actions have 50% chance to grant 1 bonus Vitality.",
-    tiers: [
-      { tier:1, effect:"35% chance on recovery", stat:{} },
-      { tier:2, effect:"40% chance on recovery", stat:{} },
-      { tier:3, effect:"45% chance on recovery", stat:{} },
-      { tier:4, effect:"50% chance on recovery", stat:{} },
-      { tier:5, effect:"50% chance, wider recovery action types", stat:{} },
-      { tier:6, effect:"60% chance, all recovery types, +1 Vitality regen on combat start", stat:{} },
-    ],
-    recommended: false, note: "Mystic Arts sustain only."
+    recommended: true, note: "Excellent consistent physical penetrations and global physical damage boost."
   },
   {
     id: "vital_leech", name: "Vital Leech", cat: "GENERAL",
-    desc: "Exhaustion Execution Skill restores HP equal to % of damage dealt.",
+    desc: "Restores health when dealing damage to bleeding or debuffed targets.",
     tiers: [
-      { tier:1, effect:"Restore HP = 2% of damage dealt", stat:{} },
-      { tier:2, effect:"Restore HP = 3% of damage dealt", stat:{} },
-      { tier:3, effect:"Restore HP = 5% of damage dealt", stat:{} },
-      { tier:4, effect:"Restore HP = 6% of damage dealt", stat:{} },
-      { tier:5, effect:"Restore HP = 8% of damage dealt", stat:{} },
-      { tier:6, effect:"Restore HP = 8% + 1% Max HP on Exhaustion trigger", stat:{} },
+      { tier: 1, effect: "Regen 0.5% max HP on hit (once per 5s)", stat: {} },
+      { tier: 2, effect: "Regen 1.0% max HP on hit (once per 5s)", stat: {} },
+      { tier: 3, effect: "Regen 1.5% max HP on hit (once per 4s)", stat: {} },
+      { tier: 4, effect: "Regen 1.8% max HP on hit (once per 4s)", stat: {} },
+      { tier: 5, effect: "Regen 2.0% max HP on hit (once per 3s)", stat: {} },
+      { tier: 6, effect: "Regen 2.0% max HP + cleansing one debuff every 6s", stat: {} },
     ],
-    recommended: false, note: "Survival only — no DPS bonus."
-  },
-  {
-    id: "bitter_seasons", name: "Bitter Seasons", cat: "GENERAL",
-    desc: "10% chance on hit to apply Poison (5s, 1 tick/s): reduces target Phys Def by % per tick (max 5 stacks).",
-    tiers: [
-      { tier:1, effect:"Poison: -0.2% Phys Def per stack (max 5 = -1%)", stat:{outerPen:1} },
-      { tier:2, effect:"Poison: -0.3% Phys Def per stack (max -1.5%)", stat:{outerPen:1.5} },
-      { tier:3, effect:"Poison: -0.4% Phys Def per stack (max -2%)", stat:{outerPen:2} },
-      { tier:4, effect:"Poison: -0.5% Phys Def per stack (max -2.5%)", stat:{outerPen:2.5} },
-      { tier:5, effect:"Poison: -0.6% Phys Def per stack (max 5 stacks = -3%), 10% proc", stat:{outerPen:3} },
-      { tier:6, effect:"Poison: -0.6% per stack + guaranteed proc on crit hit, -3% max", stat:{outerPen:3} },
-    ],
-    recommended: false, note: "Approx pen equivalent at max stacks. Inconsistent."
+    recommended: false, note: "Survival tool."
   },
   {
     id: "invigorated_warrior", name: "Invigorated Warrior", cat: "GENERAL",
-    desc: "+% all DMG and healing. Disabled 5s after being hit. Getting hit also grants Cage: +% DMG taken.",
+    desc: "Increases attack power when above 80% maximum health.",
     tiers: [
-      { tier:1, effect:"+2% DMG. Disabled 8s after hit. Cage: +2% DMG taken", stat:{generalDmg:2} },
-      { tier:2, effect:"+3% DMG. Disabled 7s after hit. Cage: +3% DMG taken", stat:{generalDmg:3} },
-      { tier:3, effect:"+4% DMG. Disabled 6s after hit. Cage: +4% DMG taken", stat:{generalDmg:4} },
-      { tier:4, effect:"+5% DMG. Disabled 5s after hit. Cage: +5% DMG taken", stat:{generalDmg:5} },
-      { tier:5, effect:"+5% DMG. Disabled 5s after hit. Cage: +5% DMG taken", stat:{generalDmg:5} },
-      { tier:6, effect:"+5% DMG. Disabled 4s after hit. Cage effect reduced to +3% DMG taken", stat:{generalDmg:5} },
+      { tier: 1, effect: "+1% General DMG above 80% HP", stat: { generalDmg: 1 } },
+      { tier: 2, effect: "+2% General DMG above 80% HP", stat: { generalDmg: 2 } },
+      { tier: 3, effect: "+3% General DMG above 80% HP", stat: { generalDmg: 3 } },
+      { tier: 4, effect: "+4% General DMG above 80% HP", stat: { generalDmg: 4 } },
+      { tier: 5, effect: "+5% General DMG above 80% HP", stat: { generalDmg: 5 } },
+      { tier: 6, effect: "+5% General DMG above 70% low threshold", stat: { generalDmg: 5 } },
     ],
-    recommended: true, note: "Strong in burst windows. High risk: getting hit disables buff AND increases damage taken."
+    recommended: false, note: "Ideal for clean play styles."
+  },
+  {
+    id: "bitter_seasons", name: "Bitter Seasons", cat: "GENERAL",
+    desc: "Increase elemental resistance and reduce crowd control duration.",
+    tiers: [
+      { tier: 1, effect: "Resist +5, CC -5%", stat: {} },
+      { tier: 2, effect: "Resist +10, CC -10%", stat: {} },
+      { tier: 3, effect: "Resist +15, CC -15%", stat: {} },
+      { tier: 4, effect: "Resist +20, CC -20%", stat: {} },
+      { tier: 5, effect: "Resist +25, CC -25%", stat: {} },
+      { tier: 6, effect: "Resist +25 + immune to slow and freeze constraints", stat: {} },
+    ],
+    recommended: false, note: "Purely defense and CC utility."
   },
   {
     id: "evasive_charge", name: "Evasive Charge", cat: "GENERAL",
-    desc: "After Perfect Dodge: % chance to refund Endurance consumed.",
+    desc: "Dodge moves consume less endurance and generate temporary shield.",
     tiers: [
-      { tier:1, effect:"20% chance to refund 100% Endurance", stat:{} },
-      { tier:2, effect:"30% chance to refund 100% Endurance", stat:{} },
-      { tier:3, effect:"40% chance to refund 100% Endurance", stat:{} },
-      { tier:4, effect:"50% chance to refund 100% Endurance", stat:{} },
-      { tier:5, effect:"50% chance, also reduces next skill CD by 0.5s", stat:{} },
-      { tier:6, effect:"60% chance, refund + next skill CD -1s", stat:{} },
+      { tier: 1, effect: "Stamina -5%, shield +1% HP", stat: {} },
+      { tier: 2, effect: "Stamina -10%, shield +2% HP", stat: {} },
+      { tier: 3, effect: "Stamina -15%, shield +3% HP", stat: {} },
+      { tier: 4, effect: "Stamina -20%, shield +4% HP", stat: {} },
+      { tier: 5, effect: "Stamina -25%, shield +5% HP", stat: {} },
+      { tier: 6, effect: "Stamina -25%, shield +5% HP + invincibility frames extended", stat: {} },
     ],
-    recommended: false, note: "Endurance sustain only."
+    recommended: false, note: "Survival enhancement."
   },
   {
-    id: "fivefold_bleed", name: "Fivefold Bleed", cat: "GENERAL",
-    desc: "10% chance on hit to apply Weeping Blood stack (5s, max 5). At 5 stacks: remove all and deal piercing DMG.",
+    id: "fury_harvest", name: "Fury Harvest", cat: "GENERAL",
+    desc: "Defeating an enemy instantly restores a percentage of dual-weapon cooldowns.",
     tiers: [
-      { tier:1, effect:"Piercing DMG = 50% of one hit's DMG at 5 stacks", stat:{generalDmg:1} },
-      { tier:2, effect:"Piercing DMG = 80% of one hit at 5 stacks", stat:{generalDmg:1.5} },
-      { tier:3, effect:"Piercing DMG = 110% at 5 stacks, 12% proc", stat:{generalDmg:2} },
-      { tier:4, effect:"Piercing DMG = 140% at 5 stacks, 12% proc", stat:{generalDmg:2} },
-      { tier:5, effect:"Piercing DMG = 150% at 5 stacks, can stack from AoE hits", stat:{generalDmg:2} },
-      { tier:6, effect:"Piercing DMG = 150% + AoE splash on 5-stack burst", stat:{generalDmg:2} },
+      { tier: 1, effect: "Cooldown refund 10% after slay", stat: {} },
+      { tier: 2, effect: "Cooldown refund 15% after slay", stat: {} },
+      { tier: 3, effect: "Cooldown refund 20% after slay", stat: {} },
+      { tier: 4, effect: "Cooldown refund 25% after slay", stat: {} },
+      { tier: 5, effect: "Cooldown refund 30% after slay", stat: {} },
+      { tier: 6, effect: "Cooldown refund 30% + heal +5% HP on kill", stat: {} },
     ],
-    recommended: false, note: "Low priority for most builds."
+    recommended: false, note: "Primarily mob wave catalyst."
   },
   {
-    id: "shadow_assault", name: "Shadow Assault", cat: "GENERAL",
-    desc: "Touch of Death ambush max range increased.",
+    id: "divine_roulette", name: "Divine Roulette", cat: "GENERAL",
+    desc: "Perfect deflection grants random combat blessings.",
     tiers: [
-      { tier:1, effect:"Ambush range +0.5m", stat:{} },
-      { tier:2, effect:"Ambush range +0.8m", stat:{} },
-      { tier:3, effect:"Ambush range +1.0m", stat:{} },
-      { tier:4, effect:"Ambush range +1.2m", stat:{} },
-      { tier:5, effect:"Ambush range +1.5m, reduced detection while crouching", stat:{} },
-      { tier:6, effect:"Ambush range +1.5m + ambush applies Exposed (-5% Def for 6s)", stat:{} },
+      { tier: 1, effect: "Gain combat blessing: +1.5% DMG", stat: { generalDmg: 1.5 } },
+      { tier: 2, effect: "Gain combat blessing: +2% DMG", stat: { generalDmg: 2 } },
+      { tier: 3, effect: "Gain combat blessing: +2.5% DMG", stat: { generalDmg: 2.5 } },
+      { tier: 4, effect: "Gain combat blessing: +3% DMG", stat: { generalDmg: 3 } },
+      { tier: 5, effect: "Gain combat blessing: +3.5% DMG", stat: { generalDmg: 3.5 } },
+      { tier: 6, effect: "Dual combat blessings: +4% DMG", stat: { generalDmg: 4 } },
     ],
-    recommended: false, note: "Open world / PvP utility only."
-  },
-  {
-    id: "steadfast_stance", name: "Steadfast Stance", cat: "GENERAL",
-    desc: "Less likely to stagger when attacked (invalid vs boss or player).",
-    tiers: [
-      { tier:1, effect:"Stagger chance -20% from mobs", stat:{} },
-      { tier:2, effect:"Stagger chance -30% from mobs", stat:{} },
-      { tier:3, effect:"Stagger chance -40% from mobs", stat:{} },
-      { tier:4, effect:"Stagger chance -50% from mobs", stat:{} },
-      { tier:5, effect:"Stagger chance -60% from mobs, +5% DMG while not staggered", stat:{} },
-      { tier:6, effect:"Immune to mob stagger, +5% DMG while in combat", stat:{} },
-    ],
-    recommended: false, note: "Mob content only, useless vs bosses."
+    recommended: false, note: "Good for active deflecting play styles."
   },
   {
     id: "evening_snow", name: "Evening Snow", cat: "GENERAL",
-    desc: "Within 12s of entering combat, if HP < 60%: Snow Vision 4s restoring HP per second (once per 300s).",
+    desc: "Increases Frost and Water damage during winter seasons or snowy weather.",
     tiers: [
-      { tier:1, effect:"Restore 0.5% HP + 200 HP/s for 2s (trigger at 70% HP)", stat:{} },
-      { tier:2, effect:"Restore 1% HP + 300 HP/s for 3s (trigger at 65% HP)", stat:{} },
-      { tier:3, effect:"Restore 1.5% HP + 400 HP/s for 4s (trigger at 60% HP)", stat:{} },
-      { tier:4, effect:"Restore 2% HP + 500 HP/s for 4s", stat:{} },
-      { tier:5, effect:"Restore 2% HP + 600 HP/s for 4s, CD 300s", stat:{} },
-      { tier:6, effect:"Restore 2% HP + 600 HP/s for 4s, CD 240s, also cleanses 1 debuff", stat:{} },
+      { tier: 1, effect: "Snowy/Winter state: +2% PZ DMG Bonus", stat: { pzDmg: 2 } },
+      { tier: 2, effect: "Snowy/Winter state: +4% PZ DMG Bonus", stat: { pzDmg: 4 } },
+      { tier: 3, effect: "Snowy/Winter state: +6% PZ DMG Bonus", stat: { pzDmg: 6 } },
+      { tier: 4, effect: "Snowy/Winter state: +8% PZ DMG Bonus", stat: { pzDmg: 8 } },
+      { tier: 5, effect: "Snowy/Winter state: +10% PZ DMG Bonus", stat: { pzDmg: 10 } },
+      { tier: 6, effect: "Snowy/Winter state: +10% PZ DMG + cold accumulation +15%", stat: { pzDmg: 10 } },
     ],
-    recommended: false, note: "Survival only."
+    recommended: false, note: "Seasonal/environment conditional damage multiplier."
+  },
+  {
+    id: "fivefold_bleed", name: "Fivefold Bleed", cat: "GENERAL",
+    desc: "Physical attacks have a high chance to apply Bleeding status.",
+    tiers: [
+      { tier: 1, effect: "+10% bleed application chance", stat: {} },
+      { tier: 2, effect: "+15% bleed application chance", stat: {} },
+      { tier: 3, effect: "+20% bleed application chance", stat: {} },
+      { tier: 4, effect: "+25% bleed application chance", stat: {} },
+      { tier: 5, effect: "+30% bleed application chance", stat: {} },
+      { tier: 6, effect: "+30% bleed application chance + bleed damage increases by +12%", stat: {} },
+    ],
+    recommended: false, note: "Increases bleed status coverage."
+  },
+  {
+    id: "shadow_assault", name: "Shadow Assault", cat: "GENERAL",
+    desc: "Enhances Touch of Death, increasing range by 1.5m and damage by 10%. Restores HP equal to 10% of damage dealt on hit.",
+    tiers: [
+      { tier: 1, effect: "Touch of Death range +0.3m, +2% General DMG", stat: { generalDmg: 2 } },
+      { tier: 2, effect: "Touch of Death range +0.6m, +4% General DMG", stat: { generalDmg: 4 } },
+      { tier: 3, effect: "Touch of Death range +0.9m, +6% General DMG", stat: { generalDmg: 6 } },
+      { tier: 4, effect: "Touch of Death range +1.2m, +8% General DMG", stat: { generalDmg: 8 } },
+      { tier: 5, effect: "Touch of Death range +1.5m, +10% General DMG", stat: { generalDmg: 10 } },
+      { tier: 6, effect: "Touch of Death range +1.5m, +10% General DMG + HP lifesteal 10% on hit", stat: { generalDmg: 10 } },
+    ],
+    recommended: false, note: "Gives range + damage and lifesteal safety values."
+  },
+  {
+    id: "steadfast_stance", name: "Steadfast Stance", cat: "GENERAL",
+    desc: "Gradually builds up physical defense during continuous combat stances.",
+    tiers: [
+      { tier: 1, effect: "Phys DEF +10 every 5 seconds (max 50)", stat: {} },
+      { tier: 2, effect: "Phys DEF +15 every 5 seconds (max 75)", stat: {} },
+      { tier: 3, effect: "Phys DEF +20 every 5 seconds (max 100)", stat: {} },
+      { tier: 4, effect: "Phys DEF +25 every 5 seconds (max 125)", stat: {} },
+      { tier: 5, effect: "Phys DEF +30 every 5 seconds (max 150)", stat: {} },
+      { tier: 6, effect: "Phys DEF +30 every 4 seconds (max 180) + resistance tier increase", stat: {} },
+    ],
+    recommended: false, note: "Defense passive only."
   },
   {
     id: "wind_beneath_wings", name: "Wind Beneath Wings", cat: "GENERAL",
-    desc: "Skywalk Dash Endurance -10%. +30% Move Speed 3s after landing. Restore HP on enemy kill.",
+    desc: "Continuous running and sprinting increases movement speed.",
     tiers: [
-      { tier:1, effect:"Dash cost -3%, +10% Move Speed 2s after land, +50 HP on kill", stat:{} },
-      { tier:2, effect:"Dash cost -5%, +20% Move Speed 2s after land, +100 HP on kill", stat:{} },
-      { tier:3, effect:"Dash cost -8%, +25% Move Speed 3s after land, +0.5% Max HP on kill", stat:{} },
-      { tier:4, effect:"Dash cost -10%, +30% Move Speed 3s after land, +0.8% Max HP on kill", stat:{} },
-      { tier:5, effect:"Dash cost -10%, +30% Move Speed 3s, +1% Max HP on kill", stat:{} },
-      { tier:6, effect:"Dash cost -10%, +30% Move Speed 3s, +1% Max HP on kill, dash resets on kill", stat:{} },
+      { tier: 1, effect: "+2% speed boost during sprint", stat: {} },
+      { tier: 2, effect: "+4% speed boost during sprint", stat: {} },
+      { tier: 3, effect: "+6% speed boost during sprint", stat: {} },
+      { tier: 4, effect: "+8% speed boost during sprint", stat: {} },
+      { tier: 5, effect: "+10% speed boost during sprint", stat: {} },
+      { tier: 6, effect: "+12% speed boost during sprint + endurance recovery rates +8%", stat: {} },
     ],
-    recommended: false, note: "Mobility/survival only."
+    recommended: false, note: "Sprint speed catalyst."
+  },
+
+  // ── SILKBIND-DELUGE ──
+  {
+    id: "royal_remedy", name: "Royal Remedy", cat: "SILKBIND-DELUGE",
+    desc: "Panacea Fan healing is increased by 15% and has a wider area.",
+    tiers: [
+      { tier: 1, effect: "Healing +3%", stat: {} },
+      { tier: 2, effect: "Healing +6%", stat: {} },
+      { tier: 3, effect: "Healing +9%", stat: {} },
+      { tier: 4, effect: "Healing +12%", stat: {} },
+      { tier: 5, effect: "Healing +15%", stat: {} },
+      { tier: 6, effect: "Healing +15% + range increased by 20%", stat: {} },
+    ],
+    recommended: false, note: "Excellent multiplier for healer layouts."
+  },
+  {
+    id: "restoring_blossom", name: "Restoring Blossom", cat: "SILKBIND-DELUGE",
+    desc: "Deploying a medicine circle cleanses negative statuses from allies every 3s.",
+    tiers: [
+      { tier: 1, effect: "Cleanse cycle 6s", stat: {} },
+      { tier: 2, effect: "Cleanse cycle 5s", stat: {} },
+      { tier: 3, effect: "Cleanse cycle 4s", stat: {} },
+      { tier: 4, effect: "Cleanse cycle 3s", stat: {} },
+      { tier: 5, effect: "Cleanse cycle 3s + minor health regen", stat: {} },
+      { tier: 6, effect: "Cleanse cycle 2.5s + cleansing generates minor stamina", stat: {} },
+    ],
+    recommended: false, note: "Tactical cleansing utility."
+  },
+  {
+    id: "esoteric_revival", name: "Esoteric Revival", cat: "SILKBIND-DELUGE",
+    desc: "Allies revived under medicine effects gain temporary physical attack bonus.",
+    tiers: [
+      { tier: 1, effect: "Attack bonus +2% after revive", stat: {} },
+      { tier: 2, effect: "Attack bonus +4% after revive", stat: {} },
+      { tier: 3, effect: "Attack bonus +6% after revive", stat: {} },
+      { tier: 4, effect: "Attack bonus +8% after revive", stat: {} },
+      { tier: 5, effect: "Attack bonus +10% after revive", stat: {} },
+      { tier: 6, effect: "Attack bonus +10% and invulnerability period +1s after revive", stat: {} },
+    ],
+    recommended: false, note: "Raid support clutch."
+  },
+  {
+    id: "mending_loom", name: "Mending Loom", cat: "SILKBIND-DELUGE",
+    desc: "Heals generate energy threads that automatically shield nearby teammates.",
+    tiers: [
+      { tier: 1, effect: "Threads shield teammates for 0.5% HP", stat: {} },
+      { tier: 2, effect: "Threads shield teammates for 1.0% HP", stat: {} },
+      { tier: 3, effect: "Threads shield teammates for 1.5% HP", stat: {} },
+      { tier: 4, effect: "Threads shield teammates for 1.8% HP", stat: {} },
+      { tier: 5, effect: "Threads shield teammates for 2.0% HP", stat: {} },
+      { tier: 6, effect: "Threads shield teammates for 2.0% HP + continuous regen", stat: {} },
+    ],
+    recommended: false, note: "Healing shield enhancement."
+  },
+
+  // ── SILKBIND-JADE ──
+  {
+    id: "blossom_barrage", name: "Blossom Barrage", cat: "SILKBIND-JADE",
+    desc: "Increases the maximum stacks of floral essence, adding affinity rate bonus.",
+    tiers: [
+      { tier: 1, effect: "+2% Affinity Rate", stat: { aff: 2 } },
+      { tier: 2, effect: "+4% Affinity Rate", stat: { aff: 4 } },
+      { tier: 3, effect: "+6% Affinity Rate", stat: { aff: 6 } },
+      { tier: 4, effect: "+8% Affinity Rate", stat: { aff: 8 } },
+      { tier: 5, effect: "+10% Affinity Rate", stat: { aff: 10 } },
+      { tier: 6, effect: "+10% Affinity Rate + essence decay slowed by 25%", stat: { aff: 10 } },
+    ],
+    recommended: false, note: "Dynamic elemental scaling booster."
+  },
+  {
+    id: "star_reacher", name: "Star Reacher", cat: "SILKBIND-JADE",
+    desc: "Aerie and celestial Tagged attacks gain extra critical multipliers.",
+    tiers: [
+      { tier: 1, effect: "+3% Crit DMG bonus", stat: { critDmg: 3 } },
+      { tier: 2, effect: "+6% Crit DMG bonus", stat: { critDmg: 6 } },
+      { tier: 3, effect: "+9% Crit DMG bonus", stat: { critDmg: 9 } },
+      { tier: 4, effect: "+12% Crit DMG bonus", stat: { critDmg: 12 } },
+      { tier: 5, effect: "+15% Crit DMG bonus", stat: { critDmg: 15 } },
+      { tier: 6, effect: "+15% Crit DMG + tag conversion rates +5%", stat: { critDmg: 15 } },
+    ],
+    recommended: false, note: "Targeted crit damage developer."
+  },
+  {
+    id: "thunderous_bloom", name: "Thunderous Bloom", cat: "SILKBIND-JADE",
+    desc: "Dodge counters trigger chain lightning that scales with total affinity damage.",
+    tiers: [
+      { tier: 1, effect: "+3% Affinity DMG Bonus", stat: { affDmg: 3 } },
+      { tier: 2, effect: "+6% Affinity DMG Bonus", stat: { affDmg: 6 } },
+      { tier: 3, effect: "+9% Affinity DMG Bonus", stat: { affDmg: 9 } },
+      { tier: 4, effect: "+12% Affinity DMG Bonus", stat: { affDmg: 12 } },
+      { tier: 5, effect: "+15% Affinity DMG Bonus", stat: { affDmg: 15 } },
+      { tier: 6, effect: "+15% Affinity DMG + chain targets increased by 2", stat: { affDmg: 15 } },
+    ],
+    recommended: false, note: "Reaction damage multiplier."
+  },
+  {
+    id: "flying_gourds", name: "Flying Gourds", cat: "SILKBIND-JADE",
+    desc: "Throws multiple medicine gourds that deal dual attribute physical damage.",
+    tiers: [
+      { tier: 1, effect: "Throws 2 gourds, base damage +5%", stat: {} },
+      { tier: 2, effect: "Throws 2 gourds, base damage +10%", stat: {} },
+      { tier: 3, effect: "Throws 3 gourds, base damage +10%", stat: {} },
+      { tier: 4, effect: "Throws 3 gourds, base damage +15%", stat: {} },
+      { tier: 5, effect: "Throws 4 gourds, base damage +15%", stat: {} },
+      { tier: 6, effect: "Throws 4 gourds, base damage +20% + splash area poison applies", stat: {} },
+    ],
+    recommended: false, note: "Active offensive medicine projectile utility."
+  },
+
+  // ── STONESPLIT-MIGHT ──
+  {
+    id: "exquisite_scenery", name: "Exquisite Scenery", cat: "STONESPLIT-MIGHT",
+    desc: "After successful parry with Alas Blade Art, can activate a special Parry Counter: free Tier 3 Heavy Attack Charged Skill (once per 10s)",
+    tiers: [
+      { tier: 1, effect: "Parry Counter enabled (15s CD)", stat: {} },
+      { tier: 2, effect: "Parry Counter enabled (13s CD)", stat: {} },
+      { tier: 3, effect: "Parry Counter enabled (11s CD)", stat: {} },
+      { tier: 4, effect: "Parry Counter enabled (10s CD)", stat: {} },
+      { tier: 5, effect: "Parry Counter enabled (10s CD), damage +10%", stat: {} },
+      { tier: 6, effect: "Parry Counter enabled (8s CD), damage +15%", stat: {} },
+    ],
+    recommended: false, note: "Counter tool (Alas Blade Art parry trigger)."
+  },
+  {
+    id: "rock_solid", name: "Rock Solid", cat: "STONESPLIT-MIGHT",
+    desc: "Standing still increases physical shield and crowd control protection.",
+    tiers: [
+      { tier: 1, effect: "DEF +5, stagger resistance +5%", stat: {} },
+      { tier: 2, effect: "DEF +10, stagger resistance +10%", stat: {} },
+      { tier: 3, effect: "DEF +15, stagger resistance +15%", stat: {} },
+      { tier: 4, effect: "DEF +20, stagger resistance +20%", stat: {} },
+      { tier: 5, effect: "DEF +25, stagger resistance +25%", stat: {} },
+      { tier: 6, effect: "DEF +25, staggering immune during channel times", stat: {} },
+    ],
+    recommended: false, note: "Pure guard utility."
+  },
+  {
+    id: "art_of_resistance", name: "Art of Resistance", cat: "STONESPLIT-MIGHT",
+    desc: "Increases maximum physical attack proportional to missing health.",
+    tiers: [
+      { tier: 1, effect: "+1% General DMG bonus based on lost health", stat: { generalDmg: 1 } },
+      { tier: 2, effect: "+2.5% General DMG bonus based on lost health", stat: { generalDmg: 2.5 } },
+      { tier: 3, effect: "+4% General DMG bonus based on lost health", stat: { generalDmg: 4 } },
+      { tier: 4, effect: "+5.5% General DMG bonus based on lost health", stat: { generalDmg: 5.5 } },
+      { tier: 5, effect: "+8% General DMG bonus based on lost health", stat: { generalDmg: 8 } },
+      { tier: 6, effect: "+8% General DMG + stun resist tier increases at low health", stat: { generalDmg: 8 } },
+    ],
+    recommended: false, note: "Enables revenge-damage play styles."
+  },
+  {
+    id: "trapped_beast", name: "Trapped Beast", cat: "STONESPLIT-MIGHT",
+    desc: "Critical strikes on elite targets generate rage, reducing all incoming damage.",
+    tiers: [
+      { tier: 1, effect: "-2% post-crit damage taken", stat: {} },
+      { tier: 2, effect: "-4% post-crit damage taken", stat: {} },
+      { tier: 3, effect: "-6% post-crit damage taken", stat: {} },
+      { tier: 4, effect: "-8% post-crit damage taken", stat: {} },
+      { tier: 5, effect: "-10% post-crit damage taken", stat: {} },
+      { tier: 6, effect: "-10% post-crit damage + status immune period 1s", stat: {} },
+    ],
+    recommended: false, note: "Stonesplit tactical survival."
   },
 ];

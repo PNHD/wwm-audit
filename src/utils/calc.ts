@@ -380,7 +380,7 @@ export function calcSkill(
   rot: RotationItem,
   panel: PanelStats,
   tier: TierConstants,
-  opts: { set: string; datang: boolean; yishui: boolean }
+  opts: { set: string; datang: boolean; yishui: boolean; buildKey?: string }
 ) {
   const sk = SKILL_DB[rot.name];
   if (!sk) return { perHit: 0, total: 0 };
@@ -391,7 +391,11 @@ export function calcSkill(
   const attrRes = tier.attrRes;
 
   const jR = 1 + judgeRes;
-  let critEff = Math.min(0.8, panel.crit / 100 / jR);
+  let critRateInput = panel.crit;
+  if (set === "huanhua") {
+    critRateInput += 5.0; // Huanhua set bonus gives +5% flat crit rate description
+  }
+  let critEff = Math.min(0.8, critRateInput / 100 / jR);
   let affEff = Math.min(0.4, panel.aff / 100 / jR);
   let precEff = Math.min(1.0, 0.65 + Math.max(0, panel.prec - 65) / 100 / jR);
   let dirCrit = panel.dcrit / 100;
@@ -430,6 +434,14 @@ export function calcSkill(
   const csBonus = set === "stars" && sk.csBonus ? sk.csBonus : 0;
   const spinBonus = sk.special === "spin" ? 0.12 : 0;
 
+  let setDmgBonus = 0;
+  if (set === "jadeware" && (opts.buildKey === "deluge" || opts.buildKey === "jade")) {
+    setDmgBonus += 0.25;
+  }
+  if (set === "duanyue") {
+    setDmgBonus += 0.05;
+  }
+
   const T =
     1 +
     rot.generalBonus +
@@ -439,14 +451,14 @@ export function calcSkill(
     (sk.exDmg || 0) +
     csBonus +
     spinBonus +
-    (panel.iwGeneralDmg || 0) / 100;
+    (panel.iwGeneralDmg || 0) / 100 +
+    setDmgBonus;
 
   const totalOuterPen =
     panel.outerPen +
     (sk.exPen || 0) +
     (opts.yishui && rot.yishui ? rot.yishui : 0) -
-    physRes +
-    (panel.iwOuterPen || 0);
+    physRes;
   const F = totalOuterPen >= 0 ? totalOuterPen / 200 : totalOuterPen / 100;
 
   let atkMult = set === "shakenhill" ? 1.05 : 1.0;
@@ -471,7 +483,7 @@ export function calcSkill(
   const dA_F = fixed * (1 + F) * T * affMult;
   const dmgFixed = (pGraze + pWhite) * dN_F + pCrit * dC_F + pAff * dA_F;
 
-  const totalPzPen = panel.pzPen - attrRes + (panel.iwPzPen || 0);
+  const totalPzPen = panel.pzPen - attrRes;
   const Fpz = totalPzPen >= 0 ? totalPzPen / 200 : totalPzPen / 100;
 
   const pzMult = set === "shakenhill" ? 1.05 : 1.0;
@@ -479,7 +491,7 @@ export function calcSkill(
   const maxPz_e = Math.max(0, panel.maxPz * pzMult - tier.def);
   const avgPz_e = (minPz_e + maxPz_e) / 2;
 
-  const pzDmgBonus = panel.pzDmg / 100 + spinBonus + (panel.iwPzDmg || 0) / 100;
+  const pzDmgBonus = panel.pzDmg / 100;
   const dN_PZ = avgPz_e * sk.eleRatio * (1 + Fpz) * T * (1 + pzDmgBonus);
   const dC_PZ = avgPz_e * sk.eleRatio * (1 + Fpz) * T * (1 + pzDmgBonus) * critMult;
   const dA_PZ = maxPz_e * sk.eleRatio * (1 + Fpz) * T * (1 + pzDmgBonus) * affMult;
