@@ -496,12 +496,15 @@ export function calcSkill(
 }
 
 export function calcBaseline(tier: TierConstants) {
+  // Reference "graduation" build for Global T91 — sourced from wherewindsmeetcalculator.com
+  // These are PANEL stats (what you see on character screen), NOT including food
+  // Food is added separately below matching how the game works
   const ref: PanelStats = {
-    minOuter: 1657,
-    maxOuter: 4046,
+    minOuter: 1657,   // panel min phys atk (NOT including food)
+    maxOuter: 4046,   // panel max phys atk (NOT including food)
     outerPen: 51.2,
-    minPz: 402,
-    maxPz: 721,
+    minPz: 402.9,
+    maxPz: 721.0,
     pzPen: 29.6,
     pzDmg: 11.8,
     prec: 100,
@@ -525,7 +528,7 @@ export function calcBaseline(tier: TierConstants) {
     total += calcSkill(sk, ref, tier, {
       set: "stars",
       datang: false,
-      yishui: true,
+      yishui: true,   // Song of Yi active (standard)
     }).total;
   });
   return total;

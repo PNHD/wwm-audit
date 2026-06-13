@@ -26,6 +26,7 @@ import {
 import { PanelStats, TierConstants } from "./types";
 import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils/calc";
 import { INNER_WAYS } from "./data/innerways";
+import { MARTIAL_ARTS } from "./data/martial_arts";
 import OcrScanner from "./components/OcrScanner";
 import RelayingSimulator from "./components/RelayingSimulator";
 import ArsenalSimulator from "./components/ArsenalSimulator";
@@ -239,6 +240,21 @@ const ARMOR_SETS = {
   "veil": { name: "Veil of Willow (柳絮)", bonus2pc: "+Bamboocut DMG %", bonus4pc: "Rat damage +40%", recommended: ["bamboocut-kite","bamboocut-wind"] },
   "hawking": { name: "Hawking (鹰猎)", bonus2pc: "+Crit DMG after kill", bonus4pc: "Dual blade DMG +20%", recommended: ["bamboocut-wind","stonesplit-scale"] },
   "none": { name: "No Set / Mixed", bonus2pc: "—", bonus4pc: "—", recommended: [] },
+};
+
+const isMartialArtRecommended = (ma: any, buildKey: string) => {
+  const w = ma.weapon;
+  if (w === "General") return true;
+  if (buildKey === "bamboocut-dust") return w === "Umbrella" || w === "Rope Dart";
+  if (buildKey === "bellstrike-umbra") return w === "Sword" || w === "Spear" || w === "Flute";
+  if (buildKey === "bellstrike-splendor") return w === "Sword" || w === "Spear";
+  if (buildKey === "bamboocut-wind") return w === "Twinblades" || w === "Rope Dart";
+  if (buildKey === "bamboocut-kite") return w === "Fist" || w === "Rope Dart";
+  if (buildKey === "silkbind-jade") return w === "Umbrella" || w === "Flute" || w === "General";
+  if (buildKey === "stonesplit-might") return w === "Blade" || w === "Spear";
+  if (buildKey === "stonesplit-scale") return w === "Blade" || w === "Sword";
+  if (buildKey === "silkbind-deluge") return w === "Flute" || w === "Umbrella";
+  return false;
 };
 
 const getCustomConfig = () => {
@@ -507,6 +523,15 @@ export default function App() {
     const config = getCustomConfig();
     return config?.selectedInnerWays ?? [];
   });
+  const [innerWayTiers, setInnerWayTiers] = useState<Record<string, number>>(() => {
+    const config = getCustomConfig();
+    return config?.innerWayTiers ?? {};
+  });
+  const [selectedMartialArts, setSelectedMartialArts] = useState<string[]>(() => {
+    const config = getCustomConfig();
+    return config?.selectedMartialArts ?? ["thousand_camps_call", "song_of_yi", "great_tang_song", "rope_boat_wood"];
+  });
+  const [martialArtsFilter, setMartialArtsFilter] = useState<"recommended" | "all">("recommended");
   const [profiles, setProfiles] = useState<SavedProfile[]>([]);
   const [newProfileName, setNewProfileName] = useState<string>("");
   const [compareProfileIds, setCompareProfileIds] = useState<string[]>([]);
@@ -566,6 +591,8 @@ export default function App() {
     const config = {
       panel,
       selectedInnerWays,
+      innerWayTiers,
+      selectedMartialArts,
       tierKey,
       bowSelect,
       food,
@@ -596,6 +623,8 @@ export default function App() {
           const config = JSON.parse(cachedConfig);
           if (config.panel) setPanel(config.panel);
           if (config.selectedInnerWays) setSelectedInnerWays(config.selectedInnerWays);
+          if (config.innerWayTiers) setInnerWayTiers(config.innerWayTiers);
+          if (config.selectedMartialArts) setSelectedMartialArts(config.selectedMartialArts);
           if (config.tierKey) setTierKey(config.tierKey);
           if (config.bowSelect) setBowSelect(config.bowSelect);
           if (config.food !== undefined) setFood(config.food);
@@ -649,6 +678,23 @@ export default function App() {
       alert("Custom defaults successfully wiped. Baseline factory settings restored.");
     }
   };
+
+  // Compute dynamically matching weapon categories for selected build
+  const recommendedWeaponCategories = useMemo(() => {
+    const build = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
+    if (!build) return ["General"];
+    const weaponsLower = build.weapons.toLowerCase();
+    const cats = ["General"];
+    if (weaponsLower.includes("umbrella")) cats.push("Umbrella");
+    if (weaponsLower.includes("rope dart")) cats.push("Rope Dart");
+    if (weaponsLower.includes("spear")) cats.push("Spear");
+    if (weaponsLower.includes("sword")) cats.push("Sword");
+    if (weaponsLower.includes("twinblades") || weaponsLower.includes("twinblade")) cats.push("Twinblades");
+    if (weaponsLower.includes("blade")) cats.push("Blade");
+    if (weaponsLower.includes("fist")) cats.push("Fist");
+    if (weaponsLower.includes("fan") || weaponsLower.includes("flute")) cats.push("Flute");
+    return cats;
+  }, [selectedBuild]);
 
   // 1. Resolve Active Tier Constants
   const activeTier = useMemo((): TierConstants => {
@@ -799,21 +845,79 @@ export default function App() {
       outerDmg: 0,
       generalDmg: 0,
       pzDmg: 0,
+      crit: 0,
+      aff: 0,
+      dcrit: 0,
     };
     selectedInnerWays.forEach((id) => {
       const iw = INNER_WAYS.find((item) => item.id === id);
-      if (iw && iw.stat) {
-        if (iw.stat.outerPen) bonus.outerPen += iw.stat.outerPen;
-        if (iw.stat.pzPen) bonus.pzPen += iw.stat.pzPen;
-        if (iw.stat.critDmg) bonus.critDmg += iw.stat.critDmg;
-        if (iw.stat.affDmg) bonus.affDmg += iw.stat.affDmg;
-        if (iw.stat.outerDmg) bonus.outerDmg += iw.stat.outerDmg;
-        if (iw.stat.generalDmg) bonus.generalDmg += iw.stat.generalDmg;
-        if (iw.stat.pzDmg) bonus.pzDmg += iw.stat.pzDmg;
+      if (iw) {
+        const tierNum = innerWayTiers[id] ?? 5;
+        const activeTierObj = iw.tiers.find(t => t.tier === tierNum);
+        if (activeTierObj && activeTierObj.stat) {
+          const s = activeTierObj.stat;
+          if (s.outerPen) bonus.outerPen += s.outerPen;
+          if (s.pzPen) bonus.pzPen += s.pzPen;
+          if (s.critDmg) bonus.critDmg += s.critDmg;
+          if (s.affDmg) bonus.affDmg += s.affDmg;
+          if (s.outerDmg) bonus.outerDmg += s.outerDmg;
+          if (s.generalDmg) bonus.generalDmg += s.generalDmg;
+          if (s.pzDmg) bonus.pzDmg += s.pzDmg;
+          if (s.crit) bonus.crit += s.crit;
+          if (s.aff) bonus.aff += s.aff;
+          if (s.dcrit) bonus.dcrit += s.dcrit;
+        }
       }
     });
     return bonus;
-  }, [selectedInnerWays]);
+  }, [selectedInnerWays, innerWayTiers]);
+
+  // Compute Martial Arts bonuses
+  const maStats = useMemo(() => {
+    const bonus = {
+      minOuter: 0,
+      maxOuter: 0,
+      outerPen: 0,
+      minPz: 0,
+      maxPz: 0,
+      pzPen: 0,
+      pzDmg: 0,
+      prec: 0,
+      crit: 0,
+      aff: 0,
+      critDmg: 0,
+      affDmg: 0,
+      outerDmg: 0,
+      bossDmg: 0,
+      allArts: 0,
+      umbBonus: 0,
+      ropeBonus: 0,
+    };
+    selectedMartialArts.forEach((id) => {
+      const ma = MARTIAL_ARTS.find((item) => item.id === id);
+      if (ma && ma.stat) {
+        const s = ma.stat;
+        if (s.minOuter) bonus.minOuter += s.minOuter;
+        if (s.maxOuter) bonus.maxOuter += s.maxOuter;
+        if (s.outerPen) bonus.outerPen += s.outerPen;
+        if (s.minPz) bonus.minPz += s.minPz;
+        if (s.maxPz) bonus.maxPz += s.maxPz;
+        if (s.pzPen) bonus.pzPen += s.pzPen;
+        if (s.pzDmg) bonus.pzDmg += s.pzDmg;
+        if (s.prec) bonus.prec += s.prec;
+        if (s.crit) bonus.crit += s.crit;
+        if (s.aff) bonus.aff += s.aff;
+        if (s.critDmg) bonus.critDmg += s.critDmg;
+        if (s.affDmg) bonus.affDmg += s.affDmg;
+        if (s.outerDmg) bonus.outerDmg += s.outerDmg;
+        if (s.bossDmg) bonus.bossDmg += s.bossDmg;
+        if (s.allArts) bonus.allArts += s.allArts;
+        if (s.umbBonus) bonus.umbBonus += s.umbBonus;
+        if (s.ropeBonus) bonus.ropeBonus += s.ropeBonus;
+      }
+    });
+    return bonus;
+  }, [selectedMartialArts]);
 
   // 2. Compute Adjusted Panel Stats (applying passive buffs dynamically)
   const adjustedPanel = useMemo((): PanelStats => {
@@ -841,6 +945,25 @@ export default function App() {
       p.maxOuter += 27.2;
     }
 
+    // Apply Martial Arts passive bonuses
+    p.minOuter += maStats.minOuter;
+    p.maxOuter += maStats.maxOuter;
+    p.outerPen += maStats.outerPen;
+    p.minPz += maStats.minPz;
+    p.maxPz += maStats.maxPz;
+    p.pzPen += maStats.pzPen;
+    p.pzDmg += maStats.pzDmg;
+    p.prec += maStats.prec;
+    p.crit += maStats.crit;
+    p.aff += maStats.aff;
+    p.critDmg += maStats.critDmg;
+    p.affDmg += maStats.affDmg;
+    p.outerDmg += maStats.outerDmg;
+    p.bossDmg += maStats.bossDmg;
+    p.allArts += maStats.allArts;
+    p.umbBonus += maStats.umbBonus;
+    p.ropeBonus += maStats.ropeBonus;
+
     // Apply Inner Ways direct stat offsets
     p.outerPen += iwStats.outerPen;
     p.pzPen += iwStats.pzPen;
@@ -848,6 +971,9 @@ export default function App() {
     p.affDmg += iwStats.affDmg;
     p.outerDmg += iwStats.outerDmg;
     p.pzDmg += iwStats.pzDmg;
+    p.crit += iwStats.crit;
+    p.aff += iwStats.aff;
+    p.dcrit += iwStats.dcrit;
 
     // Store raw innerway factors so they pass to formula
     p.iwGeneralDmg = iwStats.generalDmg;
@@ -856,7 +982,7 @@ export default function App() {
     p.iwPzDmg = iwStats.pzDmg;
 
     return p;
-  }, [panel, bowSelect, food, script50, earlySeason, activeTier, iwStats]);
+  }, [panel, bowSelect, food, script50, earlySeason, activeTier, iwStats, maStats]);
 
   // 3. Compute baseline reference graduation score
   const baselineScore = useMemo(() => {
@@ -1084,7 +1210,10 @@ export default function App() {
           </div>
           <div className="h-10 w-[1px] bg-slate-800" />
           <div className="text-left">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-slate-500">DPS (Avg Rank)</span>
+            <span className="text-[10px] uppercase font-mono tracking-widest text-slate-500 select-none">
+              Single-Target DPS
+              <span className="text-slate-600 ml-1 cursor-help" title="Single-target sustained DPS over 78.5s rotation vs 1 boss. In-game DPS meter includes AoE &times; mob count, dots, and mystic arts &mdash; typically 5-10x higher.">ⓘ</span>
+            </span>
             <div className="text-sm font-bold font-serif text-slate-200 mt-1">
               {Math.round(rotationStats.dps).toLocaleString()}/s
             </div>
@@ -1939,6 +2068,115 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Martial Arts Database Section */}
+              <div className="pt-4 border-t border-slate-800/80">
+                <div className="flex justify-between items-center mb-1">
+                  <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest flex items-center gap-1 font-serif">
+                    <Award className="w-3.5 h-3.5 text-amber-500" /> Martial Arts (心法)
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-950 border border-slate-900 text-amber-400 font-bold">
+                    {selectedMartialArts.length}/4 selected
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-400 mb-2.5 leading-snug">
+                  Select up to 4 passive Martial Arts sets from your active configuration to automatically scale your primary and elemental attributes:
+                </p>
+
+                {/* Filter Selector Row */}
+                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => setMartialArtsFilter("recommended")}
+                    className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
+                      martialArtsFilter === "recommended"
+                        ? "bg-amber-500 text-slate-950"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    Recommended
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMartialArtsFilter("all")}
+                    className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
+                      martialArtsFilter === "all"
+                        ? "bg-amber-500 text-slate-950"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    All Martial Arts
+                  </button>
+                </div>
+
+                <div className="space-y-2 max-h-56 overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-amber-900/40 mb-4">
+                  {MARTIAL_ARTS.filter((ma) => {
+                    if (martialArtsFilter === "all") return true;
+                    return isMartialArtRecommended(ma, selectedBuild);
+                  }).map((ma) => {
+                    const isSelected = selectedMartialArts.includes(ma.id);
+                    const disabled = !isSelected && selectedMartialArts.length >= 4;
+
+                    // Build list of stats this Martial Art provides
+                    const statStrings = [];
+                    const s = ma.stat;
+                    if (s.minOuter) statStrings.push(`+${s.minOuter} Min Phys ATK`);
+                    if (s.maxOuter) statStrings.push(`+${s.maxOuter} Max Phys ATK`);
+                    if (s.outerPen) statStrings.push(`+${s.outerPen}% Phys Pen`);
+                    if (s.minPz) statStrings.push(`+${s.minPz} Min Bamboocut`);
+                    if (s.maxPz) statStrings.push(`+${s.maxPz} Max Bamboocut`);
+                    if (s.pzPen) statStrings.push(`+${s.pzPen}% Attr Pen`);
+                    if (s.pzDmg) statStrings.push(`+${s.pzDmg}% Bamboocut DMG`);
+                    if (s.prec) statStrings.push(`+${s.prec} Precision`);
+                    if (s.crit) statStrings.push(`+${s.crit}% Crit`);
+                    if (s.aff) statStrings.push(`+${s.aff}% Attr Aff`);
+                    if (s.critDmg) statStrings.push(`+${s.critDmg}% Crit DMG`);
+                    if (s.affDmg) statStrings.push(`+${s.affDmg}% Attr DMG`);
+                    if (s.outerDmg) statStrings.push(`+${s.outerDmg}% Phys DMG`);
+                    if (s.bossDmg) statStrings.push(`+${s.bossDmg}% Boss DMG`);
+                    if (s.allArts) statStrings.push(`+${s.allArts}% All Arts`);
+                    if (s.umbBonus) statStrings.push(`+${s.umbBonus}% Umbrella`);
+                    if (s.ropeBonus) statStrings.push(`+${s.ropeBonus}% Rope Dart`);
+
+                    return (
+                      <div
+                        key={ma.id}
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedMartialArts(selectedMartialArts.filter((id) => id !== ma.id));
+                          } else if (selectedMartialArts.length < 4) {
+                            setSelectedMartialArts([...selectedMartialArts, ma.id]);
+                          }
+                        }}
+                        className={`p-2.5 rounded-lg border text-[11px] cursor-pointer transition-all ${
+                          isSelected
+                            ? "bg-amber-950/20 border-amber-500 text-[#ede5ce]"
+                            : disabled
+                            ? "bg-slate-950/20 border-slate-900/60 opacity-40 cursor-not-allowed"
+                            : "bg-slate-950/40 border-slate-900 hover:border-slate-800 text-slate-400"
+                        }`}
+                      >
+                        <div className="flex justify-between items-center font-semibold mb-1">
+                          <span className="flex items-center gap-1">
+                            {ma.name} <span className="text-[10px] text-slate-500 font-mono">({ma.nameCn})</span>
+                          </span>
+                          <span className="text-[8px] bg-slate-900 text-amber-500 font-mono px-1 rounded uppercase tracking-wider scale-90 font-bold">
+                            {ma.weapon}
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-slate-500 leading-normal mb-1">
+                          {ma.desc}
+                        </div>
+                        {statStrings.length > 0 && (
+                          <div className="text-[9.5px] text-amber-500/90 font-mono leading-tight bg-slate-900/40 px-1 py-0.5 rounded">
+                            {statStrings.join(" | ")}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Inner Ways Database Section */}
               <div className="pt-4 border-t border-slate-800/80">
                 <div className="flex justify-between items-center mb-1">
@@ -1985,8 +2223,8 @@ export default function App() {
                     // Recommended filter
                     const normalizedCat = iw.cat.toLowerCase();
                     if (normalizedCat === selectedBuild) return true;
-                    if (selectedBuild === "bamboocut-dust" && (normalizedCat === "bamboocut-wind" || iw.id === "ganglu_shaobing")) return true;
-                    if (normalizedCat === "general" && (iw.recommended || iw.id === "ganglu_shaobing" || iw.id === "seasonal_edge" || iw.id === "morale_chant" || iw.id === "invigorated_warrior")) return true;
+                    if (selectedBuild === "bamboocut-dust" && normalizedCat === "bamboocut-wind") return true;
+                    if (normalizedCat === "general" && (iw.recommended || iw.id === "seasonal_edge" || iw.id === "morale_chant" || iw.id === "invigorated_warrior")) return true;
                     return false;
                   }).map((iw) => {
                     const isSelected = selectedInnerWays.includes(iw.id);
@@ -1997,16 +2235,32 @@ export default function App() {
                       const build = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
                       if (!build) return false;
                       const pStats = build.priorityStats;
-                      if (!iw.stat) return false;
-                      if (iw.stat.outerPen && pStats.includes("outerPen")) return true;
-                      if (iw.stat.pzPen && pStats.includes("pzPen")) return true;
-                      if (iw.stat.critDmg && pStats.includes("critDmg")) return true;
-                      if (iw.stat.affDmg && pStats.includes("affDmg")) return true;
-                      if (iw.stat.pzDmg && (pStats.includes("maxPz") || pStats.includes("allArts"))) return true;
-                      if (iw.stat.generalDmg && (pStats.includes("maxOuter") || pStats.includes("allArts"))) return true;
-                      if (iw.stat.outerDmg && (pStats.includes("maxOuter") || pStats.includes("allArts"))) return true;
+                      const tierObj = iw.tiers.find(t => t.tier === 5);
+                      if (!tierObj || !tierObj.stat) return false;
+                      const s = tierObj.stat;
+                      if (s.outerPen && pStats.includes("outerPen")) return true;
+                      if (s.pzPen && pStats.includes("pzPen")) return true;
+                      if (s.critDmg && pStats.includes("critDmg")) return true;
+                      if (s.affDmg && pStats.includes("affDmg")) return true;
+                      if (s.pzDmg && (pStats.includes("maxPz") || pStats.includes("allArts"))) return true;
+                      if (s.generalDmg && (pStats.includes("maxOuter") || pStats.includes("allArts"))) return true;
+                      if (s.outerDmg && (pStats.includes("maxOuter") || pStats.includes("allArts"))) return true;
                       return false;
                     })();
+
+                    const iwTierNum = innerWayTiers[iw.id] ?? 5;
+                    const activeTierObj = iw.tiers.find(t => t.tier === iwTierNum) || iw.tiers[0];
+                    const statStrings = [];
+                    if (activeTierObj.stat.outerPen) statStrings.push(`+${activeTierObj.stat.outerPen}% Phys Pen`);
+                    if (activeTierObj.stat.pzPen) statStrings.push(`+${activeTierObj.stat.pzPen}% Elem Pen`);
+                    if (activeTierObj.stat.critDmg) statStrings.push(`+${activeTierObj.stat.critDmg}% Crit DMG`);
+                    if (activeTierObj.stat.affDmg) statStrings.push(`+${activeTierObj.stat.affDmg}% Attr DMG`);
+                    if (activeTierObj.stat.outerDmg) statStrings.push(`+${activeTierObj.stat.outerDmg}% Phys DMG`);
+                    if (activeTierObj.stat.pzDmg) statStrings.push(`+${activeTierObj.stat.pzDmg}% Bamboocut DMG`);
+                    if (activeTierObj.stat.generalDmg) statStrings.push(`+${activeTierObj.stat.generalDmg}% General DMG`);
+                    if (activeTierObj.stat.crit) statStrings.push(`+${activeTierObj.stat.crit}% Crit Rate`);
+                    if (activeTierObj.stat.aff) statStrings.push(`+${activeTierObj.stat.aff}% Attr Rate`);
+                    if (activeTierObj.stat.dcrit) statStrings.push(`+${activeTierObj.stat.dcrit}% Sub-HP Crit`);
 
                     return (
                       <div
@@ -2018,7 +2272,7 @@ export default function App() {
                             setSelectedInnerWays([...selectedInnerWays, iw.id]);
                           }
                         }}
-                        className={`p-2 rounded border text-[11px] cursor-pointer transition-all ${
+                        className={`p-2.5 rounded-lg border text-[11px] cursor-pointer transition-all ${
                           isSelected
                             ? "bg-amber-950/20 border-amber-500 text-[#ede5ce]"
                             : disabled
@@ -2026,25 +2280,189 @@ export default function App() {
                             : "bg-slate-950/40 border-slate-900 hover:border-slate-800 text-slate-400"
                         }`}
                       >
-                        <div className="flex justify-between items-center font-semibold mb-0.5">
-                          <span>{iw.name}</span>
+                        <div className="flex justify-between items-center font-semibold mb-1">
+                          <span className="flex items-center gap-1">
+                            {iw.name}
+                            {isSelected && (
+                              <span className="text-[10px] text-amber-500 font-mono">
+                                (T{iwTierNum})
+                              </span>
+                            )}
+                          </span>
                           {isBestT91 && (
                             <span className="text-[8px] bg-red-950/85 text-red-300 font-mono scale-90 px-1 rounded uppercase font-bold tracking-wider">
                               Best T91
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] text-slate-500 leading-normal mb-0.5">
+                        <div className="text-[10px] text-slate-500 leading-normal mb-1">
                           {iw.desc}
                         </div>
+                        {statStrings.length > 0 && (
+                          <div className="text-[9.5px] text-amber-400/80 font-mono leading-tight mb-1 bg-slate-900/40 px-1 py-0.5 rounded">
+                            {statStrings.join(" | ")}
+                          </div>
+                        )}
                         {iw.note && isSelected && (
-                          <div className="text-[9px] text-[#c9943a] leading-tight font-mono border-t border-amber-900/10 pt-1 mt-1">
+                          <div className="text-[9px] text-[#c9943a] leading-tight font-mono border-t border-amber-900/10 pt-1 mt-1 mb-1">
                             {iw.note}
+                          </div>
+                        )}
+                        {isSelected && (
+                          <div 
+                            onClick={(e) => e.stopPropagation()}
+                            className="mt-2 pt-1.5 border-t border-amber-900/10 flex justify-between items-center text-[10px] gap-1"
+                          >
+                            <span className="text-slate-400 font-medium">Select Level:</span>
+                            <div className="flex gap-1">
+                              {[5, 6, 7, 8, 9, 10].map((t) => {
+                                const isCurrent = (innerWayTiers[iw.id] ?? 5) === t;
+                                return (
+                                  <button
+                                    key={t}
+                                    onClick={() => setInnerWayTiers({ ...innerWayTiers, [iw.id]: t })}
+                                    className={`px-1 rounded font-mono text-[9px] font-bold ${
+                                      isCurrent
+                                        ? "bg-amber-500 text-slate-950"
+                                        : "bg-slate-900/90 text-slate-400 hover:text-slate-200"
+                                    }`}
+                                  >
+                                    T{t}
+                                  </button>
+                                );
+                              })}
+                            </div>
                           </div>
                         )}
                       </div>
                     );
                   })}
+                </div>
+              </div>
+
+              {/* Martial Arts Section */}
+              <div className="pt-4 border-t border-slate-800/80">
+                <div className="flex justify-between items-center mb-1">
+                  <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest flex items-center gap-1 font-serif">
+                    <Zap className="w-3.5 h-3.5 text-amber-500" /> Martial Arts (心法)
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-950 border border-slate-900 text-amber-400 font-bold">
+                    {selectedMartialArts.length}/4 selected
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-400 mb-2 leading-snug">
+                  Equip up to 4 mind techniques to apply fixed Tier 91 passive stat boosts:
+                </p>
+
+                {/* Priority Guide Text */}
+                <div className="bg-slate-950/70 rounded border border-slate-900 px-2 py-1.5 mb-2.5 text-[9.5px] leading-relaxed text-[#c9943a] font-mono">
+                  💡 {selectedBuild === "bamboocut-dust" 
+                    ? "Recommended: Thousand Camps Call, Song of Yi, Great Tang Song, Rope Boat Wood." 
+                    : `Recommended weapons: ${BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES]?.weapons}.`}
+                </div>
+
+                {/* Filter Selector Row */}
+                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => setMartialArtsFilter("recommended")}
+                    className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
+                      martialArtsFilter === "recommended"
+                        ? "bg-amber-500 text-slate-950"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    Recommended
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMartialArtsFilter("all")}
+                    className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
+                      martialArtsFilter === "all"
+                        ? "bg-amber-500 text-slate-950"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    All Martial Arts
+                  </button>
+                </div>
+
+                <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-amber-900/40">
+                  {(() => {
+                    const recCats = recommendedWeaponCategories;
+                    return MARTIAL_ARTS.filter((ma) => {
+                      if (martialArtsFilter === "all") return true;
+                      return recCats.includes(ma.weapon);
+                    }).map((ma) => {
+                      const isSelected = selectedMartialArts.includes(ma.id);
+                      const disabled = !isSelected && selectedMartialArts.length >= 4;
+
+                      // Build stats list
+                      const statStrings = [];
+                      if (ma.stat.minOuter) statStrings.push(`+${ma.stat.minOuter} Min Phys ATK`);
+                      if (ma.stat.maxOuter) statStrings.push(`+${ma.stat.maxOuter} Max Phys ATK`);
+                      if (ma.stat.outerPen) statStrings.push(`+${ma.stat.outerPen}% Phys Pen`);
+                      if (ma.stat.minPz) statStrings.push(`+${ma.stat.minPz} Min PZ`);
+                      if (ma.stat.maxPz) statStrings.push(`+${ma.stat.maxPz} Max PZ`);
+                      if (ma.stat.pzPen) statStrings.push(`+${ma.stat.pzPen}% PZ Pen`);
+                      if (ma.stat.pzDmg) statStrings.push(`+${ma.stat.pzDmg}% PZ DMG`);
+                      if (ma.stat.prec) statStrings.push(`+${ma.stat.prec}% Precision`);
+                      if (ma.stat.crit) statStrings.push(`+${ma.stat.crit}% Crit Rate`);
+                      if (ma.stat.aff) statStrings.push(`+${ma.stat.aff}% Attr Rate`);
+                      if (ma.stat.critDmg) statStrings.push(`+${ma.stat.critDmg}% Crit DMG`);
+                      if (ma.stat.affDmg) statStrings.push(`+${ma.stat.affDmg}% Attr DMG`);
+                      if (ma.stat.outerDmg) statStrings.push(`+${ma.stat.outerDmg}% Phys DMG`);
+                      if (ma.stat.bossDmg) statStrings.push(`+${ma.stat.bossDmg}% vs Boss`);
+                      if (ma.stat.allArts) statStrings.push(`+${ma.stat.allArts}% All Arts`);
+                      if (ma.stat.umbBonus) statStrings.push(`+${ma.stat.umbBonus}% Umb DMG`);
+                      if (ma.stat.ropeBonus) statStrings.push(`+${ma.stat.ropeBonus}% Rope DMG`);
+
+                      const isMetaForDust = ["thousand_camps_call", "song_of_yi", "great_tang_song", "rope_boat_wood", "lantern_light"].includes(ma.id);
+
+                      return (
+                        <div
+                          key={ma.id}
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedMartialArts(selectedMartialArts.filter((id) => id !== ma.id));
+                            } else if (selectedMartialArts.length < 4) {
+                              setSelectedMartialArts([...selectedMartialArts, ma.id]);
+                            }
+                          }}
+                          className={`p-2 rounded border text-[11px] cursor-pointer transition-all ${
+                            isSelected
+                              ? "bg-amber-950/20 border-amber-500 text-[#ede5ce]"
+                              : disabled
+                              ? "bg-slate-950/20 border-slate-900/60 opacity-40 cursor-not-allowed"
+                              : "bg-slate-950/40 border-slate-900 hover:border-slate-800 text-slate-400"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center font-semibold mb-0.5">
+                            <span className="flex items-center gap-1.5">
+                              <span>{ma.name}</span>
+                              <span className="text-[10px] text-slate-500">[{ma.nameCn}]</span>
+                            </span>
+                            <span className="text-[9px] font-mono px-1 rounded-sm bg-slate-900/80 text-amber-500 border border-slate-800/40 scale-90">
+                              {ma.weapon}
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-slate-500 leading-normal mb-1">
+                            {ma.desc}
+                          </div>
+                          {statStrings.length > 0 && (
+                            <div className="text-[9.5px] text-amber-400/90 font-mono leading-tight bg-slate-900/35 px-1 py-0.5 rounded">
+                              {statStrings.join(" | ")}
+                            </div>
+                          )}
+                          {isMetaForDust && selectedBuild === "bamboocut-dust" && (
+                            <span className="inline-block mt-1 text-[8px] bg-amber-900/40 text-amber-400 border border-amber-900/50 px-1 rounded font-bold uppercase tracking-wider">
+                              Dust Meta
+                            </span>
+                          )}
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
 
@@ -2147,6 +2565,9 @@ export default function App() {
                       }`}
                     />
                   </div>
+                  <p className="text-[10px] text-slate-500 mt-2">
+                    💡 DPS shown is single-target sustained (1 boss). Your in-game meter reading (&gt;36k/s) includes AoE hits on multiple mobs, mystic arts, and dots &mdash; this is normal and expected.
+                  </p>
                 </div>
 
                 {/* Dynamic Advice & Gearing Roadmap */}
