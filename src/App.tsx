@@ -1209,7 +1209,7 @@ export default function App() {
                   <Award className="w-4 h-4 text-amber-400" /> Graduation Damage Analysis
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
                   <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative">
                     <div className="text-[9px] font-mono tracking-wider text-slate-500 uppercase">Rotation Score damage</div>
                     <div className="text-xl font-bold font-serif text-slate-100 mt-1">
@@ -1226,6 +1226,12 @@ export default function App() {
                     <div className="text-[9px] font-mono tracking-wider text-slate-500 uppercase">Baseline Target (Same Tier)</div>
                     <div className="text-xl font-bold font-serif text-slate-400 mt-1">
                       {Math.round(baselineScore).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative flex flex-col justify-center">
+                    <div className="text-[9px] font-mono tracking-wider text-slate-500 uppercase">Gap to 100%</div>
+                    <div className={`text-xl font-bold font-serif mt-1 ${rotationStats.gradRate >= 100 ? "text-emerald-400" : "text-rose-400"}`}>
+                      {rotationStats.gradRate >= 100 ? "✓ Graduated" : `-${(100 - rotationStats.gradRate).toFixed(1)}%`}
                     </div>
                   </div>
                 </div>
@@ -1255,24 +1261,31 @@ export default function App() {
                 <div className="mt-4 p-4 rounded-lg text-xs leading-relaxed border bg-slate-950/50 border-slate-900 text-slate-300">
                   {rotationStats.gradRate >= 100 ? (
                     <div>
-                      <strong className="text-emerald-400 flex items-center gap-1 mb-1 font-semibold">
+                      <strong className="text-emerald-400 flex items-center gap-1 mb-1">
                         <CheckCircle className="w-4 h-4 inline" /> 🏆 Fully Graduated for Tier 91!
                       </strong>
-                      Outstanding! Your indicators have exceeded the target standard graduation score ({rotationStats.gradRate.toFixed(1)}%). Fully certified to clear all Season 3 high-tier raids.
+                      Your build exceeds the T91 baseline ({rotationStats.gradRate.toFixed(1)}%). Ready to clear all Season 3 raids. Prep for Tier 96 when it unlocks.
                     </div>
                   ) : rotationStats.gradRate >= 90 ? (
                     <div>
-                      <strong className="text-amber-400 flex items-center gap-1 mb-1 font-semibold">
-                        <CheckCircle className="w-4 h-4 inline" /> ✅ Excellent Gearing!
+                      <strong className="text-amber-400 flex items-center gap-1 mb-1">
+                        <CheckCircle className="w-4 h-4 inline" /> ✅ Excellent Build!
                       </strong>
-                      You are near the absolute graduation threshold. Suggestion: Push your gear sub-stats for Physical Pen from the current {adjustedPanel.outerPen}% to the standard target range of 35% - 41.5% and align with the manual collection to finalize.
+                      {adjustedPanel.outerPen < 46
+                        ? `Physical Pen at ${adjustedPanel.outerPen.toFixed(1)}% — push toward 51.2% graduation target. Each pen sub (cap 9.0%) is very efficient here.`
+                        : `Good penetration. Keep stacking Max Physical Attack toward 4046. Current: ${Math.round(adjustedPanel.maxOuter)}.`}
+                    </div>
+                  ) : rotationStats.gradRate >= 70 ? (
+                    <div>
+                      <strong className="text-amber-500 flex items-center gap-1 mb-1">⚠️ Solid — keep building</strong>
+                      ① Max Phys Atk → 4046+ (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → 51.2% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate panel 116%+ to reach 80% eff cap vs T91.
                     </div>
                   ) : (
                     <div>
-                      <strong className="text-rose-400 flex items-center gap-1 mb-1 font-semibold">
-                        <AlertTriangle className="w-4 h-4 inline" /> 📈 Building Phase
+                      <strong className="text-rose-400 flex items-center gap-1 mb-1">
+                        <AlertTriangle className="w-4 h-4 inline" /> 📈 Building Phase ({rotationStats.gradRate.toFixed(1)}%)
                       </strong>
-                      Your build is currently in the progression phase. Focus on maximizing your physical attack sub-stats, aiming for 2200+ Max Physical Atk, and push absolute Physical Penetration to 35%+ accompanied by upgrading the longbow in the Weapon Manual.
+                      ① Max Phys Atk → 4046 (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → 51.2% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate 116%+ panel ④ Bamboocut Atk. T91 sub caps: Pen 9.0% · Max PA 63.8 · Crit 6.5% · CritDMG 8.0%.
                     </div>
                   )}
                 </div>
@@ -1285,55 +1298,37 @@ export default function App() {
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs">
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Precision (Raw)</span>
-                    <strong className="text-slate-300 text-sm font-mono mt-1 block">
+                    <span className="text-slate-500 block font-mono text-[10px]">Precision Rate</span>
+                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effPrecision.toFixed(1)}%
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Critical (Raw)</span>
-                    <strong className="text-slate-300 text-sm font-mono mt-1 block">
+                    <span className="text-slate-500 block font-mono text-[10px]">Critical</span>
+                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effCritRate.toFixed(1)}%
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Affinity (Raw)</span>
-                    <strong className="text-slate-300 text-sm font-mono mt-1 block">
+                    <span className="text-slate-500 block font-mono text-[10px]">Affinity</span>
+                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effAffRate.toFixed(1)}%
                     </strong>
                   </div>
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-[#e5a033]/25 ring-1 ring-amber-500/5">
-                    <span className="text-amber-500/90 block font-mono text-[10px] font-bold">Effective Precision</span>
-                    <strong className="text-amber-400 text-sm font-mono mt-1 block font-bold">
-                      {effectivePrecision.toFixed(1)}%
-                    </strong>
-                  </div>
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-[#e5a033]/25 ring-1 ring-amber-500/5">
-                    <span className="text-amber-500/90 block font-mono text-[10px] font-bold">Effective Critical</span>
-                    <strong className="text-amber-400 text-sm font-mono mt-1 block font-bold">
-                      {effectiveCritical.toFixed(1)}%
-                    </strong>
-                  </div>
-                  <div className="bg-[#1b1511]/40 p-3 rounded-lg border border-[#e5a033]/25 ring-1 ring-amber-500/5">
-                    <span className="text-amber-500/90 block font-mono text-[10px] font-bold">Effective Affinity</span>
-                    <strong className="text-amber-400 text-sm font-mono mt-1 block font-bold">
-                      {effectiveAffinity.toFixed(1)}%
-                    </strong>
-                  </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Graze Probability</span>
+                    <span className="text-slate-500 block font-mono text-[10px]">Graze</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effGrazeRate.toFixed(1)}%
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Expected DMG Multiplier</span>
+                    <span className="text-slate-500 block font-mono text-[10px]">Expected Multiplier</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block text-amber-500">
                       ×{expectedMultiplier.toFixed(3)}
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Physical Pen Zone</span>
+                    <span className="text-slate-500 block font-mono text-[10px]">Pen Zone</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {netPhysPen >= 0 ? "+" : ""}
                       {(netPhysPen / 200 * 100).toFixed(1)}%

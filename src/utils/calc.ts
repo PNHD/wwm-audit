@@ -374,7 +374,7 @@ export const ROTATION: RotationItem[] = [
   { name: "Thousand Camps Lv6 (Soul Loss)", count: 2, isDingyin: false, generalBonus: 0, yishui: 10, tiaozhan: 1 },
 ];
 
-export const ROTATION_TIME = 10.0;
+export const ROTATION_TIME = 78.5;
 
 export function calcSkill(
   rot: RotationItem,
