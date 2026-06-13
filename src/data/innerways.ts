@@ -291,5 +291,91 @@ export const INNER_WAYS: InnerWay[] = [
     cat: "GENERAL",
     desc: "Skywalk Dash Endurance -10%; +30% Move Speed 3s after landing; restore bonus HP on kill.",
     stat: {}
+  },
+  // BELLSTRIKE-UMBRA specific
+  {
+    id: "wolf_candle",
+    name: "Wolf Candle",
+    cat: "BELLSTRIKE-UMBRA",
+    desc: "When HP is below a threshold, increases damage based on missing HP % (core for Bellstrike-Umbra blood explosion)",
+    stat: { generalDmg: 15 },
+    recommended: false,
+    note: "Core mechanic for Bellstrike-Umbra T0 build"
+  },
+  {
+    id: "wave_chaser",
+    name: "Wave Chaser",
+    cat: "BELLSTRIKE-UMBRA",
+    desc: "Heavenquaker Spear charge stacks give +10% damage bonus per stack, up to 5 stacks (required 6-tier for Bellstrike-Umbra)",
+    stat: { generalDmg: 10 },
+    recommended: false,
+    note: "6-tier required, core for Bellstrike-Umbra"
+  },
+  // BAMBOOCUT-KITE specific
+  {
+    id: "star_grasp",
+    name: "Sky Grasp",
+    cat: "BAMBOOCUT-KITE",
+    desc: "Fist charged skill Righteous Punishment cycle speed +30% (4-tier required for Bamboocut-Kite)",
+    stat: { generalDmg: 8 },
+    recommended: false,
+    note: "4-tier required for Bamboocut-Kite"
+  },
+  {
+    id: "triple_exhaustion",
+    name: "Triple Exhaustion",
+    cat: "BAMBOOCUT-KITE",
+    desc: "Unconditional +8% damage when target has Exhaustion debuff (no trigger condition required)",
+    stat: { generalDmg: 8 },
+    recommended: false,
+    note: "Good unconditional damage for Bamboocut-Kite"
+  },
+  // STONESPLIT-SCALE specific
+  {
+    id: "frost_night",
+    name: "Frost Night",
+    cat: "STONESPLIT-SCALE",
+    desc: "Tang Blade core skill triggers Chill (self +12% DMG) and Blood Heat (Thundercry charge speed +50%) — required core for Stonesplit-Scale",
+    stat: { generalDmg: 12 },
+    recommended: false,
+    note: "Required core art for Stonesplit-Scale"
+  },
+  {
+    id: "throat_pierce",
+    name: "Throat Pierce",
+    cat: "STONESPLIT-SCALE",
+    desc: "Sustained damage and lifesteal on consecutive hits with Thundercry Blade",
+    stat: { generalDmg: 5 },
+    recommended: false,
+    note: "Good sustain for Stonesplit-Scale in long fights"
+  },
+  // STONESPLIT-MIGHT specific
+  {
+    id: "mighty_song",
+    name: "Mighty Song",
+    cat: "STONESPLIT-MIGHT",
+    desc: "Thundercry Blade derivative skills +15% damage, spear taunt generates bonus Battle Will",
+    stat: { generalDmg: 8 },
+    recommended: false,
+    note: "Core DPS buff for Stonesplit-Might"
+  },
+  {
+    id: "homeward_bound",
+    name: "Homeward Bound",
+    cat: "BAMBOOCUT-WIND",
+    desc: "After rope dart summons rats, the rat attack damage is increased by 20% for 8s",
+    stat: { generalDmg: 8 },
+    recommended: false,
+    note: "Core rat buff for Bamboocut-Wind rotation"
+  },
+  // GENERAL
+  {
+    id: "ganglu_shaobing",
+    name: "Ganglu Shaobing",
+    cat: "GENERAL",
+    desc: "Consuming stamina for skills restores HP equal to 3% of damage dealt — sustain food/art for Bamboocut-Dust",
+    stat: {},
+    recommended: false,
+    note: "Popular sustain choice for Bamboocut-Dust runs"
   }
 ];

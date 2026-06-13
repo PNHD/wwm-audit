@@ -156,7 +156,90 @@ const SUB_MAP: Record<string, keyof PanelStats> = {
   "Boss DMG%": "bossDmg",
 };
 
-const TUNE_DURATION_MS = 168 * 60 * 60 * 1000;
+const BUILD_PROFILES = {
+  "bamboocut-dust": {
+    label: "Bamboocut-Dust 破竹尘",
+    weapons: "Soulshade Umbrella + Mortal Rope Dart",
+    tier: "T0 AOE",
+    gradTargets: { maxOuter: 4046, outerPen: 51.2, crit: 79.6, aff: 10.3, minOuter: 1657 },
+    notes: "Only AOE build. Priority: Bamboocut ATK → Max Phys ATK → Pen. Armor: Stars Align set.",
+    priorityStats: ["maxOuter","outerPen","crit","critDmg","maxPz","umbBonus"],
+  },
+  "bellstrike-umbra": {
+    label: "Bellstrike-Umbra 鸣金影",
+    weapons: "Strategic Sword + Heavenquaker Spear",
+    tier: "T0 Single",
+    gradTargets: { maxOuter: 4231, outerPen: 45.0, crit: 95.4, aff: 71.6, minOuter: 1800 },
+    notes: "T0 burst. Requires 6-tier Wave Chaser art. Priority: Affinity → Phys ATK → Crit. Armor: Jadeware Set.",
+    priorityStats: ["aff","affDmg","maxOuter","crit","outerPen"],
+  },
+  "bellstrike-splendor": {
+    label: "Bellstrike-Splendor 鸣金虹",
+    weapons: "Nameless Sword + Nameless Spear",
+    tier: "T1 Easy",
+    gradTargets: { maxOuter: 3800, outerPen: 40.0, crit: 37.5, aff: 30.0, minOuter: 1500 },
+    notes: "Beginner friendly. QQQ shield → charge sword energy. Priority: Max Phys ATK → Crit. Armor: Jadeware + Yixiang Set.",
+    priorityStats: ["maxOuter","crit","outerPen","critDmg","allArts"],
+  },
+  "bamboocut-wind": {
+    label: "Bamboocut-Wind 破竹风",
+    weapons: "Infernal Twinblades + Mortal Rope Dart",
+    tier: "T0 AOE",
+    gradTargets: { maxOuter: 1200, outerPen: 40.0, crit: 75.0, aff: 10.0, minOuter: 600 },
+    notes: "Rat summon synergy. Needs Echoes of Oblivion 6-tier. Priority: Bamboocut ATK → Max Phys ATK → Crit. Armor: Eaglerise Set.",
+    priorityStats: ["maxPz","pzPen","maxOuter","crit","outerPen"],
+  },
+  "bamboocut-kite": {
+    label: "Bamboocut-Kite 破竹鸢",
+    weapons: "Fist + Mortal Rope Dart",
+    tier: "T0 Burst",
+    gradTargets: { maxOuter: 3200, outerPen: 42.0, crit: 75.0, aff: 5.0, minOuter: 1400 },
+    notes: "Control-then-burst. DO NOT stack Affinity. Needs Star Reacher 6-tier. Priority: Max Phys ATK → Crit → Agility.",
+    priorityStats: ["maxOuter","crit","outerPen","critDmg","minOuter"],
+  },
+  "silkbind-jade": {
+    label: "Silkbind-Jade 牵丝玉",
+    weapons: "Vernal Umbrella + Inkwell Fan",
+    tier: "T1 Ranged",
+    gradTargets: { maxOuter: 4007, outerPen: 44.0, crit: 74.4, aff: 30.0, minOuter: 1700 },
+    notes: "Ranged DPS + control. Needs Blossom Barrage 6-tier. Priority: Max Phys ATK → Silkbind ATK → Crit → Affinity. Armor: Jadeware/Yixiang.",
+    priorityStats: ["maxOuter","crit","aff","affDmg","outerPen","umbBonus"],
+  },
+  "stonesplit-might": {
+    label: "Stonesplit-Might 裂石威",
+    weapons: "Thundercry Blade + Stormbreaker Spear",
+    tier: "T1 Tank",
+    gradTargets: { maxOuter: 3500, outerPen: 38.0, crit: 56.0, aff: 15.0, minOuter: 1400 },
+    notes: "Tank/DPS. Avoid Elemental ATK stats (useless). Max 2 Agility sub-stats. Priority: Max Phys ATK → Crit → Stonesplit ATK. Armor: Eaglerise Set.",
+    priorityStats: ["maxOuter","crit","outerPen","critDmg","allArts"],
+  },
+  "stonesplit-scale": {
+    label: "Stonesplit-Scale 裂石钧",
+    weapons: "Thundercry Blade + Tang Blade",
+    tier: "T1 DPS",
+    gradTargets: { maxOuter: 3000, outerPen: 40.0, crit: 70.0, aff: 10.0, minOuter: 1400 },
+    notes: "Hybrid burst. Tang Blade triggers Chill+Blood Heat buff. Priority: Min/Max Phys ATK → Crit → Agility. Target Min ATK 1400+.",
+    priorityStats: ["maxOuter","minOuter","crit","outerPen","critDmg"],
+  },
+  "silkbind-deluge": {
+    label: "Silkbind-Deluge 牵丝霖",
+    weapons: "Panacea Fan + Soulshade Umbrella",
+    tier: "T1 Healer",
+    gradTargets: { maxOuter: 2800, outerPen: 30.0, crit: 30.0, aff: 20.0, minOuter: 1200 },
+    notes: "Only healer. Focus on maintaining team health. DO NOT chase personal DPS. Priority: Healing Power → Max Phys ATK → Crit.",
+    priorityStats: ["maxOuter","crit","aff","outerPen","allArts"],
+  },
+};
+
+const ARMOR_SETS = {
+  "stars": { name: "Stars Align (连星)", bonus2pc: "+Min Phys ATK on spinning skills", bonus4pc: "Bamboocut spinning AoE DMG +20%", recommended: ["bamboocut-dust"] },
+  "eaglerise": { name: "Eaglerise (飞隼)", bonus2pc: "+Phys DEF +32", bonus4pc: "+Affinity Rate +10%, Phys ATK +10%", recommended: ["bamboocut-wind","stonesplit-might","stonesplit-scale"] },
+  "jadeware": { name: "Jadeware (玉器)", bonus2pc: "+Bellstrike ATK", bonus4pc: "Blood explosion +30% DMG", recommended: ["bellstrike-umbra","bellstrike-splendor"] },
+  "yixiang": { name: "Yixiang (衣香)", bonus2pc: "+Crit Rate on dodge", bonus4pc: "Sword energy DMG +25%", recommended: ["bellstrike-splendor","silkbind-jade"] },
+  "veil": { name: "Veil of Willow (柳絮)", bonus2pc: "+Bamboocut DMG %", bonus4pc: "Rat damage +40%", recommended: ["bamboocut-kite","bamboocut-wind"] },
+  "hawking": { name: "Hawking (鹰猎)", bonus2pc: "+Crit DMG after kill", bonus4pc: "Dual blade DMG +20%", recommended: ["bamboocut-wind","stonesplit-scale"] },
+  "none": { name: "No Set / Mixed", bonus2pc: "—", bonus4pc: "—", recommended: [] },
+};
 
 const getCustomConfig = () => {
   if (typeof window === "undefined") return null;
@@ -180,8 +263,37 @@ export default function App() {
     const config = getCustomConfig();
     return config?.panel ?? INITIAL_PANEL;
   });
-  const [activeTab, setActiveTab] = useState<"calculator" | "priority" | "gear" | "compare" | "tunecd" | "simulators" | "ocr" | "profiles">("calculator");
+
+  const [activeTab, setActiveTab] = useState<"calculator" | "priority" | "gear" | "compare" | "simulators" | "ocr" | "profiles">("calculator");
   const [rotationTab, setRotationTab] = useState<"list" | "top">("list");
+
+  // Multi-build, Inner Ways, and Custom Rotation States
+  const [selectedBuild, setSelectedBuild] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("wwm_selected_build");
+      if (stored) return stored;
+    }
+    return "bamboocut-dust";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("wwm_selected_build", selectedBuild);
+  }, [selectedBuild]);
+
+  const [innerWaysFilter, setInnerWaysFilter] = useState<"recommended" | "all">("recommended");
+
+  const [isCustomRotationOpen, setIsCustomRotationOpen] = useState(false);
+  const [customRotationText, setCustomRotationText] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("wwm_custom_rotation");
+      if (stored) return stored;
+    }
+    return "Rope Dart R×3 → Perfect Q×6 → Resonance×8 → Dragon Rider → repeat";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("wwm_custom_rotation", customRotationText);
+  }, [customRotationText]);
 
   // Multi-Character & Scheme states
   const [charsData, setCharsData] = useState<CharsData>(() => {
@@ -302,54 +414,6 @@ export default function App() {
     };
   };
 
-  // Cooldown tracker state & tick rate
-  const [cooldowns, setCooldowns] = useState<TuneCooldown[]>(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("wwm_tune_cds");
-      if (stored) {
-        try {
-          return JSON.parse(stored);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-    return [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem("wwm_tune_cds", JSON.stringify(cooldowns));
-  }, [cooldowns]);
-
-  const [tick, setTick] = useState(0);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTick(t => t + 1);
-    }, 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const getCooldownStatus = (cd: TuneCooldown) => {
-    const elapsed = Date.now() - cd.createdAt;
-    const remainingMs = cd.durationMs - elapsed;
-    const isReady = remainingMs <= 0;
-    
-    if (isReady) {
-      return { isReady: true, displayTime: "0d 0h", percent: 100 };
-    }
-    
-    const percent = Math.min(100, Math.max(0, (elapsed / cd.durationMs) * 100));
-    const totalHours = Math.floor(remainingMs / 3600000);
-    const days = Math.floor(totalHours / 24);
-    const remHours = totalHours % 24;
-    const displayTime = `${days}d ${remHours}h`;
-    return {
-      isReady: false,
-      displayTime,
-      percent
-    };
-  };
-
   // Gear state fields
   const [selectedSlot, setSelectedSlot] = useState<string>("Umbrella");
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -361,10 +425,6 @@ export default function App() {
   const [formSubs, setFormSubs] = useState<{type: string; val: string; isTuned?: boolean}[]>(
     Array(6).fill(null).map(() => ({ type: "Max Phys Atk", val: "", isTuned: false }))
   );
-
-  // form state for tune cd
-  const [cdSlot, setCdSlot] = useState("Umbrella");
-  const [cdItemName, setCdItemName] = useState("");
 
   const openAddModal = () => {
     setEditingItem(null);
@@ -1294,17 +1354,6 @@ export default function App() {
             )}
           </button>
           <button
-            onClick={() => setActiveTab("tunecd")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "tunecd" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            ⏰ Tune CD
-            {activeTab === "tunecd" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <button
             onClick={() => setActiveTab("simulators")}
             className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
               activeTab === "simulators" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
@@ -1371,6 +1420,151 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Sidebar Controls (Inputs & Modifiers) - 4 Cols */}
             <div className="lg:col-span-4 bg-[#141210] border border-amber-900/10 rounded-xl p-5 space-y-6">
+              {/* Build Path Dropdown */}
+              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
+                <span className="text-[10px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+                  <span className="text-sm">⚔️</span> Build Path Selection
+                </span>
+                <div>
+                  <select
+                    value={selectedBuild}
+                    onChange={e => setSelectedBuild(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 text-amber-400 rounded px-2.5 py-2 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                  >
+                    {Object.entries(BUILD_PROFILES).map(([key, b]) => (
+                      <option key={key} value={key}>{b.label} [{b.tier}]</option>
+                    ))}
+                  </select>
+                </div>
+                {/* Build info box */}
+                {(() => {
+                  const b = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
+                  if (!b) return null;
+                  return (
+                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[11px] space-y-1.5 text-slate-300 antialiased">
+                      <div className="flex justify-between text-slate-400">
+                        <span>Weapons:</span>
+                        <span className="text-amber-500 font-medium text-right text-[10px]">{b.weapons}</span>
+                      </div>
+                      <div className="font-mono text-[10px] text-slate-400 border-t border-slate-900/60 pt-1.5">
+                        <span className="text-slate-500 block">Graduation Targets:</span>
+                        <div className="grid grid-cols-2 gap-y-1 gap-x-2 mt-1">
+                          <div>Max PA: <span className="text-slate-200">{b.gradTargets.maxOuter}</span></div>
+                          <div>Min PA: <span className="text-slate-200">{b.gradTargets.minOuter}</span></div>
+                          <div>Pen: <span className="text-slate-200">{b.gradTargets.outerPen}%</span></div>
+                          <div>Crit: <span className="text-slate-200">{b.gradTargets.crit}%</span></div>
+                        </div>
+                      </div>
+                      <div className="text-slate-400 border-t border-slate-900/60 pt-1.5 leading-relaxed text-[10.5px]">
+                        <span className="text-amber-500/90 font-bold">Strategy:</span> {b.notes}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Armor Set Selector */}
+              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
+                <span className="text-[10px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+                  <Shield className="w-3.5 h-3.5 text-amber-500" /> Active Armor Set Selector
+                </span>
+                <div>
+                  <select
+                    value={panel.set}
+                    onChange={e => handleStatChange("set", e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 text-amber-100 rounded px-2.5 py-2 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                  >
+                    {Object.entries(ARMOR_SETS).map(([key, s]) => (
+                      <option key={key} value={key}>{s.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Armor Set details & badges */}
+                {(() => {
+                  const s = ARMOR_SETS[panel.set as keyof typeof ARMOR_SETS];
+                  if (!s) return null;
+                  const isRecommended = s.recommended && s.recommended.includes(selectedBuild);
+                  const isMismatched = panel.set !== "none" && !isRecommended;
+                  
+                  return (
+                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[11px] space-y-2 text-slate-300">
+                      <div className="flex flex-wrap gap-1">
+                        {isRecommended && (
+                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-900/40">
+                            ✓ Recommended Set
+                          </span>
+                        )}
+                        {isMismatched && (
+                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-505 text-amber-400 font-bold border border-amber-900/40">
+                            ⚠ Mismatched Set
+                          </span>
+                        )}
+                        {panel.set === "none" && (
+                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 font-bold border border-slate-850">
+                            No active bonus
+                          </span>
+                        )}
+                      </div>
+                      
+                      {panel.set !== "none" && (
+                        <div className="font-mono text-[10px] space-y-1 text-slate-400 border-t border-slate-900/60 pt-1.5">
+                          <div>
+                            <span className="text-amber-500/90 font-bold">2pc:</span> {s.bonus2pc}
+                          </div>
+                          <div>
+                            <span className="text-amber-500/90 font-bold">4pc:</span> {s.bonus4pc}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Custom Rotation & DPS */}
+              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
+                <button
+                  type="button"
+                  onClick={() => setIsCustomRotationOpen(!isCustomRotationOpen)}
+                  className="w-full flex justify-between items-center text-[10.5px] font-mono font-bold tracking-widest text-[#a19683] uppercase border-b border-amber-950/40 pb-1.5 focus:outline-none"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" /> Custom Rotation & DPS
+                  </span>
+                  <span className="text-amber-500">{isCustomRotationOpen ? "▲ Hide" : "▼ Show"}</span>
+                </button>
+                
+                {isCustomRotationOpen && (
+                  <div className="space-y-3 pt-1">
+                    <div>
+                      <label className="block text-[9px] uppercase font-mono text-slate-500 mb-1">
+                        Active Skill Rotation String:
+                      </label>
+                      <textarea
+                        value={customRotationText}
+                        onChange={(e) => setCustomRotationText(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-xs text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500 font-sans"
+                        rows={2}
+                        placeholder="Rope Dart R×3 →..."
+                      />
+                    </div>
+                    
+                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[10.5px] text-slate-400 space-y-1.5 antialiased">
+                      <div className="flex justify-between items-center text-slate-300">
+                        <span>Est. Speedrun DPS:</span>
+                        <span className="font-mono text-xs text-amber-400 font-extrabold">
+                          {(rotationStats.dps * 0.96).toFixed(0)} ~ {(rotationStats.dps * 1.04).toFixed(0)}
+                        </span>
+                      </div>
+                      <p className="text-[9.5px] text-slate-500 leading-snug">
+                        💡 <strong>Calculates a rough DPS expectation; actual raid DPS will vary based on boss movement, mechanics, and lag.</strong>
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Reset/Save Default Quick Group */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
                 <div className="flex items-center justify-between">
@@ -1685,11 +1879,9 @@ export default function App() {
                       onChange={(e) => handleStatChange("set", e.target.value)}
                       className="bg-slate-900 border-none text-[11px] text-amber-500 font-medium px-2 py-0.5 rounded focus:outline-none"
                     >
-                      <option value="stars">Stars Align Set (+Attribute Atk)</option>
-                      <option value="eaglerise">Eaglerise Set (+Phys Crit)</option>
-                      <option value="stormrain">Stormrain Set (+Cooldown)</option>
-                      <option value="shakenhill">Shakenhill Set (+Stagger)</option>
-                      <option value="none">Standard Set</option>
+                      {Object.entries(ARMOR_SETS).map(([key, s]) => (
+                        <option key={key} value={key}>{s.name}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -1757,14 +1949,65 @@ export default function App() {
                     {selectedInnerWays.length}/4 selected
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-400 mb-3 leading-snug">
+                <p className="text-[10px] text-slate-400 mb-2.5 leading-snug">
                   Select up to 4 Inner Ways matching your active setup to automatically aggregate their dynamic passive bonus attributes:
                 </p>
 
+                {/* Filter Selector Row */}
+                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => setInnerWaysFilter("recommended")}
+                    className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
+                      innerWaysFilter === "recommended"
+                        ? "bg-amber-500 text-slate-950"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    Recommended
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInnerWaysFilter("all")}
+                    className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
+                      innerWaysFilter === "all"
+                        ? "bg-amber-500 text-slate-950"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    All Inner Ways
+                  </button>
+                </div>
+
                 <div className="space-y-2 max-h-56 overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-amber-900/40">
-                  {INNER_WAYS.map((iw) => {
+                  {INNER_WAYS.filter((iw) => {
+                    if (innerWaysFilter === "all") return true;
+                    // Recommended filter
+                    const normalizedCat = iw.cat.toLowerCase();
+                    if (normalizedCat === selectedBuild) return true;
+                    if (selectedBuild === "bamboocut-dust" && (normalizedCat === "bamboocut-wind" || iw.id === "ganglu_shaobing")) return true;
+                    if (normalizedCat === "general" && (iw.recommended || iw.id === "ganglu_shaobing" || iw.id === "seasonal_edge" || iw.id === "morale_chant" || iw.id === "invigorated_warrior")) return true;
+                    return false;
+                  }).map((iw) => {
                     const isSelected = selectedInnerWays.includes(iw.id);
                     const disabled = !isSelected && selectedInnerWays.length >= 4;
+
+                    // Compute dynamic Best T91 badge
+                    const isBestT91 = iw.recommended || (() => {
+                      const build = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
+                      if (!build) return false;
+                      const pStats = build.priorityStats;
+                      if (!iw.stat) return false;
+                      if (iw.stat.outerPen && pStats.includes("outerPen")) return true;
+                      if (iw.stat.pzPen && pStats.includes("pzPen")) return true;
+                      if (iw.stat.critDmg && pStats.includes("critDmg")) return true;
+                      if (iw.stat.affDmg && pStats.includes("affDmg")) return true;
+                      if (iw.stat.pzDmg && (pStats.includes("maxPz") || pStats.includes("allArts"))) return true;
+                      if (iw.stat.generalDmg && (pStats.includes("maxOuter") || pStats.includes("allArts"))) return true;
+                      if (iw.stat.outerDmg && (pStats.includes("maxOuter") || pStats.includes("allArts"))) return true;
+                      return false;
+                    })();
+
                     return (
                       <div
                         key={iw.id}
@@ -1785,8 +2028,8 @@ export default function App() {
                       >
                         <div className="flex justify-between items-center font-semibold mb-0.5">
                           <span>{iw.name}</span>
-                          {iw.recommended && (
-                            <span className="text-[8px] bg-red-950/80 text-red-400 font-mono scale-90 px-1 rounded uppercase font-bold tracking-wider">
+                          {isBestT91 && (
+                            <span className="text-[8px] bg-red-950/85 text-red-300 font-mono scale-90 px-1 rounded uppercase font-bold tracking-wider">
                               Best T91
                             </span>
                           )}
@@ -1908,35 +2151,55 @@ export default function App() {
 
                 {/* Dynamic Advice & Gearing Roadmap */}
                 <div className="mt-4 p-4 rounded-lg text-xs leading-relaxed border bg-slate-950/50 border-slate-900 text-slate-300">
-                  {rotationStats.gradRate >= 100 ? (
-                    <div>
-                      <strong className="text-emerald-400 flex items-center gap-1 mb-1">
-                        <CheckCircle className="w-4 h-4 inline" /> 🏆 Fully Graduated for Tier 91!
-                      </strong>
-                      Your build exceeds the T91 baseline ({rotationStats.gradRate.toFixed(1)}%). Ready to clear all Season 3 raids. Prep for Tier 96 when it unlocks.
-                    </div>
-                  ) : rotationStats.gradRate >= 90 ? (
-                    <div>
-                      <strong className="text-amber-400 flex items-center gap-1 mb-1">
-                        <CheckCircle className="w-4 h-4 inline" /> ✅ Excellent Build!
-                      </strong>
-                      {adjustedPanel.outerPen < 46
-                        ? `Physical Pen at ${adjustedPanel.outerPen.toFixed(1)}% — push toward 51.2% graduation target. Each pen sub (cap 9.0%) is very efficient here.`
-                        : `Good penetration. Keep stacking Max Physical Attack toward 4046. Current: ${Math.round(adjustedPanel.maxOuter)}.`}
-                    </div>
-                  ) : rotationStats.gradRate >= 70 ? (
-                    <div>
-                      <strong className="text-amber-500 flex items-center gap-1 mb-1">⚠️ Solid — keep building</strong>
-                      ① Max Phys Atk → 4046+ (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → 51.2% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate panel 116%+ to reach 80% eff cap vs T91.
-                    </div>
-                  ) : (
-                    <div>
-                      <strong className="text-rose-400 flex items-center gap-1 mb-1">
-                        <AlertTriangle className="w-4 h-4 inline" /> 📈 Building Phase ({rotationStats.gradRate.toFixed(1)}%)
-                      </strong>
-                      ① Max Phys Atk → 4046 (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → 51.2% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate 116%+ panel ④ Bamboocut Atk. T91 sub caps: Pen 9.0% · Max PA 63.8 · Crit 6.5% · CritDMG 8.0%.
-                    </div>
-                  )}
+                  {(() => {
+                    const b = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
+                    if (!b) return null;
+                    const tgt = b.gradTargets;
+                    return (
+                      <>
+                        {rotationStats.gradRate >= 100 ? (
+                          <div className="space-y-1.5">
+                            <strong className="text-emerald-400 flex items-center gap-1 mb-1">
+                              <CheckCircle className="w-4 h-4 inline" /> 🏆 Fully Graduated for Tier 91!
+                            </strong>
+                            <div>
+                              Your build exceeds the T91 baseline ({rotationStats.gradRate.toFixed(1)}%). Ready to clear all Season 3 raids. Prep for Tier 96 when it unlocks.
+                            </div>
+                          </div>
+                        ) : rotationStats.gradRate >= 90 ? (
+                          <div className="space-y-1.5">
+                            <strong className="text-amber-400 flex items-center gap-1 mb-1">
+                              <CheckCircle className="w-4 h-4 inline" /> ✅ Excellent Build!
+                            </strong>
+                            <div>
+                              {adjustedPanel.outerPen < tgt.outerPen
+                                ? `Physical Pen at ${adjustedPanel.outerPen.toFixed(1)}% — push toward ${tgt.outerPen.toFixed(1)}% graduation target. Each pen sub (cap 9.0%) is very efficient here.`
+                                : `Good penetration. Keep stacking Max Physical Attack toward ${tgt.maxOuter}. Current: ${Math.round(adjustedPanel.maxOuter)}.`}
+                            </div>
+                          </div>
+                        ) : rotationStats.gradRate >= 70 ? (
+                          <div className="space-y-1.5">
+                            <strong className="text-amber-500 flex items-center gap-1 mb-1">⚠️ Solid — keep building</strong>
+                            <div>
+                              ① Max Phys Atk → {tgt.maxOuter}+ (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → {tgt.outerPen.toFixed(1)}% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate to reach {tgt.crit.toFixed(1)}% eff cap vs T91 (now: {effCritRate.toFixed(1)}%).
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-1.5">
+                            <strong className="text-rose-400 flex items-center gap-1 mb-1">
+                              <AlertTriangle className="w-4 h-4 inline" /> 📈 Building Phase ({rotationStats.gradRate.toFixed(1)}%)
+                            </strong>
+                            <div>
+                              ① Max Phys Atk → {tgt.maxOuter} (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → {tgt.outerPen.toFixed(1)}% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate → {tgt.crit.toFixed(1)}% ④ Bamboocut Atk. T91 sub caps: Pen 9.0% · Max PA 63.8 · Crit 6.5% · CritDMG 8.0%.
+                            </div>
+                          </div>
+                        )}
+                        <div className="mt-2.5 pt-2 border-t border-slate-900 text-[10.5px] text-slate-400 font-mono">
+                          <strong className="text-amber-500">Path Strategy:</strong> {b.notes}
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -2449,154 +2712,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab Tune Cooldown Locks */}
-        {activeTab === "tunecd" && (
-          <div className="space-y-6">
-            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
-              <div className="mb-5 border-b border-amber-900/10 pb-3">
-                <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-amber-500" /> Tune Cooldown Tracker (168 Hours Locks)
-                </h2>
-                <p className="text-[10px] text-slate-500 mt-0.5">
-                  Track individual gear tuning locks. Each piece of gear locked via tune has a strict 168-hour (7 days) cooldown. Monitor real-time status and receive ready notifications here.
-                </p>
-              </div>
 
-              {/* Cooldown Grid */}
-              <div className="space-y-4 mb-8">
-                {cooldowns.length === 0 ? (
-                  <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center font-mono text-xs text-slate-500">
-                    No active Tuning Cooldown locks running.
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {cooldowns.map((cd) => {
-                      const { isReady, displayTime, percent } = getCooldownStatus(cd);
-                      
-                      return (
-                        <div
-                          key={cd.id}
-                          className={`p-4 rounded-xl border relative transition-all bg-[#14120f]/85 ${
-                            isReady
-                              ? "border-emerald-500/30 shadow-md shadow-emerald-500/5 bg-emerald-950/5"
-                              : "border-slate-900 hover:border-slate-800 bg-slate-950/20 shadow-sm"
-                          }`}
-                        >
-                          <div className="flex justify-between items-start mb-2.5">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-slate-100">{cd.itemName || "Unnamed Gear"}</span>
-                                <span className="text-[9px] uppercase font-mono font-bold px-1.5 py-0.5 bg-slate-950 border border-slate-800 text-slate-400 rounded">
-                                  {cd.slot}
-                                </span>
-                              </div>
-                              <span className="text-[9px] font-mono text-slate-500 block mt-1">
-                                Started: {new Date(cd.createdAt).toLocaleString()}
-                              </span>
-                            </div>
-                            <button
-                              onClick={() => {
-                                if (confirm("Remove this cooldown track?")) {
-                                  setCooldowns(prev => prev.filter(c => c.id !== cd.id));
-                                }
-                              }}
-                              className="text-[10px] font-mono text-slate-500 hover:text-rose-400 p-1"
-                              title="Delete tracker"
-                            >
-                              ✕ Remove
-                            </button>
-                          </div>
-
-                          {/* Progress bar container */}
-                          <div className="h-1.5 bg-slate-950 border border-slate-900/60 rounded-full overflow-hidden mb-2.5">
-                            <div
-                              style={{ width: `${percent}%` }}
-                              className={`h-full transition-all duration-1000 ${
-                                isReady
-                                  ? "bg-emerald-500"
-                                  : "bg-amber-500"
-                              }`}
-                            />
-                          </div>
-
-                          {/* Status and text indicators */}
-                          <div className="flex items-center justify-between text-xs font-semibold">
-                            <span className="text-[10px] text-slate-500 font-mono">Tuning Lock Cooldown:</span>
-                            {isReady ? (
-                              <span className="text-emerald-400 flex items-center gap-1 font-bold animate-pulse text-[11px]">
-                                <CheckCircle className="w-3.5 h-3.5 inline text-emerald-400" /> ✅ Ready to tune!
-                              </span>
-                            ) : (
-                              <span className="text-amber-500 font-mono font-bold text-[11.5px] flex items-center gap-1">
-                                ⏳ {displayTime} remaining
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Add form footer inside box */}
-              <div className="bg-slate-950/40 border border-slate-900 rounded-xl p-4">
-                <span className="text-[10.5px] uppercase font-mono tracking-widest text-[#a19683] font-bold block mb-3">
-                  ⏱ Start Tuning Cooldown Timer
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-                  <div>
-                    <label className="block text-[9px] uppercase font-mono text-slate-500 mb-1">
-                      Choose Locked Slot:
-                    </label>
-                    <select
-                      value={cdSlot}
-                      onChange={(e) => setCdSlot(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                    >
-                      {SLOTS.map(st => (
-                        <option key={st.name} value={st.name}>{st.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[9px] uppercase font-mono text-slate-500 mb-1">
-                      Gear/Item Name:
-                    </label>
-                    <input
-                      type="text"
-                      value={cdItemName}
-                      onChange={(e) => setCdItemName(e.target.value)}
-                      placeholder="e.g. Dreamfount Bracers"
-                      className="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                    />
-                  </div>
-                  <button
-                    onClick={() => {
-                      if (!cdItemName.trim()) {
-                        alert("Please specify a name for the locked gear!");
-                        return;
-                      }
-                      const newCd: TuneCooldown = {
-                        id: "cd-" + Date.now(),
-                        slot: cdSlot,
-                        itemName: cdItemName,
-                        createdAt: Date.now(),
-                        durationMs: TUNE_DURATION_MS
-                      };
-                      setCooldowns(prev => [...prev, newCd]);
-                      setCdItemName("");
-                      alert(`Successfully started lock countdown for slot "${cdSlot}"!`);
-                    }}
-                    className="w-full py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded transition-all shadow-sm flex items-center justify-center gap-1 shadow-amber-500/10"
-                  >
-                    ⏱ Start CD
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Modal Editor Overlay */}
         {isItemModalOpen && (
