@@ -16,6 +16,12 @@ import {
   CheckCircle,
   Database,
   AlertTriangle,
+  Plus,
+  Trash2,
+  Edit,
+  Download,
+  Upload,
+  Clock,
 } from "lucide-react";
 import { PanelStats, TierConstants } from "./types";
 import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils/calc";
@@ -58,6 +64,100 @@ export interface SavedProfile {
   dps: number;
 }
 
+export interface GearSub {
+  type: string;
+  val: string;
+  isTuned?: boolean;
+}
+
+export interface GearItem {
+  id: string;
+  slot: string;
+  name: string;
+  quality: "gold" | "purple" | "blue";
+  main: string;
+  set: string;
+  subs: GearSub[];
+}
+
+export interface Scheme {
+  id: string;
+  name: string;
+  panel: PanelStats;
+  gear: GearItem[];
+}
+
+export interface Character {
+  id: string;
+  name: string;
+  schemes: Scheme[];
+}
+
+export interface CharsData {
+  chars: Character[];
+  activeCharId: string | null;
+  activeSchemeId: string | null;
+}
+
+export interface TuneCooldown {
+  id: string;
+  slot: string;
+  itemName: string;
+  createdAt: number;
+  durationMs: number;
+}
+
+const SLOTS = [
+  { name: "Umbrella", icon: "☂" },
+  { name: "Rope Dart", icon: "🪃" },
+  { name: "Pendant", icon: "📿" },
+  { name: "Helmet", icon: "⛑" },
+  { name: "Chest", icon: "🥋" },
+  { name: "Greaves", icon: "🦿" },
+  { name: "Bracers", icon: "🤺" },
+  { name: "Bow/Ring", icon: "🏹" }
+];
+
+const DEFAULT_GEAR: GearItem[] = [
+  { id:"g1", slot:"Umbrella", name:"Swiftwing Cloud Umbrella", quality:"gold", main:"Phys Atk 48~112", set:"stars",
+    subs:[{type:"Max Phys Atk",val:"59.2"},{type:"Max Phys Atk",val:"63.8"},{type:"Umbrella Bonus",val:"5.1%"},{type:"Min Phys Atk",val:"62.9"},{type:"Crit Rate",val:"7.4%"},{type:"Phys Pen",val:"7.4"}]},
+  { id:"g2", slot:"Rope Dart", name:"Swiftwing Charm", quality:"gold", main:"Min Phys Atk 71", set:"stars",
+    subs:[{type:"Min Phys Atk",val:"56.2"},{type:"Max Phys Atk",val:"59.9"},{type:"Min Phys Atk",val:"61.7"},{type:"Max Bamboocut Atk",val:"35.0"},{type:"Crit Rate",val:"7.4%"},{type:"Phys Pen",val:"6.4"}]},
+  { id:"g3", slot:"Pendant", name:"Swiftwing Pendant", quality:"gold", main:"Max Phys Atk 106", set:"stars",
+    subs:[{type:"Max Phys Atk",val:"49.9"},{type:"Max Phys Atk",val:"58.3"},{type:"Min Phys Atk",val:"63.8",isTuned:true},{type:"Crit Rate",val:"6.8%"},{type:"Phys Pen",val:"8.6"}]},
+  { id:"g4", slot:"Helmet", name:"Nightfarer Crown", quality:"gold", main:"HP 4614 / DEF 18", set:"eaglerise",
+    subs:[{type:"Crit Rate",val:"7.0%"},{type:"Crit Rate",val:"7.1%"},{type:"Min Phys Atk",val:"63.8",isTuned:true},{type:"Max Bamboocut Atk",val:"33.4"},{type:"Max Phys Atk",val:"62.7"},{type:"Umbrella Bonus",val:"4.8%"}]},
+  { id:"g5", slot:"Chest", name:"Nightfarer Armor", quality:"gold", main:"HP 9227 / DEF 18", set:"eaglerise",
+    subs:[{type:"Precision",val:"6.3%"},{type:"Max Bamboocut Atk",val:"34.8"},{type:"Min Bamboocut Atk",val:"35.4"},{type:"Crit Rate",val:"7.4%",isTuned:true},{type:"Max Phys Atk",val:"59.7"},{type:"Umbrella Bonus",val:"4.8%"}]},
+  { id:"g6", slot:"Greaves", name:"Nightfarer Night Leg Armor", quality:"purple", main:"HP 4153 / DEF 32", set:"eaglerise",
+    subs:[{type:"Crit Rate",val:"6.8%"},{type:"Max Phys Atk",val:"63.8",isTuned:true},{type:"Precision",val:"6.6%"},{type:"Crit Rate",val:"6.9%"},{type:"Min Bamboocut Atk",val:"33.7"},{type:"Umbrella Bonus",val:"4.5%"}]},
+  { id:"g7", slot:"Bracers", name:"Nightfarer Bracers", quality:"purple", main:"HP 4614 / DEF 18", set:"eaglerise",
+    subs:[{type:"Crit Rate",val:"7.2%"},{type:"Max Bamboocut Atk",val:"36.2"},{type:"Min Phys Atk",val:"63.8",isTuned:true},{type:"Crit Rate",val:"7.3%"},{type:"Max Phys Atk",val:"59.8"},{type:"Umbrella Bonus",val:"5.0%"}]},
+  { id:"g8", slot:"Bow/Ring", name:"Eastgaze Bow: Divine + Eastgaze Ring", quality:"gold", main:"Pursuing Shadow Set 2/2",
+    set:"pursuing", subs:[{type:"Affinity Rate",val:"1.8% (set)"},{type:"All Weapon",val:"12.5%"},{type:"Crit Rate",val:"6.8%"}]},
+];
+
+const SUB_MAP: Record<string, keyof PanelStats> = {
+  "Max Phys Atk": "maxOuter",
+  "Min Phys Atk": "minOuter", 
+  "Phys Pen": "outerPen",
+  "Crit Rate": "crit",
+  "Crit DMG": "critDmg",
+  "Affinity Rate": "aff",
+  "Affinity DMG": "affDmg",
+  "Precision": "prec",
+  "Max Bamboocut Atk": "maxPz",
+  "Min Bamboocut Atk": "minPz",
+  "Attr Pen": "pzPen",
+  "Bamboocut DMG%": "pzDmg",
+  "Umbrella Bonus": "umbBonus",
+  "All Weapon": "allArts",
+  "Phys DMG%": "outerDmg",
+  "Boss DMG%": "bossDmg",
+};
+
+const TUNE_DURATION_MS = 168 * 60 * 60 * 1000;
+
 const getCustomConfig = () => {
   if (typeof window === "undefined") return null;
   const cached = localStorage.getItem("wwm_t91_custom_config");
@@ -80,8 +180,269 @@ export default function App() {
     const config = getCustomConfig();
     return config?.panel ?? INITIAL_PANEL;
   });
-  const [activeTab, setActiveTab] = useState<"calculator" | "priority" | "simulators" | "ocr" | "profiles">("calculator");
+  const [activeTab, setActiveTab] = useState<"calculator" | "priority" | "gear" | "compare" | "tunecd" | "simulators" | "ocr" | "profiles">("calculator");
   const [rotationTab, setRotationTab] = useState<"list" | "top">("list");
+
+  // Multi-Character & Scheme states
+  const [charsData, setCharsData] = useState<CharsData>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("wwm_chars_v3");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed.chars && Array.isArray(parsed.chars)) {
+            return parsed;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+    const charId = "char-" + Date.now();
+    const schemeId = "scheme-" + Date.now();
+    return {
+      chars: [
+        {
+          id: charId,
+          name: "Main Hero",
+          schemes: [
+            {
+              id: schemeId,
+              name: "Scheme 1",
+              panel: INITIAL_PANEL,
+              gear: DEFAULT_GEAR
+            }
+          ]
+        }
+      ],
+      activeCharId: charId,
+      activeSchemeId: schemeId
+    };
+  });
+
+  const activeChar = useMemo(() => {
+    return charsData.chars.find(c => c.id === charsData.activeCharId) ?? null;
+  }, [charsData.chars, charsData.activeCharId]);
+
+  const activeScheme = useMemo(() => {
+    if (!activeChar) return null;
+    return activeChar.schemes.find(s => s.id === charsData.activeSchemeId) ?? null;
+  }, [activeChar, charsData.activeSchemeId]);
+
+  useEffect(() => {
+    if (activeScheme) {
+      if (activeScheme.panel) {
+        setPanel(activeScheme.panel);
+      }
+    }
+  }, [charsData.activeCharId, charsData.activeSchemeId]);
+
+  const getActiveGear = (): GearItem[] => {
+    return activeScheme?.gear ?? DEFAULT_GEAR;
+  };
+
+  const saveActiveGear = (newGear: GearItem[]) => {
+    const updatedChars = charsData.chars.map(c => {
+      if (c.id === charsData.activeCharId) {
+        return {
+          ...c,
+          schemes: c.schemes.map(s => {
+            if (s.id === charsData.activeSchemeId) {
+              return { ...s, gear: newGear };
+            }
+            return s;
+          })
+        };
+      }
+      return c;
+    });
+    const newData = { ...charsData, chars: updatedChars };
+    setCharsData(newData);
+    localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+  };
+
+  const WEIGHTS: Record<string, number> = {
+    "Max Phys Atk": 1.0,
+    "Min Phys Atk": 1.0, 
+    "Phys Pen": 8.5,
+    "Crit Rate": 7.2,
+    "Crit DMG": 8.0,
+    "Affinity Rate": 5.0,
+    "Affinity DMG": 4.5,
+    "Precision": 3.5,
+    "Max Bamboocut Atk": 0.8,
+    "Min Bamboocut Atk": 0.8,
+    "Attr Pen": 4.0,
+    "Bamboocut DMG%": 6.5,
+    "Umbrella Bonus": 12.0,
+    "All Weapon": 10.0,
+    "Phys DMG%": 15.0,
+    "Boss DMG%": 12.0,
+  };
+
+  const getGearItemCompareStats = (item: GearItem) => {
+    let totalGradDelta = 0;
+    const subsWithDeltas = item.subs.map(sub => {
+      const weight = WEIGHTS[sub.type] ?? 0;
+      const cleanVal = parseFloat(sub.val.replace(/[^\d.]/g, "")) || 0;
+      const isTuned = !!sub.isTuned;
+      const factor = isTuned ? 1.15 : 1.0;
+      const delta = cleanVal * weight * factor;
+      totalGradDelta += delta;
+      return {
+        type: sub.type,
+        val: sub.val,
+        isTuned,
+        delta
+      };
+    });
+    return {
+      totalGradDelta,
+      subsWithDeltas
+    };
+  };
+
+  // Cooldown tracker state & tick rate
+  const [cooldowns, setCooldowns] = useState<TuneCooldown[]>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("wwm_tune_cds");
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("wwm_tune_cds", JSON.stringify(cooldowns));
+  }, [cooldowns]);
+
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTick(t => t + 1);
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const getCooldownStatus = (cd: TuneCooldown) => {
+    const elapsed = Date.now() - cd.createdAt;
+    const remainingMs = cd.durationMs - elapsed;
+    const isReady = remainingMs <= 0;
+    
+    if (isReady) {
+      return { isReady: true, displayTime: "0d 0h", percent: 100 };
+    }
+    
+    const percent = Math.min(100, Math.max(0, (elapsed / cd.durationMs) * 100));
+    const totalHours = Math.floor(remainingMs / 3600000);
+    const days = Math.floor(totalHours / 24);
+    const remHours = totalHours % 24;
+    const displayTime = `${days}d ${remHours}h`;
+    return {
+      isReady: false,
+      displayTime,
+      percent
+    };
+  };
+
+  // Gear state fields
+  const [selectedSlot, setSelectedSlot] = useState<string>("Umbrella");
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<GearItem | null>(null);
+  const [formName, setFormName] = useState("");
+  const [formQuality, setFormQuality] = useState<"gold" | "purple" | "blue">("gold");
+  const [formMain, setFormMain] = useState("");
+  const [formSet, setFormSet] = useState("stars");
+  const [formSubs, setFormSubs] = useState<{type: string; val: string; isTuned?: boolean}[]>(
+    Array(6).fill(null).map(() => ({ type: "Max Phys Atk", val: "", isTuned: false }))
+  );
+
+  // form state for tune cd
+  const [cdSlot, setCdSlot] = useState("Umbrella");
+  const [cdItemName, setCdItemName] = useState("");
+
+  const openAddModal = () => {
+    setEditingItem(null);
+    setFormName("");
+    setFormQuality("gold");
+    setFormMain("");
+    setFormSet("stars");
+    setFormSubs(Array(6).fill(null).map(() => ({ type: "Max Phys Atk", val: "", isTuned: false })));
+    setIsItemModalOpen(true);
+  };
+
+  const openEditModal = (item: GearItem) => {
+    setEditingItem(item);
+    setFormName(item.name);
+    setFormQuality(item.quality);
+    setFormMain(item.main);
+    setFormSet(item.set);
+    const subs = [...item.subs];
+    while (subs.length < 6) {
+      subs.push({ type: "Other", val: "", isTuned: false });
+    }
+    setFormSubs(subs);
+    setIsItemModalOpen(true);
+  };
+
+  const handleSaveItem = () => {
+    if (!formName.trim()) {
+      alert("Please enter an item name!");
+      return;
+    }
+    const savedSubs = formSubs
+      .filter(s => s.type !== "Other" && s.val.trim() !== "")
+      .map(s => ({
+        type: s.type,
+        val: s.val,
+        isTuned: !!s.isTuned
+      }));
+    const activeGear = getActiveGear();
+    let updatedGear: GearItem[];
+    if (editingItem) {
+      updatedGear = activeGear.map(it => {
+        if (it.id === editingItem.id) {
+          return {
+            ...it,
+            name: formName,
+            quality: formQuality,
+            main: formMain,
+            set: formSet,
+            subs: savedSubs
+          };
+        }
+        return it;
+      });
+    } else {
+      const newItem: GearItem = {
+        id: "gear-" + Date.now(),
+        slot: selectedSlot,
+        name: formName,
+        quality: formQuality,
+        main: formMain,
+        set: formSet,
+        subs: savedSubs
+      };
+      updatedGear = [...activeGear, newItem];
+    }
+    saveActiveGear(updatedGear);
+    setIsItemModalOpen(false);
+  };
+
+  const handleDeleteItem = (id: string) => {
+    if (confirm("Are you sure you want to delete this gear item?")) {
+      const activeGear = getActiveGear();
+      const updatedGear = activeGear.filter(it => it.id !== id);
+      saveActiveGear(updatedGear);
+      setIsItemModalOpen(false);
+    }
+  };
+
   const [selectedInnerWays, setSelectedInnerWays] = useState<string[]>(() => {
     const config = getCustomConfig();
     return config?.selectedInnerWays ?? [];
@@ -671,13 +1032,227 @@ export default function App() {
         </div>
       </header>
 
+      {/* Multi-Character & Multi-Scheme Sticky Bar */}
+      <div className="bg-[#14120f] border-b border-amber-900/10 px-6 py-2.5 flex flex-wrap gap-4 items-center justify-between text-xs sticky top-0 z-20 shadow-md">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Character selection & operations */}
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 font-mono text-[10px] uppercase tracking-wider font-semibold">Hero Profile:</span>
+            <select
+              value={charsData.activeCharId ?? ""}
+              onChange={(e) => {
+                const headId = e.target.value;
+                const char = charsData.chars.find(c => c.id === headId);
+                const firstSchemeId = char?.schemes[0]?.id ?? null;
+                const newData = { ...charsData, activeCharId: headId, activeSchemeId: firstSchemeId };
+                setCharsData(newData);
+                localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+              }}
+              className="bg-slate-950 border border-slate-800 text-amber-500 rounded px-2.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+            >
+              {charsData.chars.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={() => {
+              const name = prompt("Enter new character name:");
+              if (!name) return;
+              const newId = "char-" + Date.now();
+              const schemeId = "scheme-" + Date.now();
+              const newChar: Character = {
+                id: newId,
+                name,
+                schemes: [
+                  {
+                    id: schemeId,
+                    name: "Scheme 1",
+                    panel: panel,
+                    gear: DEFAULT_GEAR
+                  }
+                ]
+              };
+              const newData: CharsData = {
+                ...charsData,
+                chars: [...charsData.chars, newChar],
+                activeCharId: newId,
+                activeSchemeId: schemeId
+              };
+              setCharsData(newData);
+              localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+            }}
+            className="px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded border border-amber-500/20 flex items-center gap-1 transition-colors font-semibold shadow-sm"
+          >
+            <Plus className="w-3.5 h-3.5" /> <span>Add Hero</span>
+          </button>
+          {charsData.chars.length > 1 && (
+            <button
+              onClick={() => {
+                if (confirm("Are you sure you want to delete this hero? This operation cannot be undone.")) {
+                  const remaining = charsData.chars.filter(c => c.id !== charsData.activeCharId);
+                  const newActiveCharId = remaining[0]?.id ?? null;
+                  const newActiveSchemeId = remaining[0]?.schemes[0]?.id ?? null;
+                  const newData: CharsData = {
+                    chars: remaining,
+                    activeCharId: newActiveCharId,
+                    activeSchemeId: newActiveSchemeId
+                  };
+                  setCharsData(newData);
+                  localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+                }
+              }}
+              className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded border border-rose-500/20 flex items-center gap-1 transition-colors"
+              title="Delete current character"
+            >
+              <Trash2 className="w-3.5 h-3.5" /> <span>Del</span>
+            </button>
+          )}
+
+          {/* Vertical Divider */}
+          <div className="w-[1px] h-5 bg-slate-800 mx-1 hidden sm:block" />
+
+          {/* Scheme Tabs inside Character */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-slate-400 font-mono text-[10px] uppercase tracking-wider font-semibold">Schemes:</span>
+            {activeChar?.schemes.map(s => (
+              <div
+                key={s.id}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded cursor-pointer transition-all border ${
+                  charsData.activeSchemeId === s.id
+                    ? "bg-amber-500 text-slate-950 font-bold border-amber-500 shadow-md shadow-amber-500/5"
+                    : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900 hover:border-slate-800"
+                }`}
+                onClick={() => {
+                  const newData = { ...charsData, activeSchemeId: s.id };
+                  setCharsData(newData);
+                  localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+                }}
+              >
+                <span>{s.name}</span>
+                <span
+                  title="Rename Scheme"
+                  className="hover:scale-110 active:scale-95 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const newName = prompt("Enter new scheme name:", s.name);
+                    if (!newName) return;
+                    const updatedChars = charsData.chars.map(c => {
+                      if (c.id === charsData.activeCharId) {
+                        return {
+                          ...c,
+                          schemes: c.schemes.map(sch => {
+                            if (sch.id === s.id) {
+                              return { ...sch, name: newName };
+                            }
+                            return sch;
+                          })
+                        };
+                      }
+                      return c;
+                    });
+                    const newData = { ...charsData, chars: updatedChars };
+                    setCharsData(newData);
+                    localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+                  }}
+                >
+                  ✎
+                </span>
+              </div>
+            ))}
+            <button
+              onClick={() => {
+                const name = prompt("Enter new scheme name:");
+                if (!name) return;
+                const schemeId = "scheme-" + Date.now();
+                const newScheme: Scheme = {
+                  id: schemeId,
+                  name,
+                  panel: panel,
+                  gear: DEFAULT_GEAR
+                };
+                const updatedChars = charsData.chars.map(c => {
+                  if (c.id === charsData.activeCharId) {
+                    return {
+                      ...c,
+                      schemes: [...c.schemes, newScheme]
+                    };
+                  }
+                  return c;
+                });
+                const newData = {
+                  ...charsData,
+                  chars: updatedChars,
+                  activeSchemeId: schemeId
+                };
+                setCharsData(newData);
+                localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+              }}
+              className="px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded border border-amber-500/20 flex items-center gap-1 transition-colors font-semibold"
+            >
+              <Plus className="w-3.5 h-3.5" /> <span>Add Scheme</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Data Backup buttons (Export & Import) */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(charsData, null, 2));
+              const downloadAnchor = document.createElement('a');
+              downloadAnchor.setAttribute("href", dataStr);
+              downloadAnchor.setAttribute("download", `WWM_Builds_Backup_${new Date().toISOString().slice(0,10)}.json`);
+              document.body.appendChild(downloadAnchor);
+              downloadAnchor.click();
+              downloadAnchor.remove();
+            }}
+            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 transition-colors font-mono text-[10px]"
+            title="Download database backup"
+          >
+            <Download className="w-3 h-3 text-amber-500" /> <span>Export</span>
+          </button>
+          <label
+            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 cursor-pointer transition-colors font-mono text-[10px]"
+            title="Upload/Restore database from file"
+          >
+            <Upload className="w-3 h-3 text-amber-500" /> <span>Import</span>
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  try {
+                    const parsed = JSON.parse(event.target?.result as string);
+                    if (parsed.chars && Array.isArray(parsed.chars)) {
+                      setCharsData(parsed);
+                      localStorage.setItem("wwm_chars_v3", JSON.stringify(parsed));
+                      alert("Successfully restored database backup!");
+                    } else {
+                      alert("Invalid file structure. Make sure you load a valid backup JSON file.");
+                    }
+                  } catch (err) {
+                    alert("Failed to parse JSON file.");
+                  }
+                };
+                reader.readAsText(file);
+              }}
+            />
+          </label>
+        </div>
+      </div>
+
       {/* Sub-Navigation Tabs */}
-      <div className="bg-[#14120f]/60 px-6 border-b border-amber-900/10 flex items-center justify-between">
-        <div className="flex gap-4">
+      <div className="bg-[#14120f]/60 px-6 border-b border-amber-900/10 flex items-center justify-between overflow-x-auto scrollbar-none">
+        <div className="flex gap-4 min-w-max">
           <button
             onClick={() => setActiveTab("calculator")}
             className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "calculator" ? "text-amber-500" : "text-slate-400 hover:text-slate-200"
+              activeTab === "calculator" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
             ⚔ Calc
@@ -688,7 +1263,7 @@ export default function App() {
           <button
             onClick={() => setActiveTab("priority")}
             className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "priority" ? "text-amber-500" : "text-slate-400 hover:text-slate-200"
+              activeTab === "priority" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
             📊 Priority
@@ -697,9 +1272,42 @@ export default function App() {
             )}
           </button>
           <button
+            onClick={() => setActiveTab("gear")}
+            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+              activeTab === "gear" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            🛡 Gear
+            {activeTab === "gear" && (
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("compare")}
+            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+              activeTab === "compare" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            ⚖ Compare
+            {activeTab === "compare" && (
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("tunecd")}
+            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+              activeTab === "tunecd" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            ⏰ Tune CD
+            {activeTab === "tunecd" && (
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
+            )}
+          </button>
+          <button
             onClick={() => setActiveTab("simulators")}
             className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "simulators" ? "text-amber-500" : "text-slate-400 hover:text-slate-200"
+              activeTab === "simulators" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
             🛠 Gear Sim
@@ -710,10 +1318,10 @@ export default function App() {
           <button
             onClick={() => setActiveTab("ocr")}
             className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "ocr" ? "text-amber-500" : "text-slate-400 hover:text-slate-200"
+              activeTab === "ocr" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            📸 Screen OCR
+            📸 OCR
             {activeTab === "ocr" && (
               <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
             )}
@@ -721,7 +1329,7 @@ export default function App() {
           <button
             onClick={() => setActiveTab("profiles")}
             className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "profiles" ? "text-amber-500" : "text-slate-400 hover:text-slate-200"
+              activeTab === "profiles" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
             📁 Gear Sets
@@ -1196,6 +1804,47 @@ export default function App() {
                   })}
                 </div>
               </div>
+
+              {/* Active Scheme Sync Group */}
+              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 shadow-md space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-mono font-bold tracking-widest text-[#a19683] uppercase">
+                    Active Scheme Sync
+                  </span>
+                  <span className="text-[10px] text-amber-500 font-bold font-mono">
+                    {activeScheme ? activeScheme.name : "None Selected"}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    if (!activeScheme) {
+                      alert("Please select or create an active character and scheme first!");
+                      return;
+                    }
+                    const updatedChars = charsData.chars.map(c => {
+                      if (c.id === charsData.activeCharId) {
+                        return {
+                          ...c,
+                          schemes: c.schemes.map(s => {
+                            if (s.id === charsData.activeSchemeId) {
+                              return { ...s, panel: { ...panel } };
+                            }
+                            return s;
+                          })
+                        };
+                      }
+                      return c;
+                    });
+                    const newData = { ...charsData, chars: updatedChars };
+                    setCharsData(newData);
+                    localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+                    alert(`Successfully saved stats & buffs to scheme "${activeScheme.name}"!`);
+                  }}
+                  className="w-full py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-bold rounded-lg text-xs hover:from-amber-500 hover:to-amber-400 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/10"
+                >
+                  <Database className="w-3.5 h-3.5" /> 💾 Save to Scheme
+                </button>
+              </div>
             </div>
 
             {/* Results Board & Active Calculations - 8 Cols */}
@@ -1484,6 +2133,649 @@ export default function App() {
                   <p>
                     <strong className="text-amber-400">5. Substat Relaying (Inherit mechanics)</strong>: When refining Level 91 gear, always prioritize relaying/inheriting attributes that have reached diamond/gold thresholds (such as Phys Pen 9.0%, Max Atk 63.8, Crit 6.5%, etc.). A carefully put-together set can singlehandedly contribute over 40% of your graduation progression.
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab Gear Stock Manager */}
+        {activeTab === "gear" && (
+          <div className="space-y-6">
+            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
+              <div className="flex justify-between items-center mb-4 border-b border-amber-900/10 pb-3">
+                <div>
+                  <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
+                    <Shield className="w-4 h-4 ml-0.5 inline-block text-amber-500" /> Gear Stock Inventory
+                  </h2>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    Manage and store alternate gears for the active character scheme.
+                  </p>
+                </div>
+                <button
+                  onClick={openAddModal}
+                  className="px-3 py-1.5 bg-amber-500 text-slate-950 rounded font-bold text-xs hover:bg-amber-400 flex items-center gap-1 transition-all"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Add Gear Item
+                </button>
+              </div>
+
+              {/* 4x2 Grid of Slot Selection Buttons */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                {SLOTS.map((slot) => {
+                  const itemsInSlot = getActiveGear().filter(it => it.slot === slot.name);
+                  const hasItems = itemsInSlot.length > 0;
+                  const isSelected = selectedSlot === slot.name;
+                  
+                  return (
+                    <button
+                      key={slot.name}
+                      onClick={() => setSelectedSlot(slot.name)}
+                      className={`relative flex items-center gap-2.5 p-3 rounded-lg border transition-all text-left ${
+                        isSelected
+                          ? "bg-amber-500 text-slate-950 border-amber-500 font-bold shadow-md shadow-amber-500/5"
+                          : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900/60 hover:border-slate-800"
+                      }`}
+                    >
+                      <span className="text-lg">{slot.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[11px] truncate uppercase tracking-wide font-semibold">{slot.name}</div>
+                        {hasItems && (
+                          <div className={`text-[9px] mt-0.5 ${isSelected ? "text-slate-900 font-bold" : "text-slate-500"}`}>
+                            {itemsInSlot.length} item{itemsInSlot.length > 1 ? "s" : ""}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Gold dot indicator if possesses items */}
+                      {hasItems && (
+                        <span className={`absolute top-2 right-2 w-1.5 h-1.5 rounded-full ${isSelected ? "bg-slate-950" : "bg-amber-500 animate-pulse"}`} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Items List for selected slot */}
+              <div>
+                <h3 className="text-xs uppercase font-bold tracking-widest text-slate-400 font-mono mb-4 flex items-center gap-2">
+                  <span>Selected Slot:</span>
+                  <span className="text-amber-500 font-serif">{selectedSlot}</span>
+                </h3>
+
+                {getActiveGear().filter(it => it.slot === selectedSlot).length === 0 ? (
+                  <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center">
+                    <p className="text-slate-400 text-xs">No items created for this slot yet.</p>
+                    <button
+                      onClick={openAddModal}
+                      className="mt-3 px-3 py-1.5 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-xs transition-colors"
+                    >
+                      Create first "{selectedSlot}" item
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {getActiveGear()
+                      .filter(it => it.slot === selectedSlot)
+                      .map((item) => {
+                        const isGold = item.quality === "gold";
+                        const isPurple = item.quality === "purple";
+                        const hasTuned = item.subs.some(sub => sub.isTuned);
+                        
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => openEditModal(item)}
+                            className={`group p-4 rounded-xl border cursor-pointer hover:scale-[1.01] transition-all relative overflow-hidden flex flex-col justify-between ${
+                              isGold
+                                ? "bg-gradient-to-b from-[#1b1510] to-[#120f0c] border-[#d48c2a]/20 hover:border-[#d48c2a]/40"
+                                : isPurple
+                                ? "bg-gradient-to-b from-[#16121c] to-[#110e14] border-purple-500/10 hover:border-purple-500/30"
+                                : "bg-gradient-to-b from-[#11141a] to-[#0e1014] border-sky-500/10 hover:border-sky-500/30"
+                            }`}
+                          >
+                            <div className="absolute top-0 right-0 h-10 w-10 flex items-center justify-center pointer-events-none">
+                              {hasTuned && (
+                                <span className="absolute top-1 right-2 text-amber-500 font-bold text-xs" title="Tuned substat inside">✦</span>
+                              )}
+                            </div>
+
+                            <div>
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <h4 className="text-xs font-bold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
+                                  {item.name}
+                                </h4>
+                                <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded scale-90 ${
+                                  isGold
+                                    ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                                    : isPurple
+                                    ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                                    : "bg-sky-500/20 text-sky-400 border border-sky-500/30"
+                                }`}>
+                                  {item.quality}
+                                </span>
+                              </div>
+
+                              <div className="text-[10px] text-slate-400 bg-slate-950/60 p-2 rounded border border-slate-900 mb-3 font-mono">
+                                <span className="text-slate-500">Main Stat: </span>
+                                <span>{item.main || "None"}</span>
+                                {item.set && item.set !== "none" && (
+                                  <div className="mt-1 text-[9px] text-[#2ebd85] font-bold">
+                                    Set: {item.set === "stars" ? "⭐ Stars Align" : item.set === "eaglerise" ? "🦅 Eaglerise" : item.set === "pursuing" ? "👥 Pursuing Shadow" : item.set === "stormrain" ? "⛈️ Stormrain" : item.set === "shakenhill" ? "⛰️ Shakenhill" : item.set}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="space-y-1.5">
+                                {item.subs.map((sub, sidx) => (
+                                  <div key={sidx} className="flex items-center justify-between text-[11px] font-mono leading-tight">
+                                    <span className="text-slate-500">{sub.type}</span>
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-slate-300 font-semibold">{sub.val}</span>
+                                      {sub.isTuned && (
+                                        <span className="text-amber-500 text-[10px] font-extrabold" title="Tuned substat">✦</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="mt-4 pt-2 border-t border-slate-900 text-right text-[9px] text-slate-505 font-mono group-hover:text-amber-500/60 transition-colors">
+                              Click to configure ✎
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab Item Compare */}
+        {activeTab === "compare" && (
+          <div className="space-y-6">
+            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
+              <div className="mb-4 border-b border-amber-900/10 pb-3">
+                <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" /> Item Comparison & Graduation Deltas
+                </h2>
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  Understand exactly which gears represent the largest marginal upgrade relative to your active panel. Ranked descending by total simulation contribution.
+                </p>
+              </div>
+
+              {/* 4x2 Grid of Slot Selection Buttons */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                {SLOTS.map((slot) => {
+                  const itemsInSlot = getActiveGear().filter(it => it.slot === slot.name);
+                  const hasItems = itemsInSlot.length > 0;
+                  const isSelected = selectedSlot === slot.name;
+                  
+                  return (
+                    <button
+                      key={slot.name}
+                      onClick={() => setSelectedSlot(slot.name)}
+                      className={`relative flex items-center gap-2.5 p-3 rounded-lg border transition-all text-left ${
+                        isSelected
+                          ? "bg-amber-500 text-slate-950 border-amber-500 font-bold shadow-md shadow-amber-500/5"
+                          : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900/60 hover:border-slate-800"
+                      }`}
+                    >
+                      <span className="text-lg">{slot.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[11px] truncate uppercase tracking-wide font-semibold">{slot.name}</div>
+                        {hasItems && (
+                          <div className={`text-[9px] mt-0.5 ${isSelected ? "text-slate-900 font-bold" : "text-slate-500"}`}>
+                            {itemsInSlot.length} item{itemsInSlot.length > 1 ? "s" : ""}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Gold dot indicator if possesses items */}
+                      {hasItems && (
+                        <span className={`absolute top-2 right-2 w-1.5 h-1.5 rounded-full ${isSelected ? "bg-slate-950" : "bg-amber-500 animate-pulse"}`} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Comparison list section */}
+              <div>
+                <h3 className="text-xs uppercase font-bold tracking-widest text-slate-400 font-mono mb-4">
+                  Graduation ranking for slot: <span className="text-amber-500 font-serif">{selectedSlot}</span>
+                </h3>
+
+                {(() => {
+                  const slotItems = getActiveGear().filter(it => it.slot === selectedSlot);
+                  if (slotItems.length === 0) {
+                    return (
+                      <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center font-mono">
+                        <p className="text-slate-400 text-xs">No items in this slot to compare.</p>
+                        <p className="text-[10px] text-slate-500 mt-1">Go to the "🛡 Gear" tab to add items for comparison.</p>
+                      </div>
+                    );
+                  }
+                  
+                  const scored = slotItems.map(item => {
+                    const stats = getGearItemCompareStats(item);
+                    return {
+                      item,
+                      total: stats.totalGradDelta,
+                      subs: stats.subsWithDeltas
+                    };
+                  });
+                  
+                  scored.sort((a, b) => b.total - a.total);
+                  const bestScore = scored[0].total;
+                  
+                  return (
+                    <div className="space-y-4">
+                      {scored.map((entry, rankIdx) => {
+                        const rank = rankIdx + 1;
+                        const item = entry.item;
+                        const isBest = rank === 1;
+                        const gapToBest = isBest ? 0 : bestScore - entry.total;
+                        const qualityClass = item.quality === "gold" ? "border-amber-500/20 bg-[#1b1510]/80" : item.quality === "purple" ? "border-purple-500/20 bg-[#16121c]/80" : "border-sky-500/20 bg-[#11141a]/80";
+                        
+                        return (
+                          <div
+                            key={item.id}
+                            className={`p-4 rounded-xl border relative transition-all ${qualityClass}`}
+                          >
+                            <div className="absolute top-4 left-4 w-7 h-7 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center font-bold text-xs text-amber-500 font-serif shadow-inner">
+                              #{rank}
+                            </div>
+
+                            <div className="pl-10">
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-900/40 pb-2 mb-3">
+                                <div>
+                                  <h4 className="text-xs font-bold text-slate-100 flex items-center gap-2">
+                                    <span>{item.name}</span>
+                                    {isBest && (
+                                      <span className="text-[8px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold uppercase tracking-wider scale-90">
+                                        Best Option
+                                      </span>
+                                    )}
+                                  </h4>
+                                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                    Main: {item.main}
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-xs font-mono font-extrabold text-amber-400">
+                                    +{entry.total.toFixed(2)} score contribution
+                                  </div>
+                                  {!isBest && (
+                                    <div className="text-[10px] font-mono font-semibold text-rose-400">
+                                      -{gapToBest.toFixed(2)} vs best
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                {entry.subs.map((sub, sidx) => {
+                                  const subDeltaString = sub.delta > 0 ? `+${sub.delta.toFixed(2)}` : "0.00";
+                                  
+                                  return (
+                                    <div key={sidx} className="bg-slate-950/60 p-2 rounded border border-slate-900/60 flex items-center justify-between font-mono text-[10px]">
+                                      <div className="truncate text-slate-500 flex items-center gap-1 shrink md:shrink-0 pr-1">
+                                        <span>{sub.type}</span>
+                                        {sub.isTuned && <span className="text-amber-500 text-[9px]">✦</span>}
+                                      </div>
+                                      <div className="text-right shrink-0">
+                                        <div className="text-slate-300 font-semibold">{sub.val}</div>
+                                        <div className="text-emerald-400 text-[9px] font-bold mt-0.5">
+                                          +{subDeltaString} index
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab Tune Cooldown Locks */}
+        {activeTab === "tunecd" && (
+          <div className="space-y-6">
+            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
+              <div className="mb-5 border-b border-amber-900/10 pb-3">
+                <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-500" /> Tune Cooldown Tracker (168 Hours Locks)
+                </h2>
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  Track individual gear tuning locks. Each piece of gear locked via tune has a strict 168-hour (7 days) cooldown. Monitor real-time status and receive ready notifications here.
+                </p>
+              </div>
+
+              {/* Cooldown Grid */}
+              <div className="space-y-4 mb-8">
+                {cooldowns.length === 0 ? (
+                  <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center font-mono text-xs text-slate-500">
+                    No active Tuning Cooldown locks running.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {cooldowns.map((cd) => {
+                      const { isReady, displayTime, percent } = getCooldownStatus(cd);
+                      
+                      return (
+                        <div
+                          key={cd.id}
+                          className={`p-4 rounded-xl border relative transition-all bg-[#14120f]/85 ${
+                            isReady
+                              ? "border-emerald-500/30 shadow-md shadow-emerald-500/5 bg-emerald-950/5"
+                              : "border-slate-900 hover:border-slate-800 bg-slate-950/20 shadow-sm"
+                          }`}
+                        >
+                          <div className="flex justify-between items-start mb-2.5">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-slate-100">{cd.itemName || "Unnamed Gear"}</span>
+                                <span className="text-[9px] uppercase font-mono font-bold px-1.5 py-0.5 bg-slate-950 border border-slate-800 text-slate-400 rounded">
+                                  {cd.slot}
+                                </span>
+                              </div>
+                              <span className="text-[9px] font-mono text-slate-500 block mt-1">
+                                Started: {new Date(cd.createdAt).toLocaleString()}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => {
+                                if (confirm("Remove this cooldown track?")) {
+                                  setCooldowns(prev => prev.filter(c => c.id !== cd.id));
+                                }
+                              }}
+                              className="text-[10px] font-mono text-slate-500 hover:text-rose-400 p-1"
+                              title="Delete tracker"
+                            >
+                              ✕ Remove
+                            </button>
+                          </div>
+
+                          {/* Progress bar container */}
+                          <div className="h-1.5 bg-slate-950 border border-slate-900/60 rounded-full overflow-hidden mb-2.5">
+                            <div
+                              style={{ width: `${percent}%` }}
+                              className={`h-full transition-all duration-1000 ${
+                                isReady
+                                  ? "bg-emerald-500"
+                                  : "bg-amber-500"
+                              }`}
+                            />
+                          </div>
+
+                          {/* Status and text indicators */}
+                          <div className="flex items-center justify-between text-xs font-semibold">
+                            <span className="text-[10px] text-slate-500 font-mono">Tuning Lock Cooldown:</span>
+                            {isReady ? (
+                              <span className="text-emerald-400 flex items-center gap-1 font-bold animate-pulse text-[11px]">
+                                <CheckCircle className="w-3.5 h-3.5 inline text-emerald-400" /> ✅ Ready to tune!
+                              </span>
+                            ) : (
+                              <span className="text-amber-500 font-mono font-bold text-[11.5px] flex items-center gap-1">
+                                ⏳ {displayTime} remaining
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Add form footer inside box */}
+              <div className="bg-slate-950/40 border border-slate-900 rounded-xl p-4">
+                <span className="text-[10.5px] uppercase font-mono tracking-widest text-[#a19683] font-bold block mb-3">
+                  ⏱ Start Tuning Cooldown Timer
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                  <div>
+                    <label className="block text-[9px] uppercase font-mono text-slate-500 mb-1">
+                      Choose Locked Slot:
+                    </label>
+                    <select
+                      value={cdSlot}
+                      onChange={(e) => setCdSlot(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    >
+                      {SLOTS.map(st => (
+                        <option key={st.name} value={st.name}>{st.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[9px] uppercase font-mono text-slate-500 mb-1">
+                      Gear/Item Name:
+                    </label>
+                    <input
+                      type="text"
+                      value={cdItemName}
+                      onChange={(e) => setCdItemName(e.target.value)}
+                      placeholder="e.g. Dreamfount Bracers"
+                      className="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (!cdItemName.trim()) {
+                        alert("Please specify a name for the locked gear!");
+                        return;
+                      }
+                      const newCd: TuneCooldown = {
+                        id: "cd-" + Date.now(),
+                        slot: cdSlot,
+                        itemName: cdItemName,
+                        createdAt: Date.now(),
+                        durationMs: TUNE_DURATION_MS
+                      };
+                      setCooldowns(prev => [...prev, newCd]);
+                      setCdItemName("");
+                      alert(`Successfully started lock countdown for slot "${cdSlot}"!`);
+                    }}
+                    className="w-full py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded transition-all shadow-sm flex items-center justify-center gap-1 shadow-amber-500/10"
+                  >
+                    ⏱ Start CD
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal Editor Overlay */}
+        {isItemModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-955/80 backdrop-blur-sm">
+            <div className="bg-[#141210] border border-amber-900/20 max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+              {/* Header */}
+              <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-500 font-serif">
+                  {editingItem ? "Edit Gear Item" : `Add New Class ${selectedSlot}`}
+                </span>
+                <button
+                  onClick={() => setIsItemModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-200 text-sm font-mono"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Form Content */}
+              <div className="p-5 space-y-4 overflow-y-auto min-h-0 text-slate-300 text-xs text-left">
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                    Slot
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedSlot}
+                    disabled
+                    className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 font-mono text-slate-400 cursor-not-allowed text-xs"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                      Item Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      placeholder="e.g. Divine Sky Ring"
+                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                      Quality
+                    </label>
+                    <select
+                      value={formQuality}
+                      onChange={(e) => setFormQuality(e.target.value as any)}
+                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-650"
+                    >
+                      <option value="gold">Gold (Legendary)</option>
+                      <option value="purple">Purple (Epic)</option>
+                      <option value="blue">Blue (Rare)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                      Main Stat Text
+                    </label>
+                    <input
+                      type="text"
+                      value={formMain}
+                      onChange={(e) => setFormMain(e.target.value)}
+                      placeholder="e.g. Phys Atk 48~112"
+                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                      Set Selection
+                    </label>
+                    <select
+                      value={formSet}
+                      onChange={(e) => setFormSet(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-650"
+                    >
+                      <option value="none">None</option>
+                      <option value="stars">Stars Align (2/2)</option>
+                      <option value="eaglerise">Eaglerise (3/3)</option>
+                      <option value="pursuing">Pursuing Shadow (2/2)</option>
+                      <option value="stormrain">Stormrain (4/4)</option>
+                      <option value="shakenhill">Shakenhill (2/2)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Substat Rows */}
+                <div className="space-y-2 border-t border-slate-900 pt-3">
+                  <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 font-bold block">
+                    Sub-stats (Max 6 rows)
+                  </span>
+                  
+                  <div className="space-y-2">
+                    {formSubs.map((sub, sidx) => (
+                      <div key={sidx} className="grid grid-cols-12 gap-2 items-center">
+                        <div className="col-span-6">
+                          <select
+                            value={sub.type}
+                            onChange={(e) => {
+                              const updated = [...formSubs];
+                              updated[sidx] = { ...updated[sidx], type: e.target.value };
+                              setFormSubs(updated);
+                            }}
+                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[11px] text-slate-350 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                          >
+                            <option value="Other">Choose Substat / Empty</option>
+                            {Object.keys(SUB_MAP).map(t => (
+                              <option key={t} value={t}>{t}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div className="col-span-4">
+                          <input
+                            type="text"
+                            value={sub.val}
+                            onChange={(e) => {
+                              const updated = [...formSubs];
+                              updated[sidx] = { ...updated[sidx], val: e.target.value };
+                              setFormSubs(updated);
+                            }}
+                            placeholder="e.g. 59.2 or 7.4%"
+                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[11px] font-mono placeholder:text-slate-700"
+                          />
+                        </div>
+                        
+                        <div className="col-span-2 flex items-center justify-center">
+                          <label className="flex items-center gap-1 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={!!sub.isTuned}
+                              onChange={(e) => {
+                                const updated = [...formSubs];
+                                updated[sidx] = { ...updated[sidx], isTuned: e.target.checked };
+                                setFormSubs(updated);
+                              }}
+                              className="accent-amber-500 h-3 w-3"
+                            />
+                            <span className="text-[10px] font-mono text-amber-500 font-semibold">✦</span>
+                          </label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="p-4 bg-slate-950/60 border-t border-amber-900/10 flex justify-between items-center shrink-0 gap-2">
+                <div>
+                  {editingItem && (
+                    <button
+                      onClick={() => handleDeleteItem(editingItem.id)}
+                      className="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 rounded text-xs border border-rose-500/10 font-bold transition-all"
+                    >
+                      Delete Item
+                    </button>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setIsItemModalOpen(false)}
+                    className="px-3 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-300 rounded text-xs border border-slate-800 transition-all font-semibold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveItem}
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded text-xs font-bold transition-all"
+                  >
+                    Save Changes
+                  </button>
                 </div>
               </div>
             </div>
