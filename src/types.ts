@@ -77,6 +77,23 @@ export interface RelayedGear {
   relayedSubstat?: { name: string; value: number };
 }
 
+export interface InnerWayTier {
+  tier: number;
+  effect: string;
+  stat: { [key: string]: number };
+}
+
+export interface InnerWay {
+  id: string;
+  name: string;
+  cat: string;
+  desc: string;
+  icon?: string;
+  tiers: InnerWayTier[];
+  recommended?: boolean;
+  note?: string;
+}
+
 export interface ArsenalWeapon {
   id: string;
   name: string;
