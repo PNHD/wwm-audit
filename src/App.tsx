@@ -26,10 +26,23 @@ import {
 import { PanelStats, TierConstants } from "./types";
 import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils/calc";
 import { INNER_WAYS } from "./data/innerways";
+import { MARTIAL_ARTS } from "./data/martial_arts_system";
 import OcrScanner from "./components/OcrScanner";
 import RelayingSimulator from "./components/RelayingSimulator";
 import ArsenalSimulator from "./components/ArsenalSimulator";
-import GeminiAdvisor from "./components/GeminiAdvisor";
+
+
+const ATTUNED_BONUS_LABEL: Record<string, string> = {
+  "bamboocut-dust": "Drunken Spring: Skill DMG Bonus (醉梦游春·武学技增伤)",
+  "bamboocut-wind": "Mortal Rope Dart: Rodent DMG Bonus (绳镖·鼠鼠增伤)",
+  "bamboocut-kite": "Fist: Charged Skill DMG Bonus (手甲·蓄力技增伤)",
+  "bellstrike-umbra": "Strategic Sword: Skill DMG Bonus (积矩九剑·武学技增伤)",
+  "bellstrike-splendor": "Nameless Sword: Charged Skill DMG Bonus (无名剑·蓄力技增伤)",
+  "silkbind-jade": "Vernal Umbrella: Special Skill DMG Bonus (九重春色·特殊技增伤)",
+  "stonesplit-might": "Guandao: Charged/Derived Skill DMG Bonus (陌刀·蓄力技增伤)",
+  "stonesplit-scale": "Guandao: Charged/Derived Skill DMG Bonus (陌刀·蓄力技增伤)",
+  "silkbind-deluge": "Panacea Fan: Healing Bonus",
+};
 
 const INITIAL_PANEL: PanelStats = {
   minOuter: 1507,
@@ -51,8 +64,10 @@ const INITIAL_PANEL: PanelStats = {
   umbBonus: 5.1,
   ropeBonus: 0,
   allArts: 0,
-  skillDmg: 0,
-  set: "stars",
+  attunedBonus: 0,
+  wuxiangMin: 0,
+  wuxiangMax: 0,
+  set: "moonflare",
 };
 
 export interface SavedProfile {
@@ -158,160 +173,121 @@ const SUB_MAP: Record<string, keyof PanelStats> = {
 
 const BUILD_PROFILES = {
   "bamboocut-dust": {
-    label: "Bamboocut-Dust 破竹尘",
-    weapons: "Soulshade Umbrella + Mortal Rope Dart",
-    tier: "T0 AOE",
-    gradTargets: { maxOuter: 4046, outerPen: 51.2, crit: 79.6, aff: 10.3, minOuter: 1657 },
-    notes: "Only AOE build. Priority: Bamboocut ATK → Max Phys ATK → Pen. Armor: Stars Align set.",
+    label: "Bamboocut-Dust", weapons: "Everspring Umbrella + Unfettered Rope Dart",
+    tier: "T0 AoE", color: "text-amber-500",
+    gradTargets: { maxOuter: 4046, minOuter: 1657, outerPen: 51.2, crit: 116.9, aff: 14.7, critDmg: 54 },
+    notes: "Priority: Max Phys ATK → Phys Pen → Bamboocut ATK. Prec ~116% (effectively capped). Crit ~116%+ panel to cap at 80% eff.",
     priorityStats: ["maxOuter","outerPen","crit","critDmg","maxPz","umbBonus"],
   },
   "bellstrike-umbra": {
-    label: "Bellstrike-Umbra 鸣金影",
-    weapons: "Strategic Sword + Heavenquaker Spear",
-    tier: "T0 Single",
-    gradTargets: { maxOuter: 4231, outerPen: 45.0, crit: 95.4, aff: 71.6, minOuter: 1800 },
-    notes: "T0 burst. Requires 6-tier Wave Chaser art. Priority: Affinity → Phys ATK → Crit. Armor: Jadeware Set.",
+    label: "Bellstrike-Umbra", weapons: "Strategic Sword + Heavenquaker Spear",
+    tier: "T0 Single", color: "text-indigo-400",
+    gradTargets: { maxOuter: 4231, minOuter: 1800, outerPen: 45.0, crit: 95.4, aff: 71.6, critDmg: 60 },
+    notes: "Priority: Affinity Rate → Max Phys ATK → Crit DMG. Aff cap = 40% eff (need ~58% panel at T91).",
     priorityStats: ["aff","affDmg","maxOuter","crit","outerPen"],
   },
   "bellstrike-splendor": {
-    label: "Bellstrike-Splendor 鸣金虹",
-    weapons: "Nameless Sword + Nameless Spear",
-    tier: "T1 Easy",
-    gradTargets: { maxOuter: 3800, outerPen: 40.0, crit: 37.5, aff: 30.0, minOuter: 1500 },
-    notes: "Beginner friendly. QQQ shield → charge sword energy. Priority: Max Phys ATK → Crit. Armor: Jadeware + Yixiang Set.",
-    priorityStats: ["maxOuter","crit","outerPen","critDmg","allArts"],
+    label: "Bellstrike-Splendor", weapons: "Nameless Sword + Nameless Spear",
+    tier: "T1 Easy", color: "text-blue-400",
+    gradTargets: { maxOuter: 3800, minOuter: 1500, outerPen: 40.0, crit: 54.4, aff: 43.5, critDmg: 45 },
+    notes: "Priority: Max Phys ATK → Crit Rate → Affinity Rate. Forgiving build for beginners.",
+    priorityStats: ["maxOuter","crit","aff","outerPen","critDmg"],
   },
   "bamboocut-wind": {
-    label: "Bamboocut-Wind 破竹风",
-    weapons: "Infernal Twinblades + Mortal Rope Dart",
-    tier: "T0 AOE",
-    gradTargets: { maxOuter: 1200, outerPen: 40.0, crit: 75.0, aff: 10.0, minOuter: 600 },
-    notes: "Rat summon synergy. Needs Echoes of Oblivion 6-tier. Priority: Bamboocut ATK → Max Phys ATK → Crit. Armor: Eaglerise Set.",
+    label: "Bamboocut-Wind", weapons: "Infernal Twinblades + Mortal Rope Dart",
+    tier: "T0 AoE", color: "text-orange-400",
+    gradTargets: { maxOuter: 1800, minOuter: 800, outerPen: 40.0, crit: 108.8, aff: 14.5, critDmg: 50 },
+    notes: "Priority: Bamboocut ATK → Phys Pen → Crit Rate. Different scaling from Bamboocut-Dust.",
     priorityStats: ["maxPz","pzPen","maxOuter","crit","outerPen"],
   },
-  "bamboocut-kite": {
-    label: "Bamboocut-Kite 破竹鸢",
-    weapons: "Fist + Mortal Rope Dart",
-    tier: "T0 Burst",
-    gradTargets: { maxOuter: 3200, outerPen: 42.0, crit: 75.0, aff: 5.0, minOuter: 1400 },
-    notes: "Control-then-burst. DO NOT stack Affinity. Needs Star Reacher 6-tier. Priority: Max Phys ATK → Crit → Agility.",
-    priorityStats: ["maxOuter","crit","outerPen","critDmg","minOuter"],
-  },
-  "silkbind-jade": {
-    label: "Silkbind-Jade 牵丝玉",
-    weapons: "Vernal Umbrella + Inkwell Fan",
-    tier: "T1 Ranged",
-    gradTargets: { maxOuter: 4007, outerPen: 44.0, crit: 74.4, aff: 30.0, minOuter: 1700 },
-    notes: "Ranged DPS + control. Needs Blossom Barrage 6-tier. Priority: Max Phys ATK → Silkbind ATK → Crit → Affinity. Armor: Jadeware/Yixiang.",
-    priorityStats: ["maxOuter","crit","aff","affDmg","outerPen","umbBonus"],
-  },
   "stonesplit-might": {
-    label: "Stonesplit-Might 裂石威",
-    weapons: "Thundercry Blade + Stormbreaker Spear",
-    tier: "T1 Tank",
-    gradTargets: { maxOuter: 3500, outerPen: 38.0, crit: 56.0, aff: 15.0, minOuter: 1400 },
-    notes: "Tank/DPS. Avoid Elemental ATK stats (useless). Max 2 Agility sub-stats. Priority: Max Phys ATK → Crit → Stonesplit ATK. Armor: Eaglerise Set.",
+    label: "Stonesplit-Might", weapons: "Thundercry Blade + Stormbreaker Spear",
+    tier: "T1 Tank", color: "text-stone-400",
+    gradTargets: { maxOuter: 3500, minOuter: 1400, outerPen: 38.0, crit: 81.2, aff: 21.75, critDmg: 45 },
+    notes: "Priority: Max Phys ATK → Crit Rate → Phys Pen. Avoid Attr ATK stats (useless for this path).",
     priorityStats: ["maxOuter","crit","outerPen","critDmg","allArts"],
   },
-  "stonesplit-scale": {
-    label: "Stonesplit-Scale 裂石钧",
-    weapons: "Thundercry Blade + Tang Blade",
-    tier: "T1 DPS",
-    gradTargets: { maxOuter: 3000, outerPen: 40.0, crit: 70.0, aff: 10.0, minOuter: 1400 },
-    notes: "Hybrid burst. Tang Blade triggers Chill+Blood Heat buff. Priority: Min/Max Phys ATK → Crit → Agility. Target Min ATK 1400+.",
-    priorityStats: ["maxOuter","minOuter","crit","outerPen","critDmg"],
+  "silkbind-jade": {
+    label: "Silkbind-Jade", weapons: "Vernal Umbrella + Inkwell Fan",
+    tier: "T1 Ranged", color: "text-teal-400",
+    gradTargets: { maxOuter: 4007, minOuter: 1700, outerPen: 44.0, crit: 107.6, aff: 43.5, critDmg: 50 },
+    notes: "Priority: Max Phys ATK → Bamboocut ATK → Crit Rate → Affinity Rate.",
+    priorityStats: ["maxOuter","crit","aff","affDmg","outerPen","umbBonus"],
   },
   "silkbind-deluge": {
-    label: "Silkbind-Deluge 牵丝霖",
-    weapons: "Panacea Fan + Soulshade Umbrella",
-    tier: "T1 Healer",
-    gradTargets: { maxOuter: 2800, outerPen: 30.0, crit: 30.0, aff: 20.0, minOuter: 1200 },
-    notes: "Only healer. Focus on maintaining team health. DO NOT chase personal DPS. Priority: Healing Power → Max Phys ATK → Crit.",
+    label: "Silkbind-Deluge (Healer)", weapons: "Panacea Fan + Soulshade Umbrella",
+    tier: "T1 Healer", color: "text-emerald-400",
+    gradTargets: { maxOuter: 2800, minOuter: 1200, outerPen: 30.0, crit: 43.5, aff: 29.0, critDmg: 40 },
+    notes: "Focus on healing power > personal DPS. Do NOT chase Bamboocut ATK or high pen.",
     priorityStats: ["maxOuter","crit","aff","outerPen","allArts"],
   },
 };
 
 const ARMOR_SETS = {
-  "stars": {
-    name: "Stars Align (连星)",
+  "moonflare": {
+    name: "Moonflare (连星)",
     stat2pc: { minOuter: 106 },
-    desc2pc: "+Min Phys ATK (106 flat)",
-    desc4pc: "Martial Art Skills +3% DMG per stack (max 5 stacks = +15%). Stacks on boss/2+ enemy hits. Lost on taking damage.",
+    desc2pc: "+106 Min Physical ATK",
+    desc4pc: "Martial Art Skills deal +3% DMG per Stars Align stack (max 5 stacks = +15%). Gain stacks by hitting 2+ enemies or boss. Each stack lasts 5s, removed on taking damage.",
     recommended: ["bamboocut-dust"],
-    note: "Best set for Bamboocut-Dust. The 4pc bonus applies to umbrella/rope spinning skills via per-skill modifiers (0.15–0.20 × Min ATK per hit)."
   },
-  "eaglerise": {
-    name: "Eaglerise (飞隼)",
+  "hawking": {
+    name: "Hawking (飞隼)",
     stat2pc: { aff: 6.1 },
     desc2pc: "+6.1% Affinity Rate",
-    desc4pc: "+10% Physical Attack (multiplicative multiplier on all Phys ATK)",
-    recommended: ["bamboocut-wind", "stonesplit-might", "stonesplit-scale"],
-    note: "4pc gives a strong 10% ATK multiplier, good for high-ATK builds."
+    desc4pc: "When Affinity DMG triggers, gain Hawking: +2% Physical ATK per stack (5s, max 5 stacks = +10% Phys ATK)",
+    recommended: ["bamboocut-wind", "stonesplit-might"],
+  },
+  "eaglerise": {
+    name: "Eaglerise (时雨)",
+    stat2pc: { prec: 10.8 },
+    desc2pc: "+10.8% Precision Rate",
+    desc4pc: "Dealing damage over time OR healing grants 1 stack: increases damage and healing by X%",
+    recommended: ["bellstrike-umbra"],
   },
   "jadeware": {
-    name: "Jadeware / Jade Bowl (玉斗)",
+    name: "Jadeware (玉斗)",
     stat2pc: { maxOuter: 106 },
-    desc2pc: "+Max Phys ATK (106 flat)",
-    desc4pc: "+10% Affinity DMG Bonus (on Bellstrike builds) or +10% Crit DMG (on other builds)",
+    desc2pc: "+106 Max Physical ATK",
+    desc4pc: "Martial Art Skill activates Jadeware: Increases Affinity DMG when dealing Affinity damage",
     recommended: ["bellstrike-umbra", "bellstrike-splendor"],
-    note: "4pc applies different bonus depending on build path."
   },
-  "stormrain": {
-    name: "Stormrain (时雨)",
+  "formbend": {
+    name: "Formbend (铁衣)",
+    stat2pc: {},
+    desc2pc: "+Physical Defense",
+    desc4pc: "Shield duration +2s. If shield broken, gain additional DMG reduction",
+    recommended: [],
+  },
+  "veilwillow": {
+    name: "Veil of Willow (撼天)",
     stat2pc: { prec: 10.8 },
     desc2pc: "+10.8% Precision Rate",
-    desc4pc: "+10% Critical DMG Bonus + +10% Critical Healing Bonus",
-    recommended: ["bamboocut-dust"],
-    note: "Good alternative if you need more precision."
+    desc4pc: "After Light Attack/Airborne Light Attack, Heavy Attack DMG increased",
+    recommended: ["silkbind-jade"],
   },
-  "huanhua": {
-    name: "Blossom (浣花)",
-    stat2pc: { crit: 12.1 },
-    desc2pc: "+12.1% Critical Rate",
-    desc4pc: "+5% Critical Rate (additional) + +15% Critical Healing Bonus",
-    recommended: [],
-    note: "High crit rate. 4pc crit heal bonus only useful for healer builds."
-  },
-  "yangliu": {
-    name: "Willow (烟烟柳)",
-    stat2pc: { prec: 10.8 },
-    desc2pc: "+10.8% Precision Rate",
-    desc4pc: "+12% DMG on spinning/special-tagged skills",
-    recommended: [],
-    note: "DMG bonus only applies to skills with the 'yangliu' modifier tag."
-  },
-  "shakenhill": {
-    name: "Shakenhill (撼天)",
-    stat2pc: { minOuter: 106 },
-    desc2pc: "+Min Phys ATK (106 flat)",
-    desc4pc: "+5% Physical Attack (multiplicative multiplier)",
-    recommended: [],
-    note: "Weaker ATK multiplier than Eaglerise (5% vs 10%)."
-  },
-  "duanyue": {
-    name: "Duanyue (断岳)",
-    stat2pc: { minOuter: 106 },
-    desc2pc: "+Min Phys ATK (106 flat)",
-    desc4pc: "+5% Global DMG always active, +8% additional on skills with 'duanyue' modifier tag",
-    recommended: [],
-    note: "Always-on 5% DMG, strongest on specific tagged skills."
-  },
-  "yanggui": {
+  "swallowreturn": {
     name: "Swallow Return (燕归)",
     stat2pc: { minOuter: 106 },
-    desc2pc: "+Min Phys ATK (106 flat)",
-    desc4pc: "No additional 4pc effect recorded in source data",
-    recommended: [],
-    note: "Similar to Stars Align 2pc but no confirmed 4pc effect."
+    desc2pc: "+106 Min Physical ATK",
+    desc4pc: "Light Attacks deal +15% DMG to targets above 50% HP",
+    recommended: ["bamboocut-wind"],
   },
-  "none": {
-    name: "No Set / Mixed",
+  "rainwhisper": {
+    name: "Rainwhisper (涟鱼)",
     stat2pc: {},
-    desc2pc: "—",
-    desc4pc: "—",
-    recommended: [],
-    note: ""
+    desc2pc: "+Max HP",
+    desc4pc: "+10% Critical DMG and healing. Additional effects.",
+    recommended: ["stonesplit-might"],
   },
+  "ivorybloom": {
+    name: "Ivorybloom (杏林)",
+    stat2pc: { crit: 12.1 },
+    desc2pc: "+12.1% Critical Rate",
+    desc4pc: "At Max HP, +5% chance to deal Critical damage",
+    recommended: ["silkbind-deluge"],
+  },
+  "none": { name: "No Set / Mixed", stat2pc: {}, desc2pc: "—", desc4pc: "—", recommended: [] },
 };
 
 const getCustomConfig = () => {
@@ -355,6 +331,12 @@ export default function App() {
 
   const [innerWaysFilter, setInnerWaysFilter] = useState<"recommended" | "all">("recommended");
   const [innerWaySearch, setInnerWaySearch] = useState("");
+  const [selectedMAs, setSelectedMAs] = useState<string[]>(() => {
+    const config = getCustomConfig();
+    return config?.selectedMAs ?? [];
+  });
+  const [maSearch, setMaSearch] = useState("");
+  const [formlessOpen, setFormlessOpen] = useState(false);
 
   const [isCustomRotationOpen, setIsCustomRotationOpen] = useState(false);
   const [customRotationText, setCustomRotationText] = useState(() => {
@@ -644,6 +626,7 @@ export default function App() {
     const config = {
       panel,
       selectedInnerWays,
+      selectedMAs,
       innerWayTiers,
       tierKey,
       bowSelect,
@@ -675,6 +658,7 @@ export default function App() {
           const config = JSON.parse(cachedConfig);
           if (config.panel) setPanel(config.panel);
           if (config.selectedInnerWays) setSelectedInnerWays(config.selectedInnerWays);
+          if (config.selectedMAs) setSelectedMAs(config.selectedMAs);
           if (config.innerWayTiers) setInnerWayTiers(config.innerWayTiers);
           if (config.tierKey) setTierKey(config.tierKey);
           if (config.bowSelect) setBowSelect(config.bowSelect);
@@ -809,7 +793,9 @@ export default function App() {
             umbBonus: 2.0,
             ropeBonus: 0,
             allArts: 0,
-            skillDmg: 0,
+            attunedBonus: 0,
+            wuxiangMin: 0,
+            wuxiangMax: 0,
             set: "none"
           },
           gradRate: 42.5,
@@ -839,8 +825,10 @@ export default function App() {
             umbBonus: 4.5,
             ropeBonus: 0,
             allArts: 3.5,
-            skillDmg: 0,
-            set: "stars"
+            attunedBonus: 0,
+            wuxiangMin: 0,
+            wuxiangMax: 0,
+            set: "moonflare"
           },
           gradRate: 70.8,
           dps: 31200
@@ -869,8 +857,10 @@ export default function App() {
             umbBonus: 7.4,
             ropeBonus: 0,
             allArts: 7.2,
-            skillDmg: 0,
-            set: "stars"
+            attunedBonus: 0,
+            wuxiangMin: 0,
+            wuxiangMax: 0,
+            set: "moonflare"
           },
           gradRate: 98.4,
           dps: 45600
@@ -924,28 +914,37 @@ export default function App() {
   }, [selectedInnerWays, innerWayTiers]);
 
   // Compute Martial Arts bonuses
-  const maStats = useMemo(() => {
+  const maBonuses = useMemo(() => {
     const bonus = {
       minOuter: 0,
       maxOuter: 0,
+      crit: 0,
+      aff: 0,
+      prec: 0,
+      critDmg: 0,
+      affDmg: 0,
       outerPen: 0,
+      outerDmg: 0,
+      dcrit: 0,
+      daff: 0,
       minPz: 0,
       maxPz: 0,
       pzPen: 0,
       pzDmg: 0,
-      prec: 0,
-      crit: 0,
-      aff: 0,
-      critDmg: 0,
-      affDmg: 0,
-      outerDmg: 0,
       bossDmg: 0,
       allArts: 0,
       umbBonus: 0,
       ropeBonus: 0,
     };
+    selectedMAs.forEach((id) => {
+      const ma = MARTIAL_ARTS.find((m) => m.id === id);
+      if (!ma) return;
+      Object.entries(ma.stat).forEach(([k, v]) => {
+        if (bonus.hasOwnProperty(k)) bonus[k as keyof typeof bonus] += v as number;
+      });
+    });
     return bonus;
-  }, []);
+  }, [selectedMAs]);
 
   // 2. Compute Adjusted Panel Stats (applying passive buffs dynamically)
   const adjustedPanel = useMemo((): PanelStats => {
@@ -974,23 +973,23 @@ export default function App() {
     }
 
     // Apply Martial Arts passive bonuses
-    p.minOuter += maStats.minOuter;
-    p.maxOuter += maStats.maxOuter;
-    p.outerPen += maStats.outerPen;
-    p.minPz += maStats.minPz;
-    p.maxPz += maStats.maxPz;
-    p.pzPen += maStats.pzPen;
-    p.pzDmg += maStats.pzDmg;
-    p.prec += maStats.prec;
-    p.crit += maStats.crit;
-    p.aff += maStats.aff;
-    p.critDmg += maStats.critDmg;
-    p.affDmg += maStats.affDmg;
-    p.outerDmg += maStats.outerDmg;
-    p.bossDmg += maStats.bossDmg;
-    p.allArts += maStats.allArts;
-    p.umbBonus += maStats.umbBonus;
-    p.ropeBonus += maStats.ropeBonus;
+    p.minOuter += maBonuses.minOuter;
+    p.maxOuter += maBonuses.maxOuter;
+    p.outerPen += maBonuses.outerPen;
+    p.minPz += maBonuses.minPz;
+    p.maxPz += maBonuses.maxPz;
+    p.pzPen += maBonuses.pzPen;
+    p.pzDmg += maBonuses.pzDmg;
+    p.prec += maBonuses.prec;
+    p.crit += maBonuses.crit;
+    p.aff += maBonuses.aff;
+    p.critDmg += maBonuses.critDmg;
+    p.affDmg += maBonuses.affDmg;
+    p.outerDmg += maBonuses.outerDmg;
+    p.bossDmg += maBonuses.bossDmg;
+    p.allArts += maBonuses.allArts;
+    p.umbBonus += maBonuses.umbBonus;
+    p.ropeBonus += maBonuses.ropeBonus;
 
     // Apply Inner Ways direct stat offsets
     p.outerPen += iwStats.outerPen;
@@ -1021,7 +1020,7 @@ export default function App() {
     }
 
     return p;
-  }, [panel, bowSelect, food, script50, earlySeason, activeTier, iwStats, maStats]);
+  }, [panel, bowSelect, food, script50, earlySeason, activeTier, iwStats, maBonuses]);
 
   // 3. Compute baseline reference graduation score
   const baselineScore = useMemo(() => {
@@ -1686,11 +1685,6 @@ export default function App() {
                           <div>
                             <span className="text-amber-500 font-bold">4pc:</span> {s.desc4pc || "—"}
                           </div>
-                          {s.note && (
-                            <div className="text-[10px] text-slate-500 italic mt-1 bg-slate-950 p-1.5 rounded border border-slate-900/60">
-                              Note: {s.note}
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>
@@ -2044,12 +2038,16 @@ export default function App() {
                     />
                   </div>
                   <div className="flex justify-between items-center bg-[#201512]/60 p-2 rounded-lg border border-rose-950/40 text-xs">
-                    <span className="text-amber-200">Specified Skill Bonus %</span>
+                    <label>
+                      <span className="text-amber-500 font-bold">Attuned Bonus</span>
+                      <br/>
+                      <span className="text-[9px] text-slate-500">{ATTUNED_BONUS_LABEL[selectedBuild] || "Skill DMG Bonus"}</span>
+                    </label>
                     <input
                       type="number"
                       step="0.1"
-                      value={panel.skillDmg}
-                      onChange={(e) => handleStatChange("skillDmg", parseFloat(e.target.value) || 0)}
+                      value={panel.attunedBonus ?? 0}
+                      onChange={(e) => handleStatChange("attunedBonus", parseFloat(e.target.value) || 0)}
                       className="bg-transparent border-none text-right text-rose-300 focus:outline-none w-16 font-mono font-bold"
                     />
                   </div>
@@ -2064,6 +2062,21 @@ export default function App() {
                         <option key={key} value={key}>{s.name}</option>
                       ))}
                     </select>
+                  </div>
+                  <div className="bg-[#141210] p-3 rounded-lg border border-slate-900/50 mt-4">
+                    <button onClick={() => setFormlessOpen(!formlessOpen)} className="text-amber-500 font-bold text-xs w-full text-left">Advanced / Formless ATK {formlessOpen ? "▼" : "▶"}</button>
+                    {formlessOpen && (
+                      <div className="mt-3 space-y-2">
+                        <div className="fr flex justify-between text-xs">
+                          <label className="text-slate-400">Formless Min ATK</label>
+                          <input type="number" value={panel.wuxiangMin ?? 0} onChange={(e) => handleStatChange("wuxiangMin", parseFloat(e.target.value) || 0)} className="bg-slate-900 p-1 w-16 text-right rounded" />
+                        </div>
+                        <div className="fr flex justify-between text-xs">
+                          <label className="text-slate-400">Formless Max ATK</label>
+                          <input type="number" value={panel.wuxiangMax ?? 0} onChange={(e) => handleStatChange("wuxiangMax", parseFloat(e.target.value) || 0)} className="bg-slate-900 p-1 w-16 text-right rounded" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2117,6 +2130,87 @@ export default function App() {
                   <label htmlFor="chk-script50" className="text-slate-300 cursor-pointer text-[11px]">
                     Sub-50% HP Active Talent (+15% Direct Crit)
                   </label>
+                </div>
+              </div>
+
+              {/* Martial Arts Section */}
+              <div className="space-y-2 mb-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-[9px] font-mono tracking-wider text-amber-500 uppercase font-bold">
+                    Martial Arts (心法) — {selectedMAs.length}/4
+                  </span>
+                  <span className="text-[9px] text-slate-500">Select up to 4</span>
+                </div>
+                
+                <div className="text-[9px] text-slate-500 mb-1">
+                  Recommended: {' '}
+                  {MARTIAL_ARTS.filter(m => m.recommended?.includes(selectedBuild))
+                    .map(m => m.name).join(", ")}
+                </div>
+                
+                {selectedMAs.length > 0 && (
+                  <div className="bg-amber-950/20 border border-amber-500/20 rounded p-2 text-[10px]">
+                    {Object.entries(maBonuses)
+                      .filter(([,v]) => v !== 0)
+                      .map(([k,v]) => `${k}: +${v}`)
+                      .join(" · ")}
+                  </div>
+                )}
+                
+                <input 
+                  type="text" 
+                  placeholder="Search martial arts..."
+                  className="w-full px-2 py-1 bg-slate-950/60 border border-slate-800 rounded text-xs text-slate-300 placeholder-slate-600"
+                  onChange={e => setMaSearch(e.target.value)}
+                />
+                
+                <div className="max-h-48 overflow-y-auto space-y-1">
+                  {MARTIAL_ARTS
+                    .filter(ma => !maSearch || ma.name.toLowerCase().includes(maSearch.toLowerCase()) || ma.cn.includes(maSearch))
+                    .sort((a,b) => {
+                      const aRec = a.recommended?.includes(selectedBuild) ? 0 : 1;
+                      const bRec = b.recommended?.includes(selectedBuild) ? 0 : 1;
+                      return aRec - bRec || a.tier.localeCompare(b.tier);
+                    })
+                    .map(ma => {
+                      const isSelected = selectedMAs.includes(ma.id);
+                      const disabled = !isSelected && selectedMAs.length >= 4;
+                      const isRec = ma.recommended?.includes(selectedBuild);
+                      const statStr = Object.entries(ma.stat)
+                        .filter(([,v]) => v)
+                        .map(([k,v]) => `+${v} ${k}`)
+                        .join(", ");
+                      
+                      return (
+                        <div
+                          key={ma.id}
+                          onClick={() => {
+                            if (isSelected) setSelectedMAs(prev => prev.filter(id => id !== ma.id));
+                            else if (!disabled) setSelectedMAs(prev => [...prev, ma.id]);
+                          }}
+                          className={`p-2 rounded border text-[10px] cursor-pointer transition-all ${
+                            isSelected ? "bg-amber-950/30 border-amber-500 text-amber-200" :
+                            disabled ? "opacity-30 cursor-not-allowed border-slate-900" :
+                            "border-slate-900 hover:border-slate-700 text-slate-400"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="font-semibold">
+                              {isRec && <span className="text-amber-500 mr-1">★</span>}
+                              {ma.name}
+                              <span className="text-slate-600 ml-1 font-normal">{ma.cn}</span>
+                            </span>
+                            <span className={`text-[8px] px-1 rounded font-bold ${
+                              ma.tier === "gold" ? "bg-yellow-900/50 text-yellow-400" :
+                              ma.tier === "purple" ? "bg-purple-900/50 text-purple-400" :
+                              "bg-blue-900/50 text-blue-400"
+                            }`}>{ma.tier.toUpperCase()}</span>
+                          </div>
+                          {statStr && <div className="text-amber-400/70 font-mono">{statStr}</div>}
+                          {ma.note && isSelected && <div className="text-slate-500 mt-0.5">{ma.note}</div>}
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
 
@@ -2420,6 +2514,11 @@ export default function App() {
                     const b = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
                     if (!b) return null;
                     const tgt = b.gradTargets;
+                    const precCapPanel = Math.round(65 + (100-65) * (1 + activeTier.judgeRes)); 
+                    const precAdvice = adjustedPanel.prec < precCapPanel 
+                      ? `Precision: push to ~${precCapPanel}% panel (need 100% eff)` 
+                      : "Precision: capped ✓";
+
                     return (
                       <>
                         {rotationStats.gradRate >= 100 ? (
@@ -2428,39 +2527,21 @@ export default function App() {
                               <CheckCircle className="w-4 h-4 inline" /> 🏆 Fully Graduated for Tier 91!
                             </strong>
                             <div>
-                              Your build exceeds the T91 baseline ({rotationStats.gradRate.toFixed(1)}%). Ready to clear all Season 3 raids. Prep for Tier 96 when it unlocks.
-                            </div>
-                          </div>
-                        ) : rotationStats.gradRate >= 90 ? (
-                          <div className="space-y-1.5">
-                            <strong className="text-amber-400 flex items-center gap-1 mb-1">
-                              <CheckCircle className="w-4 h-4 inline" /> ✅ Excellent Build!
-                            </strong>
-                            <div>
-                              {adjustedPanel.outerPen < tgt.outerPen
-                                ? `Physical Pen at ${adjustedPanel.outerPen.toFixed(1)}% — push toward ${tgt.outerPen.toFixed(1)}% graduation target. Each pen sub (cap 9.0%) is very efficient here.`
-                                : `Good penetration. Keep stacking Max Physical Attack toward ${tgt.maxOuter}. Current: ${Math.round(adjustedPanel.maxOuter)}.`}
-                            </div>
-                          </div>
-                        ) : rotationStats.gradRate >= 70 ? (
-                          <div className="space-y-1.5">
-                            <strong className="text-amber-500 flex items-center gap-1 mb-1">⚠️ Solid — keep building</strong>
-                            <div>
-                              ① Max Phys Atk → {tgt.maxOuter}+ (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → {tgt.outerPen.toFixed(1)}% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate to reach {tgt.crit.toFixed(1)}% eff cap vs T91 (now: {effCritRate.toFixed(1)}%).
+                              Your build exceeds the T91 baseline ({rotationStats.gradRate.toFixed(1)}%). Ready to clear all Season 3 raids.
                             </div>
                           </div>
                         ) : (
                           <div className="space-y-1.5">
-                            <strong className="text-rose-400 flex items-center gap-1 mb-1">
-                              <AlertTriangle className="w-4 h-4 inline" /> 📈 Building Phase ({rotationStats.gradRate.toFixed(1)}%)
-                            </strong>
+                            <strong className="text-amber-500 flex items-center gap-1 mb-1">📈 {rotationStats.gradRate < 70 ? "Building Phase" : "Road to Graduation"}</strong>
+                            <div>{precAdvice}</div>
                             <div>
-                              ① Max Phys Atk → {tgt.maxOuter} (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → {tgt.outerPen.toFixed(1)}% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate → {tgt.crit.toFixed(1)}% ④ Bamboocut Atk. T91 sub caps: Pen 9.0% · Max PA 63.8 · Crit 6.5% · CritDMG 8.0%.
+                              ① Max Phys Atk → {tgt.maxOuter} (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → {tgt.outerPen.toFixed(1)}% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate Panel → {tgt.crit.toFixed(1)}% (need 80% eff)
                             </div>
                           </div>
                         )}
                         <div className="mt-2.5 pt-2 border-t border-slate-900 text-[10.5px] text-slate-400 font-mono">
                           <strong className="text-amber-500">Path Strategy:</strong> {b.notes}
+                          <div className="text-rose-400 mt-1">⚠️ Precision: The base 65% is not reduced by Judge Resistance. Effective cap = 100%. Panel ~116% achieves this at T91. DO NOT stack above ~116% panel — diminishing returns become zero at cap.</div>
                         </div>
                       </>
                     );
@@ -2476,13 +2557,13 @@ export default function App() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs">
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900 flex flex-col justify-between">
                     <div>
-                      <span className="text-slate-500 block font-mono text-[10px]">Precision Rate</span>
+                      <span className="text-[9px] text-slate-500 uppercase font-mono mt-1 block">Precision (Eff)</span>
                       <strong className="text-slate-100 text-sm font-mono mt-1 block">
                         {effPrecision.toFixed(1)}%
                       </strong>
                     </div>
-                    <div className="text-[9.5px] text-slate-500 mt-2 leading-snug border-t border-slate-900/40 pt-1.5 font-sans">
-                      Base 65% is not affected by Judgment Resistance. Only the portion above 65% is reduced by ÷1.45.
+                    <div className="text-[9px] text-slate-500 mt-2 leading-snug border-t border-slate-900/40 pt-1.5 font-sans">
+                      Base 65% is not reduced by boss resist. Cap = 100%.
                     </div>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
@@ -2490,6 +2571,9 @@ export default function App() {
                     <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effCritRate.toFixed(1)}%
                     </strong>
+                    <div className="text-[9px] text-slate-500 mt-0.5">
+                      Cap: 80% effective. Need ~116%+ panel at T91 (÷1.45). Direct Crit Rate bypasses resistance.
+                    </div>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[10px]">Affinity</span>
@@ -2520,7 +2604,7 @@ export default function App() {
               </div>
 
               {/* Gemini AI recommendation & optimizing advisor */}
-              <GeminiAdvisor panel={adjustedPanel} tier={activeTier} gradRate={rotationStats.gradRate} />
+
 
               {/* Rotation breakdown tables */}
               <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5">

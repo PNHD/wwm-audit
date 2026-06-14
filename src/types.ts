@@ -18,7 +18,9 @@ export interface PanelStats {
   umbBonus: number;
   ropeBonus: number;
   allArts: number;
-  skillDmg: number;
+  attunedBonus: number; // Attuned Damage Bonus % (定音增伤)
+  wuxiangMin: number;
+  wuxiangMax: number;
   set: string;
   iwGeneralDmg?: number;
   iwOuterPen?: number;

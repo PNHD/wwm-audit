@@ -392,8 +392,8 @@ export function calcSkill(
 
   const jR = 1 + judgeRes;
   let critRateInput = panel.crit;
-  if (set === "huanhua") {
-    critRateInput += 5.0; // Huanhua set bonus gives +5% flat crit rate description
+  if (set === "ivorybloom") {
+    critRateInput += 5.0; 
   }
   let critEff = Math.min(0.8, critRateInput / 100 / jR);
   let affEff = Math.min(0.4, panel.aff / 100 / jR);
@@ -401,8 +401,8 @@ export function calcSkill(
   let dirCrit = panel.dcrit / 100;
   let dirAff = panel.daff / 100;
 
-  if (set === "stormrain") precEff = Math.min(1.0, precEff + 10.8 / 100 / jR);
-  if (set === "eaglerise") affEff = Math.min(0.4, affEff + 6.1 / 100 / jR);
+  if (set === "eaglerise") precEff = Math.min(1.0, precEff + 10.8 / 100 / jR);
+  if (set === "hawking") affEff = Math.min(0.4, affEff + 6.1 / 100 / jR);
 
   let pCrit: number, pAff: number, pPrec: number, pGraze: number;
   if (sk.force === "crit") {
@@ -431,15 +431,12 @@ export function calcSkill(
   if (sk.wType === "rope") weapBonus += panel.ropeBonus / 100;
   if (sk.wType === "N/A") weapBonus = 0;
 
-  const csBonus = set === "stars" ? 0.15 : 0;
+  const csBonus = set === "moonflare" ? 0.15 : 0;
   const spinBonus = sk.special === "spin" ? 0.12 : 0;
 
   let setDmgBonus = 0;
   if (set === "jadeware" && (opts.buildKey === "deluge" || opts.buildKey === "jade")) {
     setDmgBonus += 0.25;
-  }
-  if (set === "duanyue") {
-    setDmgBonus += 0.05;
   }
 
   const T =
@@ -461,8 +458,8 @@ export function calcSkill(
     physRes;
   const F = totalOuterPen >= 0 ? totalOuterPen / 200 : totalOuterPen / 100;
 
-  let atkMult = set === "shakenhill" ? 1.05 : 1.0;
-  if (set === "eaglerise") atkMult = 1.1;
+  let atkMult = set === "formbend" ? 1.05 : 1.0;
+  if (set === "hawking") atkMult = 1.1;
   let minO = panel.minOuter * atkMult;
   let maxO = panel.maxOuter * atkMult;
   if (maxO < minO) maxO = minO;
@@ -486,9 +483,9 @@ export function calcSkill(
   const totalPzPen = panel.pzPen - attrRes;
   const Fpz = totalPzPen >= 0 ? totalPzPen / 200 : totalPzPen / 100;
 
-  const pzMult = set === "shakenhill" ? 1.05 : 1.0;
-  const minPz_e = Math.max(0, panel.minPz * pzMult - tier.def);
-  const maxPz_e = Math.max(0, panel.maxPz * pzMult - tier.def);
+  const pzMult = set === "formbend" ? 1.05 : 1.0;
+  const minPz_e = Math.max(0, (panel.minPz + (panel.wuxiangMin || 0)) * pzMult - tier.def);
+  const maxPz_e = Math.max(0, (panel.maxPz + (panel.wuxiangMax || 0)) * pzMult - tier.def);
   const avgPz_e = (minPz_e + maxPz_e) / 2;
 
   const pzDmgBonus = panel.pzDmg / 100;
@@ -499,8 +496,8 @@ export function calcSkill(
 
   let perHit = dmgOuter + dmgFixed + dmgPz;
 
-  if (rot.isDingyin && panel.skillDmg > 0) {
-    perHit *= 1 + panel.skillDmg / 100;
+  if (rot.isDingyin && panel.attunedBonus > 0) {
+    perHit *= 1 + panel.attunedBonus / 100;
   }
 
   const total = perHit * rot.count * (rot.tiaozhan || 1);
@@ -512,33 +509,35 @@ export function calcBaseline(tier: TierConstants) {
   // These are PANEL stats (what you see on character screen), NOT including food
   // Food is added separately below matching how the game works
   const ref: PanelStats = {
-    minOuter: 1657,   // panel min phys atk (NOT including food)
+    minOuter: 1745,   // panel min phys atk (NOT including food)
     maxOuter: 4046,   // panel max phys atk (NOT including food)
-    outerPen: 51.2,
+    outerPen: 56.3,
     minPz: 402.9,
     maxPz: 721.0,
     pzPen: 29.6,
     pzDmg: 11.8,
     prec: 100,
-    crit: 79.6,
+    crit: 90.9,
     aff: 10.3,
-    dcrit: 4.6,
+    dcrit: 8.7,
     daff: 0,
-    critDmg: 54,
+    critDmg: 58,
     affDmg: 35,
-    outerDmg: 2.8,
+    outerDmg: 5.6,
     bossDmg: 7.6,
     umbBonus: 7.4,
     ropeBonus: 0,
     allArts: 7.2,
-    skillDmg: 0,
-    set: "stars",
+    attunedBonus: 0,
+    wuxiangMin: 0,
+    wuxiangMax: 0,
+    set: "moonflare",
   };
 
   let total = 0;
   ROTATION.forEach((sk) => {
     total += calcSkill(sk, ref, tier, {
-      set: "stars",
+      set: "moonflare",
       datang: false,
       yishui: true,   // Song of Yi active (standard)
     }).total;
