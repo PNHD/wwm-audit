@@ -80,7 +80,7 @@ const CLASS_WEAPONS: Record<string, string[]> = {
   "Bamboocut-Wind": ["Mortal Rope Dart", "Infernal Twinblades"],
   "Nameless": ["Nameless Sword", "Nameless Spear"],
   "Jade": ["Inkwell Fan", "Vernal Umbrella"],
-  "Rocksplit-Might": ["Phalanxbane Blade", "Snowparting Blade"],
+  "Rocksplit-Might": ["Thundercry Blade", "Stormbreaker Spear"],
   "Nine-Nine": ["Strategic Sword", "Heavenquaker Spear"],
   "Rocksplit-Jun": ["Snowparting Blade", "Phalanxbane Blade"],
   "Pure-Healer": ["Panacea Fan", "Soulshade Umbrella"],
@@ -3587,13 +3587,19 @@ export default function App() {
                       <button
                         onClick={() => {
                           const updated = { ...hitsState };
-                          simulatorSkills.forEach(s => {
-                            const lower = s.name.toLowerCase();
-                            if (lower.includes("spin") || lower.includes("wheel")) updated[s.name] = 80;
-                            else if (lower.includes("resonance")) updated[s.name] = 72;
-                            else if (lower.includes("umbrella") || lower.includes("rope")) updated[s.name] = 40;
-                            else updated[s.name] = 10;
-                          });
+                          const HEAVY_PRESETS: Record<string, Record<string, number>> = {
+                            "Bamboocut-Dust": { "Scarlet Spin": 78, "Resonance": 75, "Soulbreak": 4, "Burn and Bury": 6, "Soul Sweep": 40, "Soaring Spin": 8, "Piercing Dart": 6, "Flute Chanting a Thousand Waves": 11, "Divinecraft - Fire": 58 },
+                            "Bamboocut-Wind": { "Mortal Dart Red Blade (12345345)": 4, "Mortal Dart Red Blade (345)": 4, "Mortal Dart Q (Full Combo)": 8, "Mortal Dart Cross Slash (Heavy)": 6, "Mortal Dart White Blade Light": 10, "Twinblades Light Combo (Full)": 8, "Twinblades Q": 20, "Twinblades Charged": 4 },
+                            "Nameless": { "Nameless Sword Q": 10, "Nameless Sword Heavy": 15, "Nameless Sword Charge Lv2": 8, "Nameless Sword Mystic Charge": 5, "Nameless Spear Q": 20, "Nameless Spear Windmill (Fast)": 30, "Nameless Spear Windmill (Finisher)": 8 },
+                            "Jade": { "Inkwell Fan Q": 15, "Inkwell Fan Light Charge": 20, "Inkwell Fan Heavy": 15, "Inkwell Fan Heavy Charge Lv2 (Full)": 8, "Vernal Umbrella R": 30, "Vernal Fan Wind Wall": 8, "Vernal Fan Heavy": 10, "Vernal Fan 4x Light Charge": 4 },
+                            "Nine-Nine": { "Strategic Sword Q (5 Bleed)": 12, "Strategic Sword Heavy (4 Bleed)": 10, "Bleed Tick (5 Stack)": 60, "Blood Explosion": 8, "Heavenquaker Spear Q (Full 5)": 15, "Heavenquaker Spear Heavy": 10, "Heavenquaker Spear Charge Lv2": 5 },
+                            "Rocksplit-Might": { "Thundercry Blade Q (Deathstrike)": 10, "Thundercry Blade Stance Combo": 12, "Thundercry Blade Light Charge": 15, "Thundercry Blade Heavy Derived": 12, "Spirit Clone (Thundercry)": 20, "Stormbreaker Soaring Strike (Mystic)": 4, "Stormbreaker Spear Charge": 8, "Stormbreaker Spear Heavy": 10 },
+                            "Rocksplit-Jun": { "Snowparting Blade Q (3 Charge, 2 Intent)": 8, "Snowparting Derived (2 Intent)": 8, "Phalanxbane Blade Q (Fast 3 Charge)": 5, "Phalanxbane Quick Q": 8, "Spirit Blade Clone (Lv2)": 16, "Spirit Blade Clone (Lv1)": 8 },
+                            "Pure-Healer": { "Panacea Fan Heavy Strike": 20, "Panacea Fan Q": 8, "Panacea Fan Light Charge": 15, "Soulshade Umbrella Q": 15, "Soulshade Off-Field Heal": 30, "Soulshade Light Charge": 10 },
+                            "Fire-Fist-Healer": { "Panacea Fan Heavy Strike": 15, "Panacea Fan Q": 10, "Soulshade Umbrella Q": 20, "Soulshade Off-Field Heal": 25, "Soulshade Light Charge": 12 },
+                          };
+                          const classPreset = HEAVY_PRESETS[rotSimClass] || {};
+                          simulatorSkills.forEach(s => { updated[s.name] = classPreset[s.name] ?? 0; });
                           setHitsState(updated);
                         }}
                         className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-xs text-slate-350 hover:text-slate-200 transition-colors"
@@ -3603,12 +3609,19 @@ export default function App() {
                       <button
                         onClick={() => {
                           const updated = { ...hitsState };
-                          simulatorSkills.forEach(s => {
-                            const lower = s.name.toLowerCase();
-                            if (lower.includes("spin") || lower.includes("wheel")) updated[s.name] = 40;
-                            else if (lower.includes("resonance")) updated[s.name] = 30;
-                            else updated[s.name] = 15;
-                          });
+                          const BALANCED_PRESETS: Record<string, Record<string, number>> = {
+                            "Bamboocut-Dust": { "Scarlet Spin": 50, "Resonance": 45, "Soulbreak": 3, "Burn and Bury": 4, "Soul Sweep": 25, "Soaring Spin": 5, "Piercing Dart": 4, "Flute Chanting a Thousand Waves": 11, "Divinecraft - Fire": 58 },
+                            "Bamboocut-Wind": { "Mortal Dart Red Blade (12345345)": 3, "Mortal Dart Q (Full Combo)": 6, "Mortal Dart Cross Slash (Heavy)": 4, "Mortal Dart White Blade Light": 8, "Twinblades Light Combo (Full)": 6, "Twinblades Q": 15, "Twinblades Charged": 3 },
+                            "Nameless": { "Nameless Sword Q": 8, "Nameless Sword Heavy": 10, "Nameless Sword Charge Lv2": 5, "Nameless Spear Q": 15, "Nameless Spear Windmill (Fast)": 20, "Nameless Spear Windmill (Finisher)": 5 },
+                            "Jade": { "Inkwell Fan Q": 12, "Inkwell Fan Light Charge": 15, "Inkwell Fan Heavy": 10, "Vernal Umbrella R": 20, "Vernal Fan Wind Wall": 6, "Vernal Fan Heavy": 8 },
+                            "Nine-Nine": { "Strategic Sword Q (5 Bleed)": 8, "Strategic Sword Heavy (4 Bleed)": 8, "Bleed Tick (5 Stack)": 40, "Blood Explosion": 5, "Heavenquaker Spear Q (Full 5)": 10, "Heavenquaker Spear Heavy": 8 },
+                            "Rocksplit-Might": { "Thundercry Blade Q (Deathstrike)": 8, "Thundercry Blade Stance Combo": 8, "Thundercry Blade Light Charge": 10, "Spirit Clone (Thundercry)": 15, "Stormbreaker Soaring Strike (Mystic)": 3, "Stormbreaker Spear Charge": 6, "Stormbreaker Spear Heavy": 8 },
+                            "Rocksplit-Jun": { "Snowparting Blade Q (3 Charge, 2 Intent)": 5, "Snowparting Derived (2 Intent)": 5, "Phalanxbane Blade Q (Fast 3 Charge)": 4, "Phalanxbane Quick Q": 6, "Spirit Blade Clone (Lv2)": 10 },
+                            "Pure-Healer": { "Panacea Fan Heavy Strike": 15, "Panacea Fan Q": 6, "Panacea Fan Light Charge": 10, "Soulshade Umbrella Q": 10, "Soulshade Off-Field Heal": 20, "Soulshade Light Charge": 8 },
+                            "Fire-Fist-Healer": { "Panacea Fan Heavy Strike": 10, "Panacea Fan Q": 8, "Soulshade Umbrella Q": 15, "Soulshade Off-Field Heal": 18 },
+                          };
+                          const classPreset = BALANCED_PRESETS[rotSimClass] || {};
+                          simulatorSkills.forEach(s => { updated[s.name] = classPreset[s.name] ?? 0; });
                           setHitsState(updated);
                         }}
                         className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-xs text-slate-350 hover:text-slate-200 transition-colors"
