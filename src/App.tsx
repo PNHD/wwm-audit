@@ -26,10 +26,94 @@ import {
 import { PanelStats, TierConstants } from "./types";
 import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils/calc";
 import { INNER_WAYS } from "./data/innerways";
-import { MARTIAL_ARTS } from "./data/martial_arts_system";
 import OcrScanner from "./components/OcrScanner";
 import RelayingSimulator from "./components/RelayingSimulator";
 import ArsenalSimulator from "./components/ArsenalSimulator";
+
+// Constants
+const PATH_ICONS: Record<string, string> = {
+  "bellstrike-splendor": "https://static0.fextralifeimages.com/file/wherewindsmeet/8/8a/Bellstrike-splendor.png",
+  "bellstrike-umbra":    "https://static0.fextralifeimages.com/file/wherewindsmeet/b/b6/Bellstrike-umbra.png",
+  "silkbind-deluge":     "https://static0.fextralifeimages.com/file/wherewindsmeet/6/6b/Silkbind-deluge.png",
+  "silkbind-jade":       "https://static0.fextralifeimages.com/file/wherewindsmeet/e/ec/Silkbind-jade.png",
+  "bamboocut-wind":      "https://static0.fextralifeimages.com/file/wherewindsmeet/9/9f/Bamboocut-wind.png",
+  "stonesplit-might":    "https://static0.fextralifeimages.com/file/wherewindsmeet/d/d1/Stonesplit-might.png",
+  "bamboocut-dust":      "https://static0.fextralifeimages.com/file/wherewindsmeet/0/05/Bamboocut-dust-where-winds-meet-wiki-guide.webp",
+  "stonesplit-scale":    "https://static0.fextralifeimages.com/file/wherewindsmeet/9/96/Stonesplit-strength-path-where-winds-meet-wiki-guide.webp",
+};
+
+const WEAPON_ICONS: Record<string, string> = {
+  "everspring-umbrella":  "https://static0.fextralifeimages.com/file/wherewindsmeet/c/c4/Everspring-umbrella-martial-art-weapon-where-winds-meet-wiki-guide.webp",
+  "unfettered-rope-dart": "https://static0.fextralifeimages.com/file/wherewindsmeet/0/02/Unfettered-rope-dart-martial-art-weapon-where-winds-meet-wiki-guide.webp",
+  "nameless-sword":       "https://static0.fextralifeimages.com/file/wherewindsmeet/8/80/Nameless-sword-weapon-icon-where-winds-meet-wiki-guide.png",
+  "nameless-spear":       "https://static0.fextralifeimages.com/file/wherewindsmeet/9/9c/Nameless-spear-weapon-icon-where-winds-meet-wiki-guide.png",
+  "strategic-sword":      "https://static0.fextralifeimages.com/file/wherewindsmeet/9/96/Strategic-sword-weapon-icon-where-winds-meet-wiki-guide.png",
+  "heavenquaker-spear":   "https://static0.fextralifeimages.com/file/wherewindsmeet/b/b3/Heavenquaker-spear-weapon-icon-where-winds-meet-wiki-guide.png",
+  "infernal-twinblades":  "https://static0.fextralifeimages.com/file/wherewindsmeet/f/f0/Infernal-twinblades-weapon-icon-where-winds-meet-wiki-guide.png",
+  "mortal-rope-dart":     "https://static0.fextralifeimages.com/file/wherewindsmeet/8/80/Mortal-rope-dart-weapon-icon-where-winds-meet-wiki-guide.png",
+  "inkwell-fan":          "https://static0.fextralifeimages.com/file/wherewindsmeet/4/4e/Inkwell-fan-weapon-icon-where-winds-meet-wiki-guide.png",
+  "vernal-umbrella":      "https://static0.fextralifeimages.com/file/wherewindsmeet/a/a7/Ninefold-umbrella-weapon-icon-where-winds-meet-wiki-guide.png",
+  "panacea-fan":          "https://static0.fextralifeimages.com/file/wherewindsmeet/thumb/1/18/Panacea-fan-weapon-icon-where-winds-meet-wiki-guide.png/150px-Panacea-fan-weapon-icon-where-winds-meet-wiki-guide.png",
+  "soulshade-umbrella":   "https://static0.fextralifeimages.com/file/wherewindsmeet/c/c7/Soulshade-umbrella-weapon-icon-where-winds-meet-wiki-guide.png",
+  "stormbreaker-spear":   "https://static0.fextralifeimages.com/file/wherewindsmeet/8/8a/Stormbreaker-spear-weapon-icon-where-winds-meet-wiki-guide.png",
+  "thundercry-blade":     "https://static0.fextralifeimages.com/file/wherewindsmeet/2/27/Thundercry-blade-weapon-icon-where-winds-meet-wiki-guide.png",
+  "snowparting-blade":    "https://static0.fextralifeimages.com/file/wherewindsmeet/f/fd/Snowparting-blade-martial-art-weapon-where-winds-meet-wiki-guide.webp",
+  "phalanxbane-blade":    "https://static0.fextralifeimages.com/file/wherewindsmeet/f/f7/Phalanxbane-blade-martial-art-weapon-where-winds-meet-wiki-guide.webp",
+};
+
+const BUILD_WEAPONS: Record<string, [string, string]> = {
+  "bamboocut-dust":     ["everspring-umbrella", "unfettered-rope-dart"],
+  "bamboocut-wind":     ["infernal-twinblades", "mortal-rope-dart"],
+  "bellstrike-splendor":["nameless-sword", "nameless-spear"],
+  "bellstrike-umbra":   ["strategic-sword", "heavenquaker-spear"],
+  "silkbind-jade":      ["inkwell-fan", "vernal-umbrella"],
+  "silkbind-deluge":    ["panacea-fan", "soulshade-umbrella"],
+  "stonesplit-might":   ["thundercry-blade", "stormbreaker-spear"],
+  "stonesplit-scale":   ["snowparting-blade", "phalanxbane-blade"],
+};
+
+const BUILD_TIPS: Record<string, string[]> = {
+  "bamboocut-dust": [
+    "🎯 Max Phys ATK → 4046 is the graduation target",
+    "🔩 Phys Pen → 51.2% net (panel value - 20 boss resist)",
+    "⚡ Crit Rate → need 116%+ panel to cap at 80% eff (÷1.45)",
+    "⚠️ Bamboocut ATK contributes ~15-20% of rotation damage",
+    "✦ Attuned Bonus: Drunken Spring Skill DMG (定音增伤) — crucial!",
+    "🍖 Food buff adds +90/+180 Phys ATK — always use before raids",
+  ],
+  "bellstrike-umbra": [
+    "🎯 Affinity Rate → aim for 58%+ panel to cap 40% eff at T91",
+    "⚡ Crit Rate and Affinity Rate both matter for Umbra",
+    "✦ Attuned Bonus: Strategic Sword Skill DMG — stack on all gear",
+    "⚠️ DO NOT use Hawking set if Affinity procs are rare",
+  ],
+  "stonesplit-might": [
+    "🎯 Max Phys ATK → 3500+ target",
+    "⚠️ Avoid Attr ATK (Bamboocut/Bellstrike/Silkbind) — useless",
+    "⚠️ Max 2 Agility substats — diminishing returns after",
+    "🛡 Prioritize survivability over pure DPS for this path",
+  ],
+};
+
+const STAT_TOOLTIPS: Record<string, string> = {
+  minOuter: "Min Physical Attack — affects graze hits and Min ATK floor. When Min > Max, all hits use Min ATK value.",
+  maxOuter: "Max Physical Attack — primary DPS stat. Target: 4046 for graduation (Bamboocut-Dust).",
+  outerPen: "Physical Penetration. Net pen = panel - boss phys resist (20 at T91). Target net: 31.2%+",
+  crit: "Critical Rate. Effective crit = panel ÷ (1 + Judge Resist). At T91: need 116%+ panel for 80% eff cap.",
+  aff: "Affinity Rate. Cap: 40% effective. At T91 need ~58% panel.",
+  prec: "Precision Rate. Base 65% not reduced by resist. Panel 116% → ~100% effective. Cap = 100%.",
+  critDmg: "Critical DMG Bonus. Default base is 50%. Stack after crit rate is capped.",
+  affDmg: "Affinity DMG Bonus. Default base is 35%.",
+  dcrit: "Direct Critical Rate — bypasses Judgment Resistance entirely. Very efficient stat.",
+};
+
+const GRAD_MARKERS = [
+  { pct: 80, label: "C", color: "bg-slate-500" },
+  { pct: 85, label: "B", color: "bg-lime-600" },
+  { pct: 88, label: "A", color: "bg-yellow-500" },
+  { pct: 90, label: "S", color: "bg-amber-500" },
+  { pct: 100, label: "🎓", color: "bg-emerald-500" },
+];
 
 
 const ATTUNED_BONUS_LABEL: Record<string, string> = {
@@ -331,12 +415,31 @@ export default function App() {
 
   const [innerWaysFilter, setInnerWaysFilter] = useState<"recommended" | "all">("recommended");
   const [innerWaySearch, setInnerWaySearch] = useState("");
-  const [selectedMAs, setSelectedMAs] = useState<string[]>(() => {
-    const config = getCustomConfig();
-    return config?.selectedMAs ?? [];
-  });
-  const [maSearch, setMaSearch] = useState("");
   const [formlessOpen, setFormlessOpen] = useState(false);
+  
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set(["attack", "judgment", "damage", "weapon-bonus", "inner-ways"])
+  );
+
+  const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => {
+    const isOpen = expandedSections.has(id);
+    return (
+      <div className="border-b border-slate-900/50 pb-2 mb-2">
+        <button
+          onClick={() => setExpandedSections(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id); else next.add(id);
+            return next;
+          })}
+          className="w-full flex items-center justify-between text-[9px] font-mono tracking-wider text-amber-500/80 uppercase mb-1"
+        >
+          <span>{title}</span>
+          <span className="text-slate-600">{isOpen ? "▼" : "▶"}</span>
+        </button>
+        {isOpen && children}
+      </div>
+    );
+  };
 
   const [isCustomRotationOpen, setIsCustomRotationOpen] = useState(false);
   const [customRotationText, setCustomRotationText] = useState(() => {
@@ -626,7 +729,6 @@ export default function App() {
     const config = {
       panel,
       selectedInnerWays,
-      selectedMAs,
       innerWayTiers,
       tierKey,
       bowSelect,
@@ -658,7 +760,6 @@ export default function App() {
           const config = JSON.parse(cachedConfig);
           if (config.panel) setPanel(config.panel);
           if (config.selectedInnerWays) setSelectedInnerWays(config.selectedInnerWays);
-          if (config.selectedMAs) setSelectedMAs(config.selectedMAs);
           if (config.innerWayTiers) setInnerWayTiers(config.innerWayTiers);
           if (config.tierKey) setTierKey(config.tierKey);
           if (config.bowSelect) setBowSelect(config.bowSelect);
@@ -913,39 +1014,6 @@ export default function App() {
     return bonus;
   }, [selectedInnerWays, innerWayTiers]);
 
-  // Compute Martial Arts bonuses
-  const maBonuses = useMemo(() => {
-    const bonus = {
-      minOuter: 0,
-      maxOuter: 0,
-      crit: 0,
-      aff: 0,
-      prec: 0,
-      critDmg: 0,
-      affDmg: 0,
-      outerPen: 0,
-      outerDmg: 0,
-      dcrit: 0,
-      daff: 0,
-      minPz: 0,
-      maxPz: 0,
-      pzPen: 0,
-      pzDmg: 0,
-      bossDmg: 0,
-      allArts: 0,
-      umbBonus: 0,
-      ropeBonus: 0,
-    };
-    selectedMAs.forEach((id) => {
-      const ma = MARTIAL_ARTS.find((m) => m.id === id);
-      if (!ma) return;
-      Object.entries(ma.stat).forEach(([k, v]) => {
-        if (bonus.hasOwnProperty(k)) bonus[k as keyof typeof bonus] += v as number;
-      });
-    });
-    return bonus;
-  }, [selectedMAs]);
-
   // 2. Compute Adjusted Panel Stats (applying passive buffs dynamically)
   const adjustedPanel = useMemo((): PanelStats => {
     let p = { ...panel };
@@ -971,25 +1039,6 @@ export default function App() {
       p.minOuter += 4.4;
       p.maxOuter += 27.2;
     }
-
-    // Apply Martial Arts passive bonuses
-    p.minOuter += maBonuses.minOuter;
-    p.maxOuter += maBonuses.maxOuter;
-    p.outerPen += maBonuses.outerPen;
-    p.minPz += maBonuses.minPz;
-    p.maxPz += maBonuses.maxPz;
-    p.pzPen += maBonuses.pzPen;
-    p.pzDmg += maBonuses.pzDmg;
-    p.prec += maBonuses.prec;
-    p.crit += maBonuses.crit;
-    p.aff += maBonuses.aff;
-    p.critDmg += maBonuses.critDmg;
-    p.affDmg += maBonuses.affDmg;
-    p.outerDmg += maBonuses.outerDmg;
-    p.bossDmg += maBonuses.bossDmg;
-    p.allArts += maBonuses.allArts;
-    p.umbBonus += maBonuses.umbBonus;
-    p.ropeBonus += maBonuses.ropeBonus;
 
     // Apply Inner Ways direct stat offsets
     p.outerPen += iwStats.outerPen;
@@ -1020,7 +1069,7 @@ export default function App() {
     }
 
     return p;
-  }, [panel, bowSelect, food, script50, earlySeason, activeTier, iwStats, maBonuses]);
+  }, [panel, bowSelect, food, script50, earlySeason, activeTier, iwStats]);
 
   // 3. Compute baseline reference graduation score
   const baselineScore = useMemo(() => {
@@ -1234,10 +1283,10 @@ export default function App() {
             </span>
           </div>
           <h1 className="text-xl md:text-2xl font-bold font-serif text-slate-100 tracking-tight mt-1 flex items-center gap-2">
-            Bamboocut-Dust Master Graduation Calculator
+            Where Winds Meet <span className="text-amber-500"> Build Calculator</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Everspring Umbrella + Rope Dart · Stars Align Level 91 Simulation Set (破竹·尘毕业计算器)
+          <p className="text-[10px] text-slate-400 mt-0.5">
+            {(BUILD_PROFILES as any)[selectedBuild]?.label || "All Paths"} · Global T91 · Lv95
           </p>
         </div>
 
@@ -1261,6 +1310,48 @@ export default function App() {
           </div>
         </div>
       </header>
+
+      {/* Path Selector Row */}
+      <div className="bg-[#0a0908] border-b border-amber-900/10 px-3 py-2 overflow-x-auto">
+        <div className="flex gap-2 min-w-max">
+          {Object.entries(BUILD_PROFILES).map(([key, profile]) => {
+            const isActive = selectedBuild === key;
+            const [w1, w2] = BUILD_WEAPONS[key] || [];
+            return (
+              <button
+                key={key}
+                onClick={() => setSelectedBuild(key)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all flex-shrink-0 ${
+                  isActive
+                    ? "bg-amber-500/10 border-amber-500 text-amber-400"
+                    : "bg-slate-950/40 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"
+                }`}
+              >
+                {PATH_ICONS[key] && (
+                  <img
+                    src={PATH_ICONS[key]}
+                    alt={(profile as any).label}
+                    className="w-6 h-6 object-contain rounded"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                )}
+                <div className="text-left">
+                  <div className="text-[10px] font-bold tracking-wide">{(profile as any).label}</div>
+                  <div className={`text-[8px] ${isActive ? "text-amber-600" : "text-slate-600"}`}>{(profile as any).tier}</div>
+                </div>
+                {w1 && w2 && (
+                  <div className="flex gap-1 ml-1">
+                    <img src={WEAPON_ICONS[w1]} alt="" className="w-4 h-4 object-contain opacity-70"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    <img src={WEAPON_ICONS[w2]} alt="" className="w-4 h-4 object-contain opacity-70"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Multi-Character & Multi-Scheme Sticky Bar */}
       <div className="bg-[#14120f] border-b border-amber-900/10 px-6 py-2.5 flex flex-wrap gap-4 items-center justify-between text-xs sticky top-0 z-20 shadow-md">
@@ -1589,6 +1680,22 @@ export default function App() {
         {activeTab === "calculator" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Sidebar Controls (Inputs & Modifiers) - 4 Cols */}
+            <div className="flex items-center gap-3 mb-3 p-2 bg-slate-950/40 rounded-lg border border-slate-900">
+              {BUILD_WEAPONS[selectedBuild]?.map(weaponKey => (
+                <div key={weaponKey} className="flex items-center gap-2">
+                  <img
+                    src={WEAPON_ICONS[weaponKey]}
+                    alt={weaponKey}
+                    className="w-8 h-8 object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                </div>
+              ))}
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] text-amber-400 font-bold">{(BUILD_PROFILES as any)[selectedBuild]?.label}</div>
+                <div className="text-[9px] text-slate-500">{(BUILD_PROFILES as any)[selectedBuild]?.weapons}</div>
+              </div>
+            </div>
             <div className="lg:col-span-4 bg-[#141210] border border-amber-900/10 rounded-xl p-5 space-y-6">
               {/* Build Path Dropdown */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
@@ -2104,7 +2211,7 @@ export default function App() {
                     className="accent-amber-500 w-4 h-4 cursor-pointer"
                   />
                   <label htmlFor="chk-yishui" className="text-slate-300 cursor-pointer">
-                    Song of Yi Active (+10 Phys Pen)
+                    Song of Yi Buff (+10 Phys Pen)
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
@@ -2130,87 +2237,6 @@ export default function App() {
                   <label htmlFor="chk-script50" className="text-slate-300 cursor-pointer text-[11px]">
                     Sub-50% HP Active Talent (+15% Direct Crit)
                   </label>
-                </div>
-              </div>
-
-              {/* Martial Arts Section */}
-              <div className="space-y-2 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-[9px] font-mono tracking-wider text-amber-500 uppercase font-bold">
-                    Martial Arts (心法) — {selectedMAs.length}/4
-                  </span>
-                  <span className="text-[9px] text-slate-500">Select up to 4</span>
-                </div>
-                
-                <div className="text-[9px] text-slate-500 mb-1">
-                  Recommended: {' '}
-                  {MARTIAL_ARTS.filter(m => m.recommended?.includes(selectedBuild))
-                    .map(m => m.name).join(", ")}
-                </div>
-                
-                {selectedMAs.length > 0 && (
-                  <div className="bg-amber-950/20 border border-amber-500/20 rounded p-2 text-[10px]">
-                    {Object.entries(maBonuses)
-                      .filter(([,v]) => v !== 0)
-                      .map(([k,v]) => `${k}: +${v}`)
-                      .join(" · ")}
-                  </div>
-                )}
-                
-                <input 
-                  type="text" 
-                  placeholder="Search martial arts..."
-                  className="w-full px-2 py-1 bg-slate-950/60 border border-slate-800 rounded text-xs text-slate-300 placeholder-slate-600"
-                  onChange={e => setMaSearch(e.target.value)}
-                />
-                
-                <div className="max-h-48 overflow-y-auto space-y-1">
-                  {MARTIAL_ARTS
-                    .filter(ma => !maSearch || ma.name.toLowerCase().includes(maSearch.toLowerCase()) || ma.cn.includes(maSearch))
-                    .sort((a,b) => {
-                      const aRec = a.recommended?.includes(selectedBuild) ? 0 : 1;
-                      const bRec = b.recommended?.includes(selectedBuild) ? 0 : 1;
-                      return aRec - bRec || a.tier.localeCompare(b.tier);
-                    })
-                    .map(ma => {
-                      const isSelected = selectedMAs.includes(ma.id);
-                      const disabled = !isSelected && selectedMAs.length >= 4;
-                      const isRec = ma.recommended?.includes(selectedBuild);
-                      const statStr = Object.entries(ma.stat)
-                        .filter(([,v]) => v)
-                        .map(([k,v]) => `+${v} ${k}`)
-                        .join(", ");
-                      
-                      return (
-                        <div
-                          key={ma.id}
-                          onClick={() => {
-                            if (isSelected) setSelectedMAs(prev => prev.filter(id => id !== ma.id));
-                            else if (!disabled) setSelectedMAs(prev => [...prev, ma.id]);
-                          }}
-                          className={`p-2 rounded border text-[10px] cursor-pointer transition-all ${
-                            isSelected ? "bg-amber-950/30 border-amber-500 text-amber-200" :
-                            disabled ? "opacity-30 cursor-not-allowed border-slate-900" :
-                            "border-slate-900 hover:border-slate-700 text-slate-400"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-0.5">
-                            <span className="font-semibold">
-                              {isRec && <span className="text-amber-500 mr-1">★</span>}
-                              {ma.name}
-                              <span className="text-slate-600 ml-1 font-normal">{ma.cn}</span>
-                            </span>
-                            <span className={`text-[8px] px-1 rounded font-bold ${
-                              ma.tier === "gold" ? "bg-yellow-900/50 text-yellow-400" :
-                              ma.tier === "purple" ? "bg-purple-900/50 text-purple-400" :
-                              "bg-blue-900/50 text-blue-400"
-                            }`}>{ma.tier.toUpperCase()}</span>
-                          </div>
-                          {statStr && <div className="text-amber-400/70 font-mono">{statStr}</div>}
-                          {ma.note && isSelected && <div className="text-slate-500 mt-0.5">{ma.note}</div>}
-                        </div>
-                      );
-                    })}
                 </div>
               </div>
 
@@ -2457,7 +2483,7 @@ export default function App() {
                   <Award className="w-4 h-4 text-amber-400" /> Graduation Damage Analysis
                 </h2>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-5">
                   <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative">
                     <div className="text-[9px] font-mono tracking-wider text-slate-500 uppercase">Rotation Score damage</div>
                     <div className="text-xl font-bold font-serif text-slate-100 mt-1">
