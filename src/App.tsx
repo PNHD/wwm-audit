@@ -30,8 +30,7 @@ import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils
 import { INNER_WAYS } from "./data/innerways";
 import { WWM_DATA } from "./data/wwmData";
 import OcrScanner from "./components/OcrScanner";
-import RelayingSimulator from "./components/RelayingSimulator";
-import ArsenalSimulator from "./components/ArsenalSimulator";
+import StatSwapSimulator from "./components/StatSwapSimulator";
 
 // Constants
 const PATH_ICONS: Record<string, string> = {
@@ -109,7 +108,7 @@ const BUILD_TIPS: Record<string, string[]> = {
     "🎯 Affinity Rate → aim for 58%+ panel to cap 40% eff at T91",
     "⚡ Crit Rate and Affinity Rate both matter for Umbra",
     "✦ Attuned Bonus: Strategic Sword Skill DMG — stack on all gear",
-    "⚠️ DO NOT use Hawking set if Affinity procs are rare",
+    "⚠️ DO NOT use Eaglerise set if Affinity procs are rare",
   ],
   "stonesplit-might": [
     "🎯 Max Phys ATK → 3500+ target",
@@ -423,12 +422,42 @@ export default function App() {
     return config?.panel ?? INITIAL_PANEL;
   });
 
-  const [activeTab, setActiveTab ] = useState<"calculator" | "priority" | "gear" | "compare" | "simulators" | "ocr" | "profiles" | "rot-sim">("calculator");
+  const [activeTab, setActiveTab ] = useState<"calculator" | "priority" | "gear" | "compare" | "simulators" | "ocr" | "profiles" | "rot-sim" | "cultivate">("calculator");
   const [rotationTab, setRotationTab] = useState<"list" | "top">("list");
 
   // Rotation Sim & Real Marginal Gains states
   const [priorityClass, setPriorityClass] = useState<string>("Bamboocut-Dust");
   const [rotSimClass, setRotSimClass] = useState<string>("Bamboocut-Dust");
+  const [cultivateClass, setCultivateClass] = useState<string>("Bamboocut-Dust");
+
+  const [tuneCooldowns, setTuneCooldowns] = useState<TuneCooldown[]>(() => {
+    try {
+      const stored = localStorage.getItem("wwm_relay_cooldowns");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [showAddCooldownModal, setShowAddCooldownModal] = useState(false);
+  const [cooldownSelectedGearId, setCooldownSelectedGearId] = useState("");
+  const [cooldownRelayDate, setCooldownRelayDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  });
+
+  const [now, setNow] = useState<number>(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("wwm_relay_cooldowns", JSON.stringify(tuneCooldowns));
+  }, [tuneCooldowns]);
 
   const [hitsState, setHitsState] = useState<Record<string, number>>(() => {
     const initialHits: Record<string, number> = {};
@@ -654,6 +683,7 @@ export default function App() {
 
   // Gear state fields
   const [selectedSlot, setSelectedSlot] = useState<string>("Umbrella");
+  const [gearFilterSlot, setGearFilterSlot] = useState<string>("ALL");
   const [gearSortBy, setGearSortBy] = useState<"name" | "mastery">("name");
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GearItem | null>(null);
@@ -746,6 +776,40 @@ export default function App() {
       saveActiveGear(updatedGear);
       setIsItemModalOpen(false);
     }
+  };
+
+  const openCooldownModal = () => {
+    const gear = getActiveGear();
+    if (gear.length > 0) {
+      setCooldownSelectedGearId(gear[0].id);
+    } else {
+      setCooldownSelectedGearId("");
+    }
+    const today = new Date();
+    setCooldownRelayDate(today.toISOString().split("T")[0]);
+    setShowAddCooldownModal(true);
+  };
+
+  const handleAddCooldown = () => {
+    const gear = getActiveGear().find(g => g.id === cooldownSelectedGearId);
+    if (!gear) return;
+    const relayDateObj = new Date(cooldownRelayDate);
+    const timestamp = relayDateObj.getTime();
+
+    const newCd: TuneCooldown = {
+      id: "cd-" + Date.now(),
+      slot: gear.slot,
+      itemName: gear.name,
+      createdAt: timestamp,
+      durationMs: 7 * 24 * 60 * 60 * 1000
+    };
+
+    setTuneCooldowns(prev => [...prev, newCd]);
+    setShowAddCooldownModal(false);
+  };
+
+  const handleRemoveCooldown = (id: string) => {
+    setTuneCooldowns(prev => prev.filter(c => c.id !== id));
   };
 
   const [selectedInnerWays, setSelectedInnerWays] = useState<string[]>(() => {
@@ -1331,7 +1395,7 @@ export default function App() {
     return 1 + (effCritRate / 100) * (adjustedPanel.critDmg / 100) + (effAffRate / 100) * (adjustedPanel.affDmg / 100);
   }, [effCritRate, effAffRate, adjustedPanel]);
 
-  const handleStatChange = (key: keyof PanelStats, val: number) => {
+  const handleStatChange = (key: keyof PanelStats, val: number | string) => {
     setPanel((prev) => ({
       ...prev,
       [key]: val,
@@ -1683,6 +1747,17 @@ export default function App() {
           >
             ⚖ Compare
             {activeTab === "compare" && (
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("cultivate")}
+            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+              activeTab === "cultivate" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            🎯 Cultivate
+            {activeTab === "cultivate" && (
               <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
             )}
           </button>
@@ -2910,129 +2985,176 @@ export default function App() {
         {activeTab === "gear" && (
           <div className="space-y-6">
             <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
-              <div className="flex justify-between items-center mb-4 border-b border-amber-900/10 pb-3">
-                <div>
-                  <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
-                    <Shield className="w-4 h-4 ml-0.5 inline-block text-amber-500" /> Gear Stock Inventory
-                  </h2>
-                  <p className="text-[10px] text-slate-500 mt-0.5">
-                    Manage and store alternate gears for the active character scheme.
-                  </p>
-                </div>
-                <button
-                  onClick={openAddModal}
-                  className="px-3 py-1.5 bg-amber-500 text-slate-950 rounded font-bold text-xs hover:bg-amber-400 flex items-center gap-1 transition-all"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Add Gear Item
-                </button>
-              </div>
-
-              {/* 4x2 Grid of Slot Selection Buttons */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-                {SLOTS.map((slot) => {
-                  const itemsInSlot = getActiveGear().filter(it => it.slot === slot.name);
-                  const hasItems = itemsInSlot.length > 0;
-                  const isSelected = selectedSlot === slot.name;
-                  
-                  return (
-                    <button
-                      key={slot.name}
-                      onClick={() => setSelectedSlot(slot.name)}
-                      className={`relative flex items-center gap-2.5 p-3 rounded-lg border transition-all text-left ${
-                        isSelected
-                          ? "bg-amber-500 text-slate-950 border-amber-500 font-bold shadow-md shadow-amber-500/5"
-                          : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900/60 hover:border-slate-800"
-                      }`}
-                    >
-                      <span className="text-lg">{slot.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[11px] truncate uppercase tracking-wide font-semibold">{slot.name}</div>
-                        {hasItems && (
-                          <div className={`text-[9px] mt-0.5 ${isSelected ? "text-slate-900 font-bold" : "text-slate-500"}`}>
-                            {itemsInSlot.length} item{itemsInSlot.length > 1 ? "s" : ""}
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Gold dot indicator if possesses items */}
-                      {hasItems && (
-                        <span className={`absolute top-2 right-2 w-1.5 h-1.5 rounded-full ${isSelected ? "bg-slate-950" : "bg-amber-500 animate-pulse"}`} />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Items List for selected slot */}
-              <div>
-                <div className="flex justify-between items-center mb-4 border-b border-amber-900/10 pb-2">
-                  <h3 className="text-xs uppercase font-bold tracking-widest text-slate-400 font-mono flex items-center gap-2">
-                    <span>Selected Slot:</span>
-                    <span className="text-amber-500 font-serif">{selectedSlot}</span>
-                  </h3>
-                  {getActiveGear().filter(it => it.slot === selectedSlot).length > 0 && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-slate-500 uppercase font-mono">Sort:</span>
-                      <select
-                        value={gearSortBy}
-                        onChange={(e) => setGearSortBy(e.target.value as any)}
-                        className="bg-slate-950 border border-slate-900 rounded px-2 py-0.5 text-[10px] font-mono text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
-                      >
-                        <option value="name">Alphabetical</option>
-                        <option value="mastery">Mastery (⚔ High to Low)</option>
-                      </select>
-                    </div>
-                  )}
-                </div>
-
-                {getActiveGear().filter(it => it.slot === selectedSlot).length === 0 ? (
-                  <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center">
-                    <p className="text-slate-400 text-xs">No items created for this slot yet.</p>
+              {/* TOP BAR */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-amber-900/10 pb-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
+                      <Shield className="w-4 h-4 ml-0.5 inline-block text-amber-500" /> Gear Stock Inventory
+                    </h2>
                     <button
                       onClick={openAddModal}
-                      className="mt-3 px-3 py-1.5 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-xs transition-colors"
+                      className="md:hidden px-3 py-1.5 bg-amber-500 text-slate-950 rounded font-bold text-xs hover:bg-amber-400 flex items-center gap-1 transition-all"
                     >
-                      Create first "{selectedSlot}" item
+                      <Plus className="w-3.5 h-3.5" /> Add Gear
                     </button>
                   </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {getActiveGear()
-                      .filter(it => it.slot === selectedSlot)
-                      .sort((a, b) => {
-                        if (gearSortBy === "mastery") {
-                          const m1 = a.mastery ?? 0;
-                          const m2 = b.mastery ?? 0;
-                          return m2 - m1;
-                        }
-                        return a.name.localeCompare(b.name);
-                      })
-                      .map((item) => {
-                        const isGold = item.quality === "gold";
-                        const isPurple = item.quality === "purple";
-                        const hasTuned = item.subs.some(sub => sub.isTuned);
-                        
-                        return (
-                          <div
-                            key={item.id}
-                            onClick={() => openEditModal(item)}
-                            className={`group p-4 rounded-xl border cursor-pointer hover:scale-[1.01] transition-all relative overflow-hidden flex flex-col justify-between ${
-                              isGold
-                                ? "bg-gradient-to-b from-[#1b1510] to-[#120f0c] border-[#d48c2a]/20 hover:border-[#d48c2a]/40"
-                                : isPurple
-                                ? "bg-gradient-to-b from-[#16121c] to-[#110e14] border-purple-500/10 hover:border-purple-500/30"
-                                : "bg-gradient-to-b from-[#11141a] to-[#0e1014] border-sky-500/10 hover:border-sky-500/30"
-                            }`}
-                          >
-                            <div className="absolute top-0 right-0 h-10 w-10 flex items-center justify-center pointer-events-none">
-                              {hasTuned && (
-                                <span className="absolute top-1 right-2 text-amber-500 font-bold text-xs" title="Tuned substat inside">✦</span>
-                              )}
-                            </div>
+                  <p className="text-[10px] text-slate-505 mb-3">
+                    Manage and store alternate gears for the active character scheme.
+                  </p>
+                  
+                  {/* Slot filter tabs (horizontal scrollable) */}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                    {[
+                      { key: "ALL", label: "ALL", icon: "📁" },
+                      { key: "Umbrella", label: "UMBRELLA", icon: "☂" },
+                      { key: "Rope Dart", label: "ROPE DART", icon: "🪃" },
+                      { key: "Pendant", label: "PENDANT", icon: "📿" },
+                      { key: "Helmet", label: "HELMET", icon: "⛑" },
+                      { key: "Chest", label: "CHEST", icon: "🥋" },
+                      { key: "Greaves", label: "GREAVES", icon: "🦿" },
+                      { key: "Bracers", label: "BRACERS", icon: "🤺" },
+                      { key: "Bow/Ring", label: "BOW/RING", icon: "🏹" }
+                    ].map((tab) => {
+                      const isSelected = gearFilterSlot === tab.key;
+                      const count = tab.key === "ALL" 
+                        ? getActiveGear().length 
+                        : getActiveGear().filter(it => it.slot === tab.key).length;
+                      return (
+                        <button
+                          key={tab.key}
+                          onClick={() => {
+                            setGearFilterSlot(tab.key);
+                            if (tab.key !== "ALL") {
+                              setSelectedSlot(tab.key);
+                            }
+                          }}
+                          className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold border transition-all ${
+                            isSelected
+                              ? "bg-amber-500 text-slate-950 border-amber-500 shadow-md shadow-amber-500/10"
+                              : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900/60"
+                          }`}
+                        >
+                          <span>{tab.icon}</span>
+                          <span>{tab.label}</span>
+                          {count > 0 && (
+                            <span className={`text-[9px] px-1 py-0.2 rounded-full font-mono ${
+                              isSelected 
+                                ? "bg-slate-950/20 text-slate-950" 
+                                : "bg-slate-800 text-slate-400"
+                            }`}>
+                              {count}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                <div className="hidden md:flex flex-col items-end gap-2.5 shrink-0">
+                  <button
+                    onClick={openAddModal}
+                    className="px-4 py-2 bg-amber-500 text-slate-950 rounded font-bold text-xs hover:bg-amber-400 flex items-center gap-1 transition-all shadow-md shadow-amber-500/5 hover:scale-[1.02]"
+                  >
+                    <Plus className="w-4 h-4" /> Add Gear Item
+                  </button>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-500 uppercase font-mono">Sort:</span>
+                    <select
+                      value={gearSortBy}
+                      onChange={(e) => setGearSortBy(e.target.value as "name" | "mastery")}
+                      className="bg-slate-950 border border-slate-900 rounded px-2.5 py-1 text-[10px] font-mono text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                    >
+                      <option value="name">Alphabetical</option>
+                      <option value="mastery">Mastery (⚔ High to Low)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-                            <div>
-                              <div className="flex items-start justify-between gap-2 mb-2">
-                                <div>
+              {/* Mobile Sort Controls */}
+              <div className="md:hidden flex items-center justify-between mb-4 bg-slate-950/25 p-2 rounded-lg border border-slate-900">
+                <span className="text-[10px] text-slate-400 uppercase font-mono">Sort Items:</span>
+                <select
+                  value={gearSortBy}
+                  onChange={(e) => setGearSortBy(e.target.value as "name" | "mastery")}
+                  className="bg-slate-950 border border-slate-900 rounded px-2 py-1 text-[10px] font-mono text-[#ede5ce] focus:outline-none"
+                >
+                  <option value="name">Alphabetical</option>
+                  <option value="mastery">Mastery (⚔ High to Low)</option>
+                </select>
+              </div>
+
+              {/* TWO COLUMN LAYUT */}
+              <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
+                
+                {/* LEFT SIDE (70%): gear card grid */}
+                <div className="lg:col-span-7">
+                  {(() => {
+                    const allGear = getActiveGear();
+                    if (allGear.length === 0) {
+                      return (
+                        <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
+                          <p className="text-slate-400 text-xs">No gear in this slot. Add your first item →</p>
+                          <button
+                            onClick={openAddModal}
+                            className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-xs transition-all"
+                          >
+                            Create first item
+                          </button>
+                        </div>
+                      );
+                    }
+
+                    const renderGearCard = (item: GearItem) => {
+                      const isGold = item.quality === "gold";
+                      const isPurple = item.quality === "purple";
+                      const hasTuned = item.subs.some(sub => sub.isTuned);
+                      
+                      let qBorder = "border-sky-500/20 hover:border-sky-500/60";
+                      let qBgGrad = "from-[#0e121a] to-[#0a0d14]";
+                      let labelText = "BLUE";
+                      let labelStyle = "bg-sky-500/10 text-sky-400 border border-sky-500/30";
+                      
+                      if (isGold) {
+                        qBorder = "border-[#d48c2a]/20 hover:border-[#d48c2a]/60";
+                        qBgGrad = "from-[#1c1510] to-[#120f0c]";
+                        labelText = "GOLD";
+                        labelStyle = "bg-amber-500/10 text-amber-400 border border-amber-500/30 font-medium";
+                      } else if (isPurple) {
+                        qBorder = "border-[#9d5ce5]/20 hover:border-[#9d5ce5]/60";
+                        qBgGrad = "from-[#16121c] to-[#100d14]";
+                        labelText = "PURPLE";
+                        labelStyle = "bg-purple-500/10 text-purple-400 border border-purple-500/20";
+                      }
+
+                      const slotObj = SLOTS.find(s => s.name === item.slot);
+                      const slotIcon = slotObj?.icon || "🥋";
+
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => openEditModal(item)}
+                          className={`group relative p-4 rounded-xl border bg-gradient-to-b ${qBgGrad} ${qBorder} cursor-pointer hover:scale-[1.01] hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col justify-between`}
+                        >
+                          <div className="absolute top-3.5 right-3.5 flex items-center gap-1.5">
+                            {hasTuned && (
+                              <span className="text-amber-500 font-bold text-xs animate-pulse" title="Tuned substat inside">✦</span>
+                            )}
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-1">
+                              <Edit className="w-3.5 h-3.5 text-amber-500 hover:text-amber-400" />
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-lg bg-slate-950/60 w-8 h-8 rounded-lg flex items-center justify-center border border-slate-900 shrink-0">
+                                  {slotIcon}
+                                </span>
+                                <div className="min-w-0">
                                   <h4 className="text-xs font-bold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
                                     {item.name}
                                   </h4>
@@ -3042,51 +3164,386 @@ export default function App() {
                                     </div>
                                   )}
                                 </div>
-                                <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded scale-90 ${
-                                  isGold
-                                    ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                                    : isPurple
-                                    ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                                    : "bg-sky-500/20 text-sky-400 border border-sky-500/30"
-                                }`}>
-                                  {item.quality}
-                                </span>
                               </div>
-
-                              <div className="text-[10px] text-slate-400 bg-slate-950/60 p-2 rounded border border-slate-900 mb-3 font-mono">
-                                <span className="text-slate-500">Main Stat: </span>
-                                <span>{item.main || "None"}</span>
-                                {item.set && item.set !== "none" && (
-                                  <div className="mt-1 text-[9px] text-[#2ebd85] font-bold">
-                                    Set: {item.set === "stars" ? "⭐ Stars Align" : item.set === "eaglerise" ? "🦅 Eaglerise" : item.set === "pursuing" ? "👥 Pursuing Shadow" : item.set === "stormrain" ? "⛈️ Stormrain" : item.set === "shakenhill" ? "⛰️ Shakenhill" : item.set}
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="space-y-1.5">
-                                {item.subs.map((sub, sidx) => (
-                                  <div key={sidx} className="flex items-center justify-between text-[11px] font-mono leading-tight">
-                                    <span className="text-slate-500">{sub.type}</span>
-                                    <div className="flex items-center gap-1">
-                                      <span className="text-slate-300 font-semibold">{sub.val}</span>
-                                      {sub.isTuned && (
-                                        <span className="text-amber-500 text-[10px] font-extrabold" title="Tuned substat">✦</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
+                              <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded leading-none shrink-0 ${labelStyle}`}>
+                                {labelText}
+                              </span>
                             </div>
 
-                            <div className="mt-4 pt-2 border-t border-slate-900 text-right text-[9px] text-slate-505 font-mono group-hover:text-amber-500/60 transition-colors">
-                              Click to configure ✎
+                            <div className="text-[10px] text-slate-300 bg-slate-950/60 p-2.5 rounded border border-slate-900 font-mono space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-slate-500">Main Stat:</span>
+                                <span className="text-slate-205 font-medium">{item.main || "None"}</span>
+                              </div>
+                              {item.set && item.set !== "none" && (
+                                <div className="flex items-center justify-between border-t border-slate-900/50 pt-1 mt-1">
+                                  <span className="text-slate-500">Set Bonus:</span>
+                                  <span className="text-[#2ebd85] font-bold flex items-center gap-1">
+                                    {item.set === "stars" ? "⭐ Stars Align" : item.set === "eaglerise" ? "🦅 Eaglerise" : item.set === "pursuing" ? "👥 Pursuing Shadow" : item.set === "stormrain" ? "⛈️ Stormrain" : item.set === "shakenhill" ? "⛰️ Shakenhill" : item.set}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="space-y-1.5 border-t border-slate-900/40 pt-2.5">
+                              {item.subs.map((sub, sidx) => (
+                                <div key={sidx} className="flex items-center justify-between text-[11px] font-mono leading-tight">
+                                  <span className="text-slate-505">{sub.type}</span>
+                                  <div className="flex items-center gap-1">
+                                    <span className={`font-semibold ${sub.isTuned ? "text-amber-400" : "text-slate-300"}`}>
+                                      {sub.val}
+                                    </span>
+                                    {sub.isTuned && (
+                                      <span className="text-amber-500 text-[10px] font-extrabold" title="Tuned substat">✦</span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    };
+
+                    if (gearFilterSlot !== "ALL") {
+                      const slotItems = allGear
+                        .filter(it => it.slot === gearFilterSlot)
+                        .sort((a, b) => {
+                          if (gearSortBy === "mastery") {
+                            return (b.mastery ?? 0) - (a.mastery ?? 0);
+                          }
+                          return a.name.localeCompare(b.name);
+                        });
+
+                      if (slotItems.length === 0) {
+                        return (
+                          <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
+                            <p className="text-slate-400 text-xs">No gear in this slot. Add your first item →</p>
+                            <button
+                              onClick={openAddModal}
+                              className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-xs transition-all"
+                            >
+                              Create first "{gearFilterSlot}" item
+                            </button>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                          {slotItems.map(item => renderGearCard(item))}
+                        </div>
+                      );
+                    }
+
+                    const slotsWithItems = SLOTS.map(slot => {
+                      const items = allGear
+                        .filter(it => it.slot === slot.name)
+                        .sort((a, b) => {
+                          if (gearSortBy === "mastery") {
+                            return (b.mastery ?? 0) - (a.mastery ?? 0);
+                          }
+                          return a.name.localeCompare(b.name);
+                        });
+                      return { slot, items };
+                    }).filter(group => group.items.length > 0);
+
+                    return (
+                      <div className="space-y-6">
+                        {slotsWithItems.map(({ slot, items }) => (
+                          <div key={slot.name} className="space-y-3">
+                            <h3 className="text-xs uppercase tracking-wider font-extrabold text-amber-500/80 font-mono border-b border-amber-950/40 pb-1.5 flex items-center gap-2">
+                              <span className="text-sm">{slot.icon}</span>
+                              <span>{slot.name} Section</span>
+                              <span className="text-[10px] text-slate-500 font-normal">({items.length} item{items.length > 1 ? "s" : ""})</span>
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                              {items.map(item => renderGearCard(item))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* RIGHT SIDE (30%): live stats sidebar */}
+                <div className="lg:col-span-3 lg:sticky lg:top-4 h-fit space-y-4">
+                  <div className="bg-[#141210] border border-amber-900/20 rounded-xl p-4 space-y-4">
+                    <div className="border-b border-amber-955/40 pb-3">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-sm">📊</span>
+                        <h3 className="text-xs font-extrabold text-amber-500 tracking-wider font-serif uppercase">
+                          Current Panel
+                        </h3>
+                      </div>
+                      <p className="text-[10px] text-slate-400 font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-slate-900 inline-block">
+                        {selectedBuild} · {activeTier.name}
+                      </p>
+                    </div>
+
+                    {/* Section 1: Attack Stats */}
+                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Physical Attack</span>
+                        <span className="text-white font-bold text-right leading-none">
+                          {Math.round(adjustedPanel.minOuter)}~{Math.round(adjustedPanel.maxOuter)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Bamboocut Atk</span>
+                        <span className="text-slate-350 font-medium text-right leading-none">
+                          {Math.round(adjustedPanel.minPz)}~{Math.round(adjustedPanel.maxPz)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Phys Penetration</span>
+                        <span className="text-slate-350 font-medium text-right leading-none">
+                          {adjustedPanel.outerPen.toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Section 2: Critical & Precision Stats */}
+                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                      {(() => {
+                        const precCapPanel = Math.round(65 + (100-65) * (1 + activeTier.judgeRes));
+                        const hasPrecCap = adjustedPanel.prec >= precCapPanel;
+                        const judgmentFactor = 1 + activeTier.judgeRes;
+                        const effectiveCritical = Math.min(80, adjustedPanel.crit / judgmentFactor);
+                        const hasCritCap = effectiveCritical >= 80;
+                        const effectiveAffinity = Math.min(40, adjustedPanel.aff / judgmentFactor);
+                        const hasAffCap = effectiveAffinity >= 40;
+
+                        return (
+                          <>
+                            <div className="flex items-center justify-between text-xs font-mono">
+                              <span className="text-slate-400">Precision</span>
+                              <span className={`font-bold text-right leading-none ${hasPrecCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
+                                {adjustedPanel.prec.toFixed(1)}% {hasPrecCap && "(Cap)"}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs font-mono">
+                              <span className="text-slate-400">Critical Rate</span>
+                              <span className={`font-bold text-right leading-none ${hasCritCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
+                                {adjustedPanel.crit.toFixed(1)}% {hasCritCap && "(Cap)"}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs font-mono">
+                              <span className="text-slate-400">Affinity Rate</span>
+                              <span className={`font-bold text-right leading-none ${hasAffCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
+                                {adjustedPanel.aff.toFixed(1)}% {hasAffCap && "(Cap)"}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs font-mono">
+                              <span className="text-slate-400">Direct Crit</span>
+                              <span className="text-slate-355 font-medium text-right leading-none">
+                                {adjustedPanel.dcrit.toFixed(1)}%
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Section 3: Damage Modifiers */}
+                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Crit DMG Bonus</span>
+                        <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.critDmg.toFixed(1)}%</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Affinity DMG Bonus</span>
+                        <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.affDmg.toFixed(1)}%</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Phys DMG Bonus</span>
+                        <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.outerDmg.toFixed(1)}%</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Boss DMG Bonus</span>
+                        <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.bossDmg.toFixed(1)}%</span>
+                      </div>
+                    </div>
+
+                    {/* Section 4: Weapon Bonuses */}
+                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                      <div className={`flex items-center justify-between text-xs font-mono py-1 rounded px-1.5 transition-all ${
+                        adjustedPanel.umbBonus > 0 ? "bg-amber-955/25 border border-amber-900/20 text-amber-400 font-bold" : "text-slate-400"
+                      }`}>
+                        <span>Umbrella Bonus</span>
+                        <span className={adjustedPanel.umbBonus > 0 ? "text-amber-400" : "text-slate-350"}>
+                          {adjustedPanel.umbBonus.toFixed(1)}%
+                        </span>
+                      </div>
+                      {adjustedPanel.ropeBonus !== undefined && adjustedPanel.ropeBonus > 0 && (
+                        <div className="flex items-center justify-between text-xs font-mono py-1 rounded px-1.5 bg-amber-955/25 border border-amber-900/20 text-amber-400 font-bold">
+                          <span>Rope Dart Bonus</span>
+                          <span className="text-amber-400">
+                            {adjustedPanel.ropeBonus.toFixed(1)}%
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between text-xs font-mono px-1.5">
+                        <span className="text-slate-400">All Weapon Bonus</span>
+                        <span className="text-slate-350 leading-none">{adjustedPanel.allArts.toFixed(1)}%</span>
+                      </div>
+                    </div>
+
+                    {/* Section 5: Graduation Status */}
+                    <div className="space-y-2.5 pt-1">
+                      <span className="text-[10px] uppercase tracking-wider font-extrabold text-slate-450 font-serif block">
+                        GRADUATION STATUS
+                      </span>
+                      {(() => {
+                        const gradRate = rotationStats.gradRate;
+                        
+                        const getGraduationColor = (r: number) => {
+                          if (r < 50) return { text: "text-red-500", bg: "bg-red-500", glow: "" };
+                          if (r < 75) return { text: "text-orange-500", bg: "bg-orange-500", glow: "" };
+                          if (r < 90) return { text: "text-amber-500", bg: "bg-amber-500", glow: "" };
+                          if (r < 100) return { text: "text-emerald-500", bg: "bg-emerald-500", glow: "" };
+                          return { 
+                            text: "text-yellow-400 font-black tracking-widest", 
+                            bg: "bg-gradient-to-r from-amber-500 to-yellow-400 animate-pulse", 
+                            glow: "shadow-[0_0_15px_rgba(251,191,36,0.3)] border border-yellow-400/40" 
+                          };
+                        };
+
+                        const gc = getGraduationColor(gradRate);
+                        
+                        const totalBlocks = 10;
+                        const filledBlocks = Math.round(Math.min(100, Math.max(0, gradRate)) / 10);
+                        const emptyBlocks = 10 - filledBlocks;
+                        const filledStr = "█".repeat(filledBlocks);
+                        const emptyStr = "░".repeat(emptyBlocks);
+
+                        return (
+                          <div className={`bg-[#0c0a09] border border-amber-900/10 p-3.5 rounded-lg space-y-3.5 text-center ${gc.glow}`}>
+                            <div className="text-3xl font-black font-serif tracking-tight">
+                              <span className={gc.text}>{gradRate.toFixed(1)}%</span>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="text-xs font-mono text-slate-300 flex items-center justify-center gap-1.5 leading-none">
+                                <span className={gc.text}>[{filledStr}{emptyStr}]</span>
+                                <span className="text-slate-400 font-bold">{gradRate.toFixed(1)}/100</span>
+                              </div>
+                              <div className="text-[9px] text-slate-500 font-mono">
+                                Relative to baseline target
+                              </div>
                             </div>
                           </div>
                         );
-                      })}
+                      })()}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Relaying Cooldown Tracker Section */}
+              <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 mt-6 shadow-lg">
+                <div className="border-b border-amber-900/15 pb-4 mb-5 flex justify-between items-center flex-wrap gap-3">
+                  <div>
+                    <h3 className="text-base font-bold font-serif text-slate-150 flex items-center gap-2">
+                      ⏱ Relaying Cooldown Tracker
+                    </h3>
+                    <p className="text-slate-400 text-xs mt-1">
+                      Track the remaining 7-day cooldown of your relayed gear.
+                    </p>
+                  </div>
+                  <button
+                    onClick={openCooldownModal}
+                    className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>+</span> Add Item on Cooldown
+                  </button>
+                </div>
+
+                {tuneCooldowns.length === 0 ? (
+                  <div className="text-center py-6 text-slate-500 text-xs font-mono">
+                    No items currently tracking a relay cooldown.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {tuneCooldowns.map((item) => {
+                      const elapsed = now - item.createdAt;
+                      const remainingMs = item.durationMs - elapsed;
+                      const isReady = remainingMs <= 0;
+                      
+                      const progressPct = isReady ? 100 : Math.min(100, Math.max(0, (elapsed / item.durationMs) * 100));
+                      
+                      // Format ASCII blocks
+                      const totalBlocks = 10;
+                      const filledBlocks = Math.round((progressPct / 100) * totalBlocks);
+                      const progressStr = "█".repeat(filledBlocks) + "░".repeat(totalBlocks - filledBlocks);
+
+                      let remainingText = "READY TO RELAY AGAIN";
+                      if (!isReady) {
+                        const totalHours = Math.max(0, Math.floor(remainingMs / (1000 * 60 * 60)));
+                        const days = Math.floor(totalHours / 24);
+                        const hours = totalHours % 24;
+                        remainingText = `${days}d ${hours}h remaining`;
+                      }
+
+                      // Colors
+                      let progressFillColor = "bg-rose-500";
+                      let textColor = "text-rose-450";
+                      if (isReady) {
+                        progressFillColor = "bg-emerald-500";
+                        textColor = "text-emerald-400";
+                      } else if (progressPct >= 40) {
+                        progressFillColor = "bg-amber-500";
+                        textColor = "text-amber-400";
+                      }
+
+                      const dateFormatted = new Date(item.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      });
+
+                      return (
+                        <div key={item.id} className="bg-[#181512] border border-amber-900/10 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                          <div className="space-y-1 w-full md:w-auto">
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                              <span className="font-bold text-sm text-slate-200">{item.itemName}</span>
+                              <span className="text-[10px] text-slate-500 font-mono font-medium">&#183; {item.slot}</span>
+                            </div>
+                            <div className="text-xs text-slate-400 font-mono">
+                              Relayed: {dateFormatted}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-4 w-full md:w-auto max-w-md shrink-0 justify-between md:justify-end">
+                            <div className="space-y-1 w-48 sm:w-64">
+                              <div className="flex justify-between items-baseline text-[10px] font-mono mb-1">
+                                <span className={textColor}>[{progressStr}]</span>
+                                <span className={`font-bold ${textColor}`}>{remainingText}</span>
+                              </div>
+                              <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-900">
+                                <div 
+                                  className={`h-full rounded-full transition-all duration-300 ${progressFillColor}`}
+                                  style={{ width: `${progressPct}%` }}
+                                />
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => handleRemoveCooldown(item.id)}
+                              className="text-xs text-rose-450 hover:text-rose-400 px-2 py-1 font-semibold hover:bg-rose-950/20 rounded border border-rose-950/30 transition-colors cursor-pointer"
+                            >
+                              ✕ Remove
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
+
             </div>
           </div>
         )}
@@ -3246,7 +3703,312 @@ export default function App() {
           </div>
         )}
 
+        {/* Tab Cultivate */}
+        {activeTab === "cultivate" && (
+          <div className="space-y-6">
+            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
+              <div className="border-b border-amber-900/15 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h2 className="text-lg font-bold font-serif text-slate-105 flex items-center gap-2">
+                    🎯 Cultivation Summary
+                  </h2>
+                  <p className="text-slate-400 text-xs mt-1">
+                    Compare your current accumulated gear substats with the graduation panel targets.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs font-mono text-slate-400">Select Class:</span>
+                  <select
+                    value={cultivateClass}
+                    onChange={(e) => setCultivateClass(e.target.value)}
+                    className="bg-slate-950 border border-amber-900/30 hover:border-amber-500/50 text-amber-500 text-xs rounded-lg px-3 py-1.5 focus:outline-none font-bold transition-all cursor-pointer"
+                  >
+                    {Object.keys(WWM_DATA.classes).map((cls) => (
+                      <option key={cls} value={cls}>
+                        {cls}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
+              {/* Stats Overview */}
+              {(() => {
+                const classData = WWM_DATA.classes[cultivateClass as keyof typeof WWM_DATA.classes] || { graduationPanel: {}, marginalGains: [] };
+                const graduationPanel = classData.graduationPanel || {};
+                const marginalGains = classData.marginalGains || [];
+
+                // helper mapping function
+                const getStatConfig = (statName: string, gradPanel: any) => {
+                  let gearType = "";
+                  let gradKey = "";
+                  let isPercentage = false;
+                  let fallbackTarget = 100;
+
+                  const nameLower = statName.toLowerCase();
+                  if (nameLower.includes("max phys atk") || nameLower === "max physical atk") {
+                    gearType = "Max Phys Atk";
+                    gradKey = "Max Phys Atk";
+                    isPercentage = false;
+                  } else if (nameLower.includes("min phys atk") || nameLower === "min physical atk") {
+                    gearType = "Min Phys Atk";
+                    gradKey = "Min Phys Atk";
+                    isPercentage = false;
+                  } else if (nameLower.includes("phys pen") || nameLower === "physical penetration") {
+                    gearType = "Phys Pen";
+                    gradKey = "Phys Pen";
+                    isPercentage = true;
+                  } else if (nameLower.includes("crit rate") || nameLower === "critical rate") {
+                    gearType = "Crit Rate";
+                    gradKey = "Crit Rate";
+                    isPercentage = true;
+                  } else if (nameLower.includes("crit dmg") || nameLower === "critical damage") {
+                    gearType = "Crit DMG";
+                    gradKey = "Crit DMG";
+                    isPercentage = true;
+                  } else if (nameLower.includes("affinity rate")) {
+                    gearType = "Affinity Rate";
+                    gradKey = "Affinity Rate";
+                    isPercentage = true;
+                  } else if (nameLower.includes("affinity dmg")) {
+                    gearType = "Affinity DMG";
+                    gradKey = "Affinity DMG";
+                    isPercentage = true;
+                  } else if (nameLower.includes("precision")) {
+                    gearType = "Precision";
+                    gradKey = "Precision";
+                    isPercentage = true;
+                  } else if (nameLower.includes("max bamboocut")) {
+                    gearType = "Max Bamboocut Atk";
+                    gradKey = "Max Bamboocut";
+                    isPercentage = false;
+                  } else if (nameLower.includes("min bamboocut")) {
+                    gearType = "Min Bamboocut Atk";
+                    gradKey = "Min Bamboocut";
+                    isPercentage = false;
+                  } else if (nameLower.includes("bamboocut pen")) {
+                    gearType = "Attr Pen";
+                    gradKey = "Bamboocut Pen";
+                    isPercentage = true;
+                  } else if (nameLower.includes("own weapon bonus")) {
+                    gearType = "Umbrella Bonus";
+                    gradKey = "Own Weapon Bonus";
+                    isPercentage = true;
+                    fallbackTarget = 32.0;
+                  } else if (nameLower.includes("all weapon")) {
+                    gearType = "All Weapon";
+                    gradKey = "All Weapon Bonus";
+                    isPercentage = true;
+                    fallbackTarget = 16.0;
+                  } else if (nameLower.includes("boss dmg")) {
+                    gearType = "Boss DMG%";
+                    gradKey = "Boss DMG Bonus";
+                    isPercentage = true;
+                    fallbackTarget = 12.0;
+                  } else if (nameLower.includes("strength") || nameLower.includes("劲")) {
+                    gearType = "Strength";
+                    gradKey = "Strength";
+                    isPercentage = false;
+                    fallbackTarget = 120;
+                  } else if (nameLower.includes("power") || nameLower.includes("势")) {
+                    gearType = "Power";
+                    gradKey = "Power";
+                    isPercentage = false;
+                    fallbackTarget = 120;
+                  } else if (nameLower.includes("agility") || nameLower.includes("敏")) {
+                    gearType = "Agility";
+                    gradKey = "Agility";
+                    isPercentage = false;
+                    fallbackTarget = 120;
+                  } else if (nameLower.includes("phys dmg")) {
+                    gearType = "Phys DMG%";
+                    gradKey = "Phys DMG Up";
+                    isPercentage = true;
+                    fallbackTarget = 15;
+                  }
+
+                  let rawTarget = 0;
+                  if (gradKey && gradPanel && gradPanel[gradKey] !== undefined) {
+                    rawTarget = gradPanel[gradKey];
+                    if (isPercentage && rawTarget <= 2.0 && rawTarget > 0) {
+                      rawTarget = rawTarget * 100;
+                    }
+                  } else {
+                    rawTarget = fallbackTarget;
+                  }
+
+                  const scaledTarget = rawTarget * 0.606;
+
+                  return {
+                    gearType,
+                    gradKey,
+                    isPercentage,
+                    scaledTarget
+                  };
+                };
+
+                // get active gear items
+                const activeGear = getActiveGear();
+
+                // Compute summed substats per gearType
+                const currentSubsSum: Record<string, number> = {};
+                activeGear.forEach((gear) => {
+                  gear.subs.forEach((sub) => {
+                    const type = sub.type;
+                    const valNum = parseFloat(sub.val.replace(/[^\d.]/g, "")) || 0;
+                    currentSubsSum[type] = (currentSubsSum[type] || 0) + valNum;
+                  });
+                });
+
+                // Prepare stat tiles based on marginalGains
+                const tiles = marginalGains.map((gain: any) => {
+                  const label = gain.stat;
+                  const config = getStatConfig(label, graduationPanel);
+                  
+                  let currentVal = 0;
+                  if (label.toLowerCase().includes("own weapon")) {
+                    currentVal = (currentSubsSum["Umbrella Bonus"] || 0) + (currentSubsSum["Rope Dart Bonus"] || 0);
+                  } else if (label.toLowerCase().includes("all weapon")) {
+                    currentVal = currentSubsSum["All Weapon"] || 0;
+                  } else if (label.toLowerCase().includes("boss dmg")) {
+                    currentVal = currentSubsSum["Boss DMG%"] || 0;
+                  } else if (label.toLowerCase().includes("bamboocut pen")) {
+                    currentVal = currentSubsSum["Attr Pen"] || 0;
+                  } else if (label.toLowerCase().includes("phys dmg")) {
+                    currentVal = currentSubsSum["Phys DMG%"] || 0;
+                  } else if (label.toLowerCase().includes("strength") || label.toLowerCase().includes("劲")) {
+                    currentVal = currentSubsSum["Strength"] || currentSubsSum["Strength (劲)"] || currentSubsSum["jin"] || 0;
+                  } else if (label.toLowerCase().includes("power") || label.toLowerCase().includes("势")) {
+                    currentVal = currentSubsSum["Power"] || currentSubsSum["Power (势)"] || currentSubsSum["shi"] || 0;
+                  } else if (label.toLowerCase().includes("agility") || label.toLowerCase().includes("敏")) {
+                    currentVal = currentSubsSum["Agility"] || currentSubsSum["Agility (敏)"] || currentSubsSum["min"] || 0;
+                  } else {
+                    currentVal = currentSubsSum[config.gearType] || 0;
+                  }
+
+                  const targetVal = config.scaledTarget;
+                  const progressPct = targetVal > 0 ? (currentVal / targetVal) * 100 : 0;
+                  const progressCapped = Math.min(progressPct, 100);
+
+                  // Colors: >= 80% filled is Green, 40-79% is Amber, < 40% is Red
+                  let bgCardClass = "bg-[#1f1915]/40 border-rose-950/40 text-rose-450";
+                  let progressFillColor = "bg-rose-500";
+                  if (progressPct >= 80) {
+                    bgCardClass = "bg-[#141c16]/40 border-emerald-950/30 text-emerald-400";
+                    progressFillColor = "bg-emerald-500";
+                  } else if (progressPct >= 40) {
+                    bgCardClass = "bg-[#1e1a12]/40 border-amber-950/30 text-amber-500";
+                    progressFillColor = "bg-amber-500";
+                  }
+
+                  return {
+                    label,
+                    gearType: config.gearType,
+                    currentVal,
+                    targetVal,
+                    progressPct,
+                    progressCapped,
+                    bgCardClass,
+                    progressFillColor,
+                    isPercentage: config.isPercentage
+                  };
+                });
+
+                // Calculate total progress: Average progress capped at 100%, scaled to 40
+                const totalProgressSum = tiles.reduce((acc: number, t: any) => acc + t.progressCapped, 0);
+                const averageProgressPct = tiles.length > 0 ? totalProgressSum / tiles.length : 0;
+                const totalProgressVal = (averageProgressPct / 100) * 40;
+
+                // Dingyin counts
+                let totalSubsCount = 0;
+                let tunedSubsCount = 0;
+                activeGear.forEach((gear) => {
+                  gear.subs.forEach((sub) => {
+                    totalSubsCount++;
+                    if (sub.isTuned) {
+                      tunedSubsCount++;
+                    }
+                  });
+                });
+                const dingyinPct = totalSubsCount > 0 ? (tunedSubsCount / totalSubsCount) * 100 : 0;
+
+                return (
+                  <div className="space-y-6">
+                    {/* Header Summary Statistics */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="bg-[#181512] border border-amber-900/10 rounded-xl p-5 flex flex-col justify-center">
+                        <span className="text-xs font-mono uppercase tracking-wider text-slate-500">
+                          Total sub-stat progress
+                        </span>
+                        <div className="text-3xl font-extrabold text-amber-500 font-serif mt-1 flex items-baseline gap-1.5">
+                          <span>{totalProgressVal.toFixed(1)}</span>
+                          <span className="text-sm font-sans font-normal text-slate-500">/ 40</span>
+                        </div>
+                      </div>
+                      <div className="bg-[#181512] border border-amber-900/10 rounded-xl p-5 flex flex-col justify-center">
+                        <span className="text-xs font-mono uppercase tracking-wider text-slate-500">
+                          Dingyin (Tuned) stats
+                        </span>
+                        <div className="text-3xl font-extrabold text-amber-500 font-serif mt-1">
+                          {dingyinPct.toFixed(1)}<span className="text-lg font-sans font-normal text-slate-500">%</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Grid of Stat Tiles */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {tiles.map((tile: any, idx: number) => {
+                        return (
+                          <div 
+                            key={idx} 
+                            className={`border rounded-xl p-5 space-y-3 transition-colors ${tile.bgCardClass}`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <span className="text-sm font-bold font-mono tracking-tight text-slate-100">
+                                {tile.label}
+                              </span>
+                              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-mono">
+                                T91 Cap
+                              </span>
+                            </div>
+
+                            <div className="flex justify-between items-baseline font-mono text-sm">
+                              <span className="text-slate-250 font-bold">
+                                {tile.currentVal.toFixed(tile.isPercentage ? 1 : 0)}{tile.isPercentage ? "%" : ""}
+                              </span>
+                              <span className="text-slate-500 font-medium">
+                                / {tile.targetVal.toFixed(tile.isPercentage ? 1 : 0)}{tile.isPercentage ? "%" : ""}
+                              </span>
+                            </div>
+
+                            <div className="space-y-1.5 pt-1">
+                              <div className="w-full bg-slate-950/60 rounded-full h-2.5 overflow-hidden border border-slate-900">
+                                <div 
+                                  className={`h-full rounded-full transition-all duration-300 ${tile.progressFillColor}`}
+                                  style={{ width: `${tile.progressCapped}%` }}
+                                />
+                              </div>
+                              <div className="flex justify-between text-[11px] font-mono text-slate-400">
+                                <span>Progress</span>
+                                <span className="font-bold">{tile.progressPct.toFixed(1)}%</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Note at bottom */}
+                    <div className="bg-[#141210]/30 border border-slate-900/40 rounded-xl p-4 text-xs text-slate-400 leading-relaxed font-mono">
+                      Progress estimates based on Graduation Panel targets (CN Lv105).
+                      Tier 91 caps are ~60% of shown values.
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
 
         {/* Modal Editor Overlay */}
         {isItemModalOpen && (
@@ -3444,29 +4206,81 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab Simulators (Gear & Arsenal Simulators) */}
-        {activeTab === "simulators" && (
-          <div className="space-y-6">
-            <div className="bg-slate-950/60 border border-slate-900 rounded-xl p-5 space-y-3">
-              <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
-                <Info className="w-4 h-4" />
-                <span>Gear & Arsenal Simulator Guide</span>
+        {/* Modal Cooldown Add Overlay */}
+        {showAddCooldownModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
+            <div className="bg-[#141210] border border-amber-900/20 max-w-md w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+              {/* Header */}
+              <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-500 font-serif flex items-center gap-1.5">
+                  ⏱ Track Relay Cooldown
+                </span>
+                <button
+                  onClick={() => setShowAddCooldownModal(false)}
+                  className="text-slate-400 hover:text-slate-200 text-sm font-mono cursor-pointer"
+                >
+                  ✕
+                </button>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed font-sans">
-                The Gear Sim tab lets you preview the impact of high-end build milestones and alternative gear setups before investing resources.
-              </p>
-              <ul className="text-[11px] text-slate-400 space-y-2 list-disc pl-4 font-mono leading-relaxed">
-                <li><strong className="text-slate-200">Relaying Simulator:</strong> Mimics the bonus secondary stats transferred between gears when optimization thresholds are hit across the stats panel. This transfers stats from supporting armors directly to your active attributes.</li>
-                <li><strong className="text-slate-200">Arsenal Simulator:</strong> Simulates custom physical or affinity weapon passive stats and adjustments to check theoretical damage variations in real-time.</li>
-              </ul>
-            </div>
 
-            <RelayingSimulator
-              onUpdatePanelFromGear={handleSimSync}
-              currentPanel={adjustedPanel}
-            />
-            <ArsenalSimulator onUpdatePanelFromArsenal={handleSimSync} />
+              {/* Form Content */}
+              <div className="p-5 space-y-4 text-slate-300 text-xs text-left">
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 font-mono block">Select Gear Item</label>
+                  <select
+                    value={cooldownSelectedGearId}
+                    onChange={(e) => setCooldownSelectedGearId(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 cursor-pointer font-medium"
+                  >
+                    <option value="">-- Choose Gear --</option>
+                    {getActiveGear().map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name} ({item.slot})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 font-mono block">Relay Date</label>
+                  <input
+                    type="date"
+                    value={cooldownRelayDate}
+                    onChange={(e) => setCooldownRelayDate(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 font-mono cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-4 bg-slate-950/40 border-t border-amber-900/10 flex justify-end gap-3 shrink-0">
+                <button
+                  onClick={() => setShowAddCooldownModal(false)}
+                  className="px-4 py-1.5 border border-amber-900/20 hover:bg-slate-900 text-slate-300 rounded text-xs transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddCooldown}
+                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded text-xs transition-colors cursor-pointer"
+                  disabled={!cooldownSelectedGearId}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
           </div>
+        )}
+
+        {/* Tab Simulators (Stat Swap Simulator) */}
+        {activeTab === "simulators" && (
+          <StatSwapSimulator
+            adjustedPanel={adjustedPanel}
+            activeTier={activeTier}
+            datang={datang}
+            yishui={yishui}
+            selectedBuild={selectedBuild}
+          />
         )}
 
         {/* Tab OCR Scanner */}
@@ -3588,12 +4402,20 @@ export default function App() {
                         onClick={() => {
                           const updated = { ...hitsState };
                           const HEAVY_PRESETS: Record<string, Record<string, number>> = {
-                            "Bamboocut-Dust": { "Scarlet Spin": 78, "Resonance": 75, "Soulbreak": 4, "Burn and Bury": 6, "Soul Sweep": 40, "Soaring Spin": 8, "Piercing Dart": 6, "Flute Chanting a Thousand Waves": 11, "Divinecraft - Fire": 58 },
+                            "Bamboocut-Dust": {
+                              "Scarlet Spin": 78,
+                              "Resonance": 75,
+                              "Burn and Bury": 4,
+                              "Soul Sweep": 3,
+                              "Soaring Spin": 6,
+                              "Piercing Dart": 7,
+                              "Cyclone Waltz": 11
+                            },
                             "Bamboocut-Wind": { "Mortal Dart Red Blade (12345345)": 4, "Mortal Dart Red Blade (345)": 4, "Mortal Dart Q (Full Combo)": 8, "Mortal Dart Cross Slash (Heavy)": 6, "Mortal Dart White Blade Light": 10, "Twinblades Light Combo (Full)": 8, "Twinblades Q": 20, "Twinblades Charged": 4 },
                             "Nameless": { "Nameless Sword Q": 10, "Nameless Sword Heavy": 15, "Nameless Sword Charge Lv2": 8, "Nameless Sword Mystic Charge": 5, "Nameless Spear Q": 20, "Nameless Spear Windmill (Fast)": 30, "Nameless Spear Windmill (Finisher)": 8 },
                             "Jade": { "Inkwell Fan Q": 15, "Inkwell Fan Light Charge": 20, "Inkwell Fan Heavy": 15, "Inkwell Fan Heavy Charge Lv2 (Full)": 8, "Vernal Umbrella R": 30, "Vernal Fan Wind Wall": 8, "Vernal Fan Heavy": 10, "Vernal Fan 4x Light Charge": 4 },
                             "Nine-Nine": { "Strategic Sword Q (5 Bleed)": 12, "Strategic Sword Heavy (4 Bleed)": 10, "Bleed Tick (5 Stack)": 60, "Blood Explosion": 8, "Heavenquaker Spear Q (Full 5)": 15, "Heavenquaker Spear Heavy": 10, "Heavenquaker Spear Charge Lv2": 5 },
-                            "Rocksplit-Might": { "Thundercry Blade Q (Deathstrike)": 10, "Thundercry Blade Stance Combo": 12, "Thundercry Blade Light Charge": 15, "Thundercry Blade Heavy Derived": 12, "Spirit Clone (Thundercry)": 20, "Stormbreaker Soaring Strike (Mystic)": 4, "Stormbreaker Spear Charge": 8, "Stormbreaker Spear Heavy": 10 },
+                            "Rocksplit-Might": { "Thundercry Blade Q (Deathstrike)": 10, "Thundercry Blade Stance Combo": 12, "Thundercry Blade Light Charge": 15, "Thundercry Blade Heavy Derived": 12, "Spirit Clone (Thundercry)": 20, "Stormbreaker Spear Charge": 8, "Stormbreaker Spear Heavy": 10 },
                             "Rocksplit-Jun": { "Snowparting Blade Q (3 Charge, 2 Intent)": 8, "Snowparting Derived (2 Intent)": 8, "Phalanxbane Blade Q (Fast 3 Charge)": 5, "Phalanxbane Quick Q": 8, "Spirit Blade Clone (Lv2)": 16, "Spirit Blade Clone (Lv1)": 8 },
                             "Pure-Healer": { "Panacea Fan Heavy Strike": 20, "Panacea Fan Q": 8, "Panacea Fan Light Charge": 15, "Soulshade Umbrella Q": 15, "Soulshade Off-Field Heal": 30, "Soulshade Light Charge": 10 },
                             "Fire-Fist-Healer": { "Panacea Fan Heavy Strike": 15, "Panacea Fan Q": 10, "Soulshade Umbrella Q": 20, "Soulshade Off-Field Heal": 25, "Soulshade Light Charge": 12 },
@@ -3610,12 +4432,20 @@ export default function App() {
                         onClick={() => {
                           const updated = { ...hitsState };
                           const BALANCED_PRESETS: Record<string, Record<string, number>> = {
-                            "Bamboocut-Dust": { "Scarlet Spin": 50, "Resonance": 45, "Soulbreak": 3, "Burn and Bury": 4, "Soul Sweep": 25, "Soaring Spin": 5, "Piercing Dart": 4, "Flute Chanting a Thousand Waves": 11, "Divinecraft - Fire": 58 },
+                            "Bamboocut-Dust": {
+                              "Scarlet Spin": 50,
+                              "Resonance": 45,
+                              "Burn and Bury": 3,
+                              "Soul Sweep": 2,
+                              "Soaring Spin": 4,
+                              "Piercing Dart": 4,
+                              "Cyclone Waltz": 6
+                            },
                             "Bamboocut-Wind": { "Mortal Dart Red Blade (12345345)": 3, "Mortal Dart Q (Full Combo)": 6, "Mortal Dart Cross Slash (Heavy)": 4, "Mortal Dart White Blade Light": 8, "Twinblades Light Combo (Full)": 6, "Twinblades Q": 15, "Twinblades Charged": 3 },
                             "Nameless": { "Nameless Sword Q": 8, "Nameless Sword Heavy": 10, "Nameless Sword Charge Lv2": 5, "Nameless Spear Q": 15, "Nameless Spear Windmill (Fast)": 20, "Nameless Spear Windmill (Finisher)": 5 },
                             "Jade": { "Inkwell Fan Q": 12, "Inkwell Fan Light Charge": 15, "Inkwell Fan Heavy": 10, "Vernal Umbrella R": 20, "Vernal Fan Wind Wall": 6, "Vernal Fan Heavy": 8 },
                             "Nine-Nine": { "Strategic Sword Q (5 Bleed)": 8, "Strategic Sword Heavy (4 Bleed)": 8, "Bleed Tick (5 Stack)": 40, "Blood Explosion": 5, "Heavenquaker Spear Q (Full 5)": 10, "Heavenquaker Spear Heavy": 8 },
-                            "Rocksplit-Might": { "Thundercry Blade Q (Deathstrike)": 8, "Thundercry Blade Stance Combo": 8, "Thundercry Blade Light Charge": 10, "Spirit Clone (Thundercry)": 15, "Stormbreaker Soaring Strike (Mystic)": 3, "Stormbreaker Spear Charge": 6, "Stormbreaker Spear Heavy": 8 },
+                            "Rocksplit-Might": { "Thundercry Blade Q (Deathstrike)": 8, "Thundercry Blade Stance Combo": 8, "Thundercry Blade Light Charge": 10, "Spirit Clone (Thundercry)": 15, "Stormbreaker Spear Charge": 6, "Stormbreaker Spear Heavy": 8 },
                             "Rocksplit-Jun": { "Snowparting Blade Q (3 Charge, 2 Intent)": 5, "Snowparting Derived (2 Intent)": 5, "Phalanxbane Blade Q (Fast 3 Charge)": 4, "Phalanxbane Quick Q": 6, "Spirit Blade Clone (Lv2)": 10 },
                             "Pure-Healer": { "Panacea Fan Heavy Strike": 15, "Panacea Fan Q": 6, "Panacea Fan Light Charge": 10, "Soulshade Umbrella Q": 10, "Soulshade Off-Field Heal": 20, "Soulshade Light Charge": 8 },
                             "Fire-Fist-Healer": { "Panacea Fan Heavy Strike": 10, "Panacea Fan Q": 8, "Soulshade Umbrella Q": 15, "Soulshade Off-Field Heal": 18 },
@@ -3675,6 +4505,14 @@ export default function App() {
                           );
                         })}
                       </div>
+                    </div>
+
+                    {/* Disclaimer about non-Bamboocut-Dust path skill names */}
+                    <div className="mt-2 text-[10px] text-slate-400 italic leading-relaxed px-1 flex items-start gap-1">
+                      <span className="shrink-0 text-amber-500/80">⚠️</span>
+                      <span>
+                        Skill names for non-Bamboocut-Dust paths are approximate. Enter hits from your actual damage log for accurate results.
+                      </span>
                     </div>
                   </div>
                 </div>
