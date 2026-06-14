@@ -236,7 +236,7 @@ const ARMOR_SETS = {
     name: "Stars Align (连星)",
     stat2pc: { minOuter: 106 },
     desc2pc: "+Min Phys ATK (106 flat)",
-    desc4pc: "Additional +Min Phys ATK bonus on spinning weapon skills (per-hit bonus baked into skill modifiers)",
+    desc4pc: "Martial Art Skills +3% DMG per stack (max 5 stacks = +15%). Stacks on boss/2+ enemy hits. Lost on taking damage.",
     recommended: ["bamboocut-dust"],
     note: "Best set for Bamboocut-Dust. The 4pc bonus applies to umbrella/rope spinning skills via per-skill modifiers (0.15–0.20 × Min ATK per hit)."
   },
@@ -354,6 +354,7 @@ export default function App() {
   }, [selectedBuild]);
 
   const [innerWaysFilter, setInnerWaysFilter] = useState<"recommended" | "all">("recommended");
+  const [innerWaySearch, setInnerWaySearch] = useState("");
 
   const [isCustomRotationOpen, setIsCustomRotationOpen] = useState(false);
   const [customRotationText, setCustomRotationText] = useState(() => {
@@ -2134,6 +2135,13 @@ export default function App() {
                 </p>
 
                 {/* Filter Selector Row */}
+                <input
+                  type="text"
+                  value={innerWaySearch}
+                  onChange={e => setInnerWaySearch(e.target.value)}
+                  placeholder="Search inner ways..."
+                  className="w-full mb-2 px-2.5 py-1.5 bg-slate-950/60 border border-slate-800 rounded text-xs text-slate-300 placeholder-slate-600 focus:outline-none focus:border-amber-600"
+                />
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[10px]">
                   <button
                     type="button"
@@ -2161,6 +2169,10 @@ export default function App() {
 
                 <div className="space-y-2 max-h-56 overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-amber-900/40">
                   {INNER_WAYS.filter((iw) => {
+                    if (innerWaySearch) {
+                      const q = innerWaySearch.toLowerCase();
+                      if (!iw.name.toLowerCase().includes(q) && !iw.desc.toLowerCase().includes(q) && !iw.cat.toLowerCase().includes(q)) return false;
+                    }
                     if (innerWaysFilter === "all") return true;
                     // Recommended filter
                     const normalizedCat = iw.cat.toLowerCase();
@@ -2169,6 +2181,16 @@ export default function App() {
                     if (normalizedCat === "general" && (iw.recommended || iw.id === "seasonal_edge" || iw.id === "morale_chant" || iw.id === "invigorated_warrior")) return true;
                     return false;
                   }).map((iw) => {
+                    const CAT_COLORS: Record<string, string> = {
+                      "BAMBOOCUT-DUST": "bg-amber-600",
+                      "BAMBOOCUT-WIND": "bg-orange-600",
+                      "BELLSTRIKE-SPLENDOR": "bg-blue-600",
+                      "BELLSTRIKE-UMBRA": "bg-indigo-700",
+                      "GENERAL": "bg-slate-600",
+                      "SILKBIND-DELUGE": "bg-emerald-700",
+                      "SILKBIND-JADE": "bg-teal-600",
+                      "STONESPLIT-MIGHT": "bg-stone-600",
+                    };
                     const isSelected = selectedInnerWays.includes(iw.id);
                     const disabled = !isSelected && selectedInnerWays.length >= 4;
 
@@ -2223,13 +2245,18 @@ export default function App() {
                         }`}
                       >
                         <div className="flex justify-between items-center font-semibold mb-1">
-                          <span className="flex items-center gap-1">
-                            {iw.name}
-                            {isSelected && (
-                              <span className="text-[10px] text-amber-500 font-mono">
-                                (T{iwTierNum})
-                              </span>
-                            )}
+                          <span className="flex items-center gap-2">
+                            <div className={`w-7 h-7 rounded flex items-center justify-center text-white font-bold text-xs flex-shrink-0 ${CAT_COLORS[iw.cat] || "bg-slate-700"}`}>
+                              {iw.name.charAt(0)}
+                            </div>
+                            <span>
+                              {iw.name}
+                              {isSelected && (
+                                <span className="text-[10px] text-amber-500 font-mono ml-1">
+                                  (T{iwTierNum})
+                                </span>
+                              )}
+                            </span>
                           </span>
                           {isBestT91 && (
                             <span className="text-[8px] bg-red-950/85 text-red-300 font-mono scale-90 px-1 rounded uppercase font-bold tracking-wider">
@@ -2257,7 +2284,7 @@ export default function App() {
                           >
                             <span className="text-slate-400 font-medium">Select Level:</span>
                             <div className="flex gap-1">
-                              {[5, 6, 7, 8, 9, 10].map((t) => {
+                              {[1, 2, 3, 4, 5, 6].map((t) => {
                                 const isCurrent = (innerWayTiers[iw.id] ?? 5) === t;
                                 return (
                                   <button
@@ -2959,7 +2986,7 @@ export default function App() {
 
         {/* Modal Editor Overlay */}
         {isItemModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-955/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
             <div className="bg-[#141210] border border-amber-900/20 max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">

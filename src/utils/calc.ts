@@ -431,7 +431,7 @@ export function calcSkill(
   if (sk.wType === "rope") weapBonus += panel.ropeBonus / 100;
   if (sk.wType === "N/A") weapBonus = 0;
 
-  const csBonus = set === "stars" && sk.csBonus ? sk.csBonus : 0;
+  const csBonus = set === "stars" ? 0.15 : 0;
   const spinBonus = sk.special === "spin" ? 0.12 : 0;
 
   let setDmgBonus = 0;
