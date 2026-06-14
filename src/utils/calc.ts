@@ -1,104 +1,33 @@
 import { PanelStats, TierConstants, SkillDefinition, RotationItem } from "../types";
+import { WWM_DATA } from "../data/wwmData";
+
+const t95 = WWM_DATA.tiers["95下"];
 
 export const TIERS: { [key: string]: TierConstants } = {
   "350|0.45": {
     def: 350,
-    judgeRes: 0.45,
+    judgeRes: t95.base.judgeRes,
     foodMin: 90,
     foodMax: 180,
-    baseMinOuter: 894.89,
-    baseMaxOuter: 1648.08,
-    baseCrit: 30.41,
-    baseAff: 15.205,
-    basePrec: 94.0,
+    baseMinOuter: t95.base.minOuter,
+    baseMaxOuter: t95.base.maxOuter,
+    baseCrit: t95.base.crit * 100, // 30.41%
+    baseAff: t95.base.aff * 100,   // 15.205%
+    basePrec: t95.base.precision * 100, // 94.0%
     armoryMin: 114,
     armoryMax: 229,
     hiddenAttr: 129.2,
-    pzPenBase: 10.8,
-    pzDmgBase: 5.4,
+    pzPenBase: t95.base.elemPen, // 10.8
+    pzDmgBase: t95.base.elemDmgUp * 100, // 5.4%
     physRes: 20,
     attrRes: 24,
     name: "Tier 91 / Lv95 ★ Global (Season 3)",
-  },
-  "307|0.3": {
-    def: 307,
-    judgeRes: 0.3,
-    foodMin: 70,
-    foodMax: 140,
-    baseMinOuter: 740,
-    baseMaxOuter: 1370,
-    baseCrit: 28,
-    baseAff: 12,
-    basePrec: 90,
-    armoryMin: 90,
-    armoryMax: 180,
-    hiddenAttr: 110.2,
-    pzPenBase: 8.8,
-    pzDmgBase: 4.4,
-    physRes: 20,
-    attrRes: 24,
-    name: "Tier 86 / Lv90",
-  },
-  "405|0.65": {
-    def: 405,
-    judgeRes: 0.65,
-    foodMin: 120,
-    foodMax: 240,
-    baseMinOuter: 1054,
-    baseMaxOuter: 1967.76,
-    baseCrit: 34,
-    baseAff: 18,
-    basePrec: 98,
-    armoryMin: 130,
-    armoryMax: 260,
-    hiddenAttr: 144.5,
-    pzPenBase: 12.0,
-    pzDmgBase: 6.0,
-    physRes: 20,
-    attrRes: 24,
-    name: "Tier 96 / Lv100 (Lower)",
-  },
-  "405|0.65b": {
-    def: 405,
-    judgeRes: 0.65,
-    foodMin: 120,
-    foodMax: 240,
-    baseMinOuter: 1012,
-    baseMaxOuter: 1883.6,
-    baseCrit: 34,
-    baseAff: 18,
-    basePrec: 98,
-    armoryMin: 130,
-    armoryMax: 260,
-    hiddenAttr: 144.5,
-    pzPenBase: 12.0,
-    pzDmgBase: 6.0,
-    physRes: 20,
-    attrRes: 24,
-    name: "Tier 96 / Lv100 (Upper)",
-  },
-  "559|1.15": {
-    def: 559,
-    judgeRes: 1.15,
-    foodMin: 160,
-    foodMax: 320,
-    baseMinOuter: 1258.04,
-    baseMaxOuter: 2374.02,
-    baseCrit: 42,
-    baseAff: 22,
-    basePrec: 105,
-    armoryMin: 170,
-    armoryMax: 340,
-    hiddenAttr: 175.0,
-    pzPenBase: 15.0,
-    pzDmgBase: 8.0,
-    physRes: 20,
-    attrRes: 24,
-    name: "CN Lv105 (Reference)",
-  },
+  }
 };
 
-export const SKILL_DB: { [key: string]: SkillDefinition } = {
+export const SKILL_DB: { [key: string]: SkillDefinition } = {};
+
+const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
   "Rope Dart Special (Rope Boat 6 + Soul Loss)": {
     outerRatio: 2.29866,
     fixed: 637,
@@ -352,6 +281,31 @@ export const SKILL_DB: { [key: string]: SkillDefinition } = {
     csBonus: 0,
   },
 };
+
+// Initialize static skills
+Object.assign(SKILL_DB, STATIC_SKILLS);
+
+// Dynamically augment SKILL_DB with WWM_DATA.skills
+WWM_DATA.skills.forEach(s => {
+  const isUmb = s.weapon.toLowerCase().includes("umbrella");
+  const isRope = s.weapon.toLowerCase().includes("rope");
+  const isXinfa = s.name.toLowerCase().includes("resonance") || s.name.toLowerCase().includes("camps") || s.name.toLowerCase().includes("xinfa");
+
+  SKILL_DB[s.name] = {
+    outerRatio: s.outerRatio,
+    fixed: s.fixed,
+    eleRatio: s.elemRatio,
+    exCritDmg: 0.27,
+    exDmg: 0.05,
+    exPen: 0,
+    isCharge: 0,
+    type: isXinfa ? "xinfa" : "weapon",
+    wType: isUmb ? "umb" : isRope ? "rope" : "single",
+    force: "",
+    special: "",
+    csBonus: 0,
+  };
+});
 
 export const ROTATION: RotationItem[] = [
   { name: "Rope Dart Special (Rope Boat 6 + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.465, yishui: 10, tiaozhan: 1 },
