@@ -40,10 +40,20 @@ export default function OcrScanner({ onOcrResult }: OcrScannerProps) {
   const [mergeStrategy, setMergeStrategy] = useState<"sum" | "max">("sum");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Clipboard States
+  const [clipboardText, setClipboardText] = useState("");
+  const [showPastePreview, setShowPastePreview] = useState(false);
+  const [isClipboardSupported, setIsClipboardSupported] = useState(true);
+
+  React.useEffect(() => {
+    setIsClipboardSupported(!!(navigator.clipboard && navigator.clipboard.readText));
+  }, []);
+
   // Parse Yanyun screenshot text (Panel range or single gear substats)
   const parseYanyunStats = (text: string): Partial<PanelStats> => {
     const stats: Partial<PanelStats> = {};
-    const lines = text.split("\n");
+    // Pre-process pipe characters from clipboard formats for robust line-by-line scan
+    const lines = text.replace(/\|/g, "\n").split("\n");
 
     const cleanNum = (str: string) => {
       const parsed = parseFloat(str.replace(/[^0-9.]/g, ""));
@@ -351,8 +361,61 @@ export default function OcrScanner({ onOcrResult }: OcrScannerProps) {
   };
 
   const clearAllQueue = () => {
-    queue.forEach((it) => URL.revokeObjectURL(it.objectUrl));
+    queue.forEach((it) => {
+      if (it.objectUrl) {
+        URL.revokeObjectURL(it.objectUrl);
+      }
+    });
     setQueue([]);
+  };
+
+  const handlePasteButtonClick = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.read) {
+        const clipboardItems = await navigator.clipboard.read();
+        for (const item of clipboardItems) {
+          for (const type of item.types) {
+            if (type.startsWith("image/")) {
+              const blob = await item.getType(type);
+              const file = new File([blob], "clipboard-image.png", { type });
+              addFilesToQueue([file]);
+              return;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // Graceful fallback to read text
+    }
+
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text && text.trim()) {
+        setClipboardText(text);
+        setShowPastePreview(true);
+      } else {
+        alert("Clipboard is empty or does not contain readable text.");
+      }
+    } catch (err) {
+      alert("Failed to read clipboard text. Make sure you granted clipboard permissions in your browser.");
+    }
+  };
+
+  const handleConfirmClipboardImport = () => {
+    const parsed = parseYanyunStats(clipboardText);
+    const newItem: QueuedOcrItem = {
+      id: "clipboard-" + Date.now(),
+      fileName: "Pasted Clipboard text",
+      objectUrl: "",
+      status: "success",
+      progress: "Pasted text parsed!",
+      stats: parsed,
+      isSelected: true,
+      rawText: clipboardText
+    };
+    setQueue((prev) => [...prev, newItem]);
+    setShowPastePreview(false);
+    setClipboardText("");
   };
 
   return (
@@ -365,6 +428,21 @@ export default function OcrScanner({ onOcrResult }: OcrScannerProps) {
           Upload one or <strong>multiple screenshots from your photo library</strong>. The engine will extract gear substats and physical panel metrics and merge them into your setup.
         </p>
       </div>
+
+      {isClipboardSupported && (
+        <div className="flex justify-start mb-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePasteButtonClick();
+            }}
+            className="px-4 py-2 bg-slate-900/80 hover:bg-slate-800 text-amber-500 hover:text-amber-400 border border-slate-800 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm shadow-amber-500/5 hover:-translate-y-0.5"
+          >
+            <span>📋</span>
+            <span>Paste from Clipboard</span>
+          </button>
+        </div>
+      )}
 
       {/* Drag & Drop Area */}
       <div
@@ -453,11 +531,17 @@ export default function OcrScanner({ onOcrResult }: OcrScannerProps) {
                     </button>
 
                     {/* Thumbnail */}
-                    <img
-                      src={item.objectUrl}
-                      alt="Thumbnail"
-                      className="w-12 h-12 rounded object-cover border border-slate-800 shrink-0"
-                    />
+                    {item.objectUrl ? (
+                      <img
+                        src={item.objectUrl}
+                        alt="Thumbnail"
+                        className="w-12 h-12 rounded object-cover border border-slate-800 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded border border-slate-800 shrink-0 flex items-center justify-center bg-slate-950 text-amber-500 font-mono text-xs font-bold">
+                        TXT
+                      </div>
+                    )}
 
                     {/* Meta info */}
                     <div className="flex-1 min-w-0">
@@ -688,6 +772,41 @@ export default function OcrScanner({ onOcrResult }: OcrScannerProps) {
             >
               <Sparkles className="w-4 h-4 text-slate-900" /> Sync to Calculator Panel
             </button>
+          </div>
+        </div>
+      )}
+      {/* Clipboard Preview Confirm Modal */}
+      {showPastePreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
+            <h3 className="text-sm uppercase tracking-wider font-bold text-amber-500 font-serif flex items-center gap-2">
+              <span>📋</span> Confirm Clipboard Import
+            </h3>
+            <p className="text-xs text-slate-400">
+              The parsed attributes will be populated to your OCR staging list below so you can verify and combine them.
+            </p>
+            
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-900 font-mono text-xs text-slate-300 max-h-48 overflow-y-auto whitespace-pre-wrap leading-relaxed select-text">
+              {clipboardText}
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={() => {
+                  setShowPastePreview(false);
+                  setClipboardText("");
+                }}
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-bold transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmClipboardImport}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs transition-all"
+              >
+                Import & Parse Stats
+              </button>
+            </div>
           </div>
         </div>
       )}

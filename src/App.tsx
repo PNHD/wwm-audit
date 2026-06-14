@@ -22,6 +22,8 @@ import {
   Download,
   Upload,
   Clock,
+  Info,
+  Camera,
 } from "lucide-react";
 import { PanelStats, TierConstants } from "./types";
 import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils/calc";
@@ -173,7 +175,7 @@ const INITIAL_PANEL: PanelStats = {
   attunedBonus: 0,
   wuxiangMin: 0,
   wuxiangMax: 0,
-  set: "moonflare",
+  set: "stars",
 };
 
 export interface SavedProfile {
@@ -199,6 +201,7 @@ export interface GearItem {
   main: string;
   set: string;
   subs: GearSub[];
+  mastery?: number;
 }
 
 export interface Scheme {
@@ -330,25 +333,26 @@ const BUILD_PROFILES = {
 };
 
 const ARMOR_SETS = {
-  "moonflare": {
-    name: "Moonflare (连星)",
-    stat2pc: { minOuter: 106 },
-    desc2pc: "+106 Min Physical ATK",
-    desc4pc: "Martial Art Skills deal +3% DMG per Stars Align stack (max 5 stacks = +15%). Gain stacks by hitting 2+ enemies or boss. Each stack lasts 5s, removed on taking damage.",
+  "stars": {
+    name: "Stars Align (连星)",
+    stat2pc: { minOuter: 64 },
+    desc2pc: "2/3: Min Physical Attack +64",
+    desc4pc: "4/4: Hitting boss/player or 2+ enemies: gain 1 Stars Align stack (5 sec, +3% martial art skill DMG + up to +1% per meter over 4m, max 5 stacks)",
     recommended: ["bamboocut-dust"],
   },
-  "hawking": {
-    name: "Hawking (飞隼)",
+  "eaglerise": {
+    name: "Eaglerise (飞隼)",
     stat2pc: { aff: 6.1 },
-    desc2pc: "+6.1% Affinity Rate",
-    desc4pc: "When Affinity DMG triggers, gain Hawking: +2% Physical ATK per stack (5s, max 5 stacks = +10% Phys ATK)",
+    desc2pc: "2/4: +6.1% Affinity Rate",
+    desc3pc: "3/4: Outgoing Healing +10%",
+    desc4pc: "4/4: When Affinity DMG triggers, gain Eaglerise: +2% Physical ATK per stack (5s, max 5 stacks = +10% Phys ATK)",
     recommended: ["bamboocut-wind", "stonesplit-might"],
   },
-  "eaglerise": {
-    name: "Eaglerise (时雨)",
+  "stormrain": {
+    name: "Stormrain (时雨)",
     stat2pc: { prec: 10.8 },
-    desc2pc: "+10.8% Precision Rate",
-    desc4pc: "Dealing damage over time OR healing grants 1 stack: increases damage and healing by X%",
+    desc2pc: "2/4: +10.8% Precision Rate",
+    desc4pc: "4/4: Dealing damage over time OR healing grants 1 stack: increases damage and healing by X%",
     recommended: ["bellstrike-umbra"],
   },
   "jadeware": {
@@ -358,15 +362,15 @@ const ARMOR_SETS = {
     desc4pc: "Martial Art Skill activates Jadeware: Increases Affinity DMG when dealing Affinity damage",
     recommended: ["bellstrike-umbra", "bellstrike-splendor"],
   },
-  "formbend": {
-    name: "Formbend (铁衣)",
+  "ironweave": {
+    name: "Ironweave (铁衣)",
     stat2pc: {},
     desc2pc: "+Physical Defense",
     desc4pc: "Shield duration +2s. If shield broken, gain additional DMG reduction",
     recommended: [],
   },
-  "veilwillow": {
-    name: "Veil of Willow (撼天)",
+  "shakenhill": {
+    name: "Shakenhill (撼天)",
     stat2pc: { prec: 10.8 },
     desc2pc: "+10.8% Precision Rate",
     desc4pc: "After Light Attack/Airborne Light Attack, Heavy Attack DMG increased",
@@ -650,12 +654,14 @@ export default function App() {
 
   // Gear state fields
   const [selectedSlot, setSelectedSlot] = useState<string>("Umbrella");
+  const [gearSortBy, setGearSortBy] = useState<"name" | "mastery">("name");
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GearItem | null>(null);
   const [formName, setFormName] = useState("");
   const [formQuality, setFormQuality] = useState<"gold" | "purple" | "blue">("gold");
   const [formMain, setFormMain] = useState("");
   const [formSet, setFormSet] = useState("stars");
+  const [formMastery, setFormMastery] = useState<string>("");
   const [formSubs, setFormSubs] = useState<{type: string; val: string; isTuned?: boolean}[]>(
     Array(6).fill(null).map(() => ({ type: "Max Phys Atk", val: "", isTuned: false }))
   );
@@ -666,6 +672,7 @@ export default function App() {
     setFormQuality("gold");
     setFormMain("");
     setFormSet("stars");
+    setFormMastery("");
     setFormSubs(Array(6).fill(null).map(() => ({ type: "Max Phys Atk", val: "", isTuned: false })));
     setIsItemModalOpen(true);
   };
@@ -676,6 +683,7 @@ export default function App() {
     setFormQuality(item.quality);
     setFormMain(item.main);
     setFormSet(item.set);
+    setFormMastery(item.mastery !== undefined ? item.mastery.toString() : "");
     const subs = [...item.subs];
     while (subs.length < 6) {
       subs.push({ type: "Other", val: "", isTuned: false });
@@ -696,6 +704,7 @@ export default function App() {
         val: s.val,
         isTuned: !!s.isTuned
       }));
+    const masteryVal = formMastery.trim() !== "" ? parseInt(formMastery, 10) : undefined;
     const activeGear = getActiveGear();
     let updatedGear: GearItem[];
     if (editingItem) {
@@ -707,6 +716,7 @@ export default function App() {
             quality: formQuality,
             main: formMain,
             set: formSet,
+            mastery: masteryVal,
             subs: savedSubs
           };
         }
@@ -720,6 +730,7 @@ export default function App() {
         quality: formQuality,
         main: formMain,
         set: formSet,
+        mastery: masteryVal,
         subs: savedSubs
       };
       updatedGear = [...activeGear, newItem];
@@ -1004,7 +1015,7 @@ export default function App() {
             attunedBonus: 0,
             wuxiangMin: 0,
             wuxiangMax: 0,
-            set: "moonflare"
+            set: "stars"
           },
           gradRate: 70.8,
           dps: 31200
@@ -1036,7 +1047,7 @@ export default function App() {
             attunedBonus: 0,
             wuxiangMin: 0,
             wuxiangMax: 0,
-            set: "moonflare"
+            set: "stars"
           },
           gradRate: 98.4,
           dps: 45600
@@ -2954,10 +2965,25 @@ export default function App() {
 
               {/* Items List for selected slot */}
               <div>
-                <h3 className="text-xs uppercase font-bold tracking-widest text-slate-400 font-mono mb-4 flex items-center gap-2">
-                  <span>Selected Slot:</span>
-                  <span className="text-amber-500 font-serif">{selectedSlot}</span>
-                </h3>
+                <div className="flex justify-between items-center mb-4 border-b border-amber-900/10 pb-2">
+                  <h3 className="text-xs uppercase font-bold tracking-widest text-slate-400 font-mono flex items-center gap-2">
+                    <span>Selected Slot:</span>
+                    <span className="text-amber-500 font-serif">{selectedSlot}</span>
+                  </h3>
+                  {getActiveGear().filter(it => it.slot === selectedSlot).length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-slate-500 uppercase font-mono">Sort:</span>
+                      <select
+                        value={gearSortBy}
+                        onChange={(e) => setGearSortBy(e.target.value as any)}
+                        className="bg-slate-950 border border-slate-900 rounded px-2 py-0.5 text-[10px] font-mono text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                      >
+                        <option value="name">Alphabetical</option>
+                        <option value="mastery">Mastery (⚔ High to Low)</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
 
                 {getActiveGear().filter(it => it.slot === selectedSlot).length === 0 ? (
                   <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center">
@@ -2973,6 +2999,14 @@ export default function App() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {getActiveGear()
                       .filter(it => it.slot === selectedSlot)
+                      .sort((a, b) => {
+                        if (gearSortBy === "mastery") {
+                          const m1 = a.mastery ?? 0;
+                          const m2 = b.mastery ?? 0;
+                          return m2 - m1;
+                        }
+                        return a.name.localeCompare(b.name);
+                      })
                       .map((item) => {
                         const isGold = item.quality === "gold";
                         const isPurple = item.quality === "purple";
@@ -2998,9 +3032,16 @@ export default function App() {
 
                             <div>
                               <div className="flex items-start justify-between gap-2 mb-2">
-                                <h4 className="text-xs font-bold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
-                                  {item.name}
-                                </h4>
+                                <div>
+                                  <h4 className="text-xs font-bold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
+                                    {item.name}
+                                  </h4>
+                                  {item.mastery !== undefined && (
+                                    <div className="text-[9px] font-mono font-bold text-amber-500/90 mt-0.5">
+                                      ⚔ {item.mastery}
+                                    </div>
+                                  )}
+                                </div>
                                 <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded scale-90 ${
                                   isGold
                                     ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
@@ -3267,7 +3308,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <div>
                     <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                       Main Stat Text
@@ -3296,6 +3337,18 @@ export default function App() {
                       <option value="stormrain">Stormrain (4/4)</option>
                       <option value="shakenhill">Shakenhill (2/2)</option>
                     </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                      Mastery (optional)
+                    </label>
+                    <input
+                      type="number"
+                      value={formMastery}
+                      onChange={(e) => setFormMastery(e.target.value)}
+                      placeholder="e.g. 832"
+                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    />
                   </div>
                 </div>
 
@@ -3394,6 +3447,20 @@ export default function App() {
         {/* Tab Simulators (Gear & Arsenal Simulators) */}
         {activeTab === "simulators" && (
           <div className="space-y-6">
+            <div className="bg-slate-950/60 border border-slate-900 rounded-xl p-5 space-y-3">
+              <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
+                <Info className="w-4 h-4" />
+                <span>Gear & Arsenal Simulator Guide</span>
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed font-sans">
+                The Gear Sim tab lets you preview the impact of high-end build milestones and alternative gear setups before investing resources.
+              </p>
+              <ul className="text-[11px] text-slate-400 space-y-2 list-disc pl-4 font-mono leading-relaxed">
+                <li><strong className="text-slate-200">Relaying Simulator:</strong> Mimics the bonus secondary stats transferred between gears when optimization thresholds are hit across the stats panel. This transfers stats from supporting armors directly to your active attributes.</li>
+                <li><strong className="text-slate-200">Arsenal Simulator:</strong> Simulates custom physical or affinity weapon passive stats and adjustments to check theoretical damage variations in real-time.</li>
+              </ul>
+            </div>
+
             <RelayingSimulator
               onUpdatePanelFromGear={handleSimSync}
               currentPanel={adjustedPanel}
@@ -3423,7 +3490,7 @@ export default function App() {
               tiaozhan: 1
             };
             const { perHit } = calcSkill(synthRotationItem as any, adjustedPanel, activeTier, {
-              set: adjustedPanel.set || "moonflare",
+              set: adjustedPanel.set || "stars",
               datang,
               yishui,
               buildKey: selectedBuild
@@ -3459,7 +3526,7 @@ export default function App() {
               tiaozhan: 1
             };
             const { perHit } = calcSkill(synthRotationItem as any, swappedPanel, activeTier, {
-              set: swappedPanel.set || "moonflare",
+              set: swappedPanel.set || "stars",
               datang,
               yishui,
               buildKey: selectedBuild

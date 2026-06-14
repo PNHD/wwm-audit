@@ -307,6 +307,12 @@ WWM_DATA.skills.forEach(s => {
   };
 });
 
+SKILL_DB["九枪重2蓄"] = { outerRatio: 2.5683, fixed: 711, eleRatio: 3.85245, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 1, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["九剑Q"] = { outerRatio: 2.7205, fixed: 749, eleRatio: 4.08075, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
+SKILL_DB["九剑~"] = { outerRatio: 1.5, fixed: 300, eleRatio: 2.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["九枪Q满"] = { outerRatio: 3.5, fixed: 800, eleRatio: 5.0, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
+SKILL_DB["九剑~流血"] = { outerRatio: 0.8, fixed: 150, eleRatio: 1.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+
 export const ROTATION: RotationItem[] = [
   { name: "Rope Dart Special (Rope Boat 6 + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.465, yishui: 10, tiaozhan: 1 },
   { name: "Perfect Umbrella Q (0 Echo)", count: 1, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
@@ -329,6 +335,24 @@ export const ROTATION: RotationItem[] = [
 ];
 
 export const ROTATION_TIME = 78.5;
+
+export function getRotationForBuild(buildKey?: string): RotationItem[] {
+  if (buildKey === "nine-nine" || buildKey === "Nine-Nine" || buildKey === "nine-nine-aoe") {
+    return [
+      { name: "九枪重2蓄", count: 3, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九剑Q", count: 4, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九剑~", count: 12, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九枪Q满", count: 2, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九剑~流血", count: 8, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+    ];
+  }
+  return ROTATION;
+}
+
+export function getRotationTimeForBuild(buildKey?: string): number {
+  if (buildKey === "nine-nine" || buildKey === "Nine-Nine" || buildKey === "nine-nine-aoe") return 60;
+  return ROTATION_TIME;
+}
 
 export function calcSkill(
   rot: RotationItem,
@@ -355,8 +379,8 @@ export function calcSkill(
   let dirCrit = panel.dcrit / 100;
   let dirAff = panel.daff / 100;
 
-  if (set === "eaglerise") precEff = Math.min(1.0, precEff + 10.8 / 100 / jR);
-  if (set === "hawking") affEff = Math.min(0.4, affEff + 6.1 / 100 / jR);
+  if (set === "stormrain") precEff = Math.min(1.0, precEff + 10.8 / 100 / jR);
+  if (set === "eaglerise") affEff = Math.min(0.4, affEff + 6.1 / 100 / jR);
 
   let pCrit: number, pAff: number, pPrec: number, pGraze: number;
   if (sk.force === "crit") {
@@ -385,7 +409,7 @@ export function calcSkill(
   if (sk.wType === "rope") weapBonus += panel.ropeBonus / 100;
   if (sk.wType === "N/A") weapBonus = 0;
 
-  const csBonus = set === "moonflare" ? 0.15 : 0;
+  const csBonus = set === "stars" ? 0.15 : 0;
   const spinBonus = sk.special === "spin" ? 0.12 : 0;
 
   let setDmgBonus = 0;
@@ -412,8 +436,8 @@ export function calcSkill(
     physRes;
   const F = totalOuterPen >= 0 ? totalOuterPen / 200 : totalOuterPen / 100;
 
-  let atkMult = set === "formbend" ? 1.05 : 1.0;
-  if (set === "hawking") atkMult = 1.1;
+  let atkMult = set === "ironweave" ? 1.05 : 1.0;
+  if (set === "eaglerise") atkMult = 1.1;
   let minO = panel.minOuter * atkMult;
   let maxO = panel.maxOuter * atkMult;
   if (maxO < minO) maxO = minO;
@@ -485,13 +509,13 @@ export function calcBaseline(tier: TierConstants) {
     attunedBonus: 0,
     wuxiangMin: 0,
     wuxiangMax: 0,
-    set: "moonflare",
+    set: "stars",
   };
 
   let total = 0;
   ROTATION.forEach((sk) => {
     total += calcSkill(sk, ref, tier, {
-      set: "moonflare",
+      set: "stars",
       datang: false,
       yishui: true,   // Song of Yi active (standard)
     }).total;

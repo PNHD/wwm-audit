@@ -238,6 +238,140 @@ export const WWM_DATA = {
         { "stat": "Min Phys Atk", "gainPct": 1.0719 },
         { "stat": "Crit Rate", "gainPct": 0.1772 }
       ]
+    },
+    "Nine-Nine": {
+      "sheetLevel": "105",
+      "bossDefUsed": -559.0,
+      "graduationPanel": {
+        "Min Phys Atk": 1780.0,
+        "Max Phys Atk": 4550.0,
+        "Precision": 1.35,
+        "Crit Rate": 1.45,
+        "Direct Crit": 0.046,
+        "Crit DMG": 0.544,
+        "Affinity Rate": 0.30,
+        "Direct Affinity": 0.0,
+        "Affinity DMG": 0.35,
+        "Min Bamboocut": 420.0,
+        "Max Bamboocut": 850.0,
+        "Phys Pen": 55.0,
+        "Bamboocut Pen": 35.0,
+        "Bamboocut DMG Deepen": 0.138,
+        "Judge Resistance": 1.15
+      },
+      "marginalGains": [
+        { "stat": "Phys Pen", "gainPct": 4.5422 },
+        { "stat": "Max Phys Atk", "gainPct": 2.1221 },
+        { "stat": "All Weapon Bonus", "gainPct": 2.1000 },
+        { "stat": "Crit Rate", "gainPct": 1.8322 },
+        { "stat": "Crit DMG", "gainPct": 1.5432 }
+      ]
+    },
+    "Bamboocut-Bird": {
+      "sheetLevel": "105",
+      "bossDefUsed": -559.0,
+      "graduationPanel": {
+        "Min Phys Atk": 1820.0,
+        "Max Phys Atk": 4580.0,
+        "Precision": 1.361,
+        "Crit Rate": 1.50,
+        "Direct Crit": 0.046,
+        "Crit DMG": 0.544,
+        "Affinity Rate": 0.35,
+        "Direct Affinity": 0.0,
+        "Affinity DMG": 0.35,
+        "Min Bamboocut": 430.0,
+        "Max Bamboocut": 860.0,
+        "Phys Pen": 56.4,
+        "Bamboocut Pen": 36.6,
+        "Bamboocut DMG Deepen": 0.138,
+        "Judge Resistance": 1.15
+      },
+      "marginalGains": [
+        { "stat": "Max Phys Atk", "gainPct": 3.123 },
+        { "stat": "Phys Pen", "gainPct": 2.943 },
+        { "stat": "All Weapon Bonus", "gainPct": 2.112 },
+        { "stat": "Crit Rate", "gainPct": 1.632 }
+      ]
+    },
+    "Rocksplit-Jun": {
+      "sheetLevel": "105",
+      "bossDefUsed": -559.0,
+      "graduationPanel": {
+        "Min Phys Atk": 1850.0,
+        "Max Phys Atk": 4600.0,
+        "Precision": 1.40,
+        "Crit Rate": 1.30,
+        "Direct Crit": 0.046,
+        "Crit DMG": 0.544,
+        "Affinity Rate": 0.40,
+        "Direct Affinity": 0.0,
+        "Affinity DMG": 0.35,
+        "Min Bamboocut": 450.0,
+        "Max Bamboocut": 880.0,
+        "Phys Pen": 57.0,
+        "Bamboocut Pen": 38.0,
+        "Bamboocut DMG Deepen": 0.138,
+        "Judge Resistance": 1.15
+      },
+      "marginalGains": [
+        { "stat": "Phys Pen", "gainPct": 4.312 },
+        { "stat": "Max Phys Atk", "gainPct": 3.012 },
+        { "stat": "Own Weapon Bonus", "gainPct": 2.894 },
+        { "stat": "Crit Rate", "gainPct": 1.452 }
+      ]
+    },
+    "Pure-Healer": {
+      "sheetLevel": "105",
+      "bossDefUsed": -559.0,
+      "graduationPanel": {
+        "Min Phys Atk": 1700.0,
+        "Max Phys Atk": 4400.0,
+        "Precision": 1.30,
+        "Crit Rate": 1.20,
+        "Direct Crit": 0.0,
+        "Crit DMG": 0.50,
+        "Affinity Rate": 0.30,
+        "Direct Affinity": 0.0,
+        "Affinity DMG": 0.35,
+        "Min Bamboocut": 400.0,
+        "Max Bamboocut": 800.0,
+        "Phys Pen": 40.0,
+        "Bamboocut Pen": 30.0,
+        "Bamboocut DMG Deepen": 0.10,
+        "Judge Resistance": 1.15
+      },
+      "marginalGains": [
+        { "stat": "Outgoing Healing", "gainPct": 5.122 },
+        { "stat": "Max Phys Atk", "gainPct": 1.894 },
+        { "stat": "All Weapon Bonus", "gainPct": 1.233 }
+      ]
+    },
+    "Fire-Fist-Healer": {
+      "sheetLevel": "105",
+      "bossDefUsed": -559.0,
+      "graduationPanel": {
+        "Min Phys Atk": 1720.0,
+        "Max Phys Atk": 4450.0,
+        "Precision": 1.32,
+        "Crit Rate": 1.25,
+        "Direct Crit": 0.0,
+        "Crit DMG": 0.50,
+        "Affinity Rate": 0.32,
+        "Direct Affinity": 0.0,
+        "Affinity DMG": 0.35,
+        "Min Bamboocut": 410.0,
+        "Max Bamboocut": 820.0,
+        "Phys Pen": 42.0,
+        "Bamboocut Pen": 32.0,
+        "Bamboocut DMG Deepen": 0.10,
+        "Judge Resistance": 1.15
+      },
+      "marginalGains": [
+        { "stat": "Outgoing Healing", "gainPct": 4.882 },
+        { "stat": "Max Phys Atk", "gainPct": 2.012 },
+        { "stat": "All Weapon Bonus", "gainPct": 1.452 }
+      ]
     }
   }
 } as const;
