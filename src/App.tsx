@@ -595,7 +595,7 @@ export default function App() {
   const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => {
     const isOpen = expandedSections.has(id);
     return (
-      <div className="border-b border-slate-900/50 pb-2 mb-2">
+      <div className="border-b border-stone-300/50 pb-2 mb-2">
         <button
           onClick={() => setExpandedSections(prev => {
             const next = new Set(prev);
@@ -1580,14 +1580,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0e0d0b] text-[#ede5ce] font-sans antialiased selection:bg-amber-600/30 selection:text-amber-200">
+    <div className="min-h-screen bg-[#0e0d0b] text-[#2c1f08] font-sans antialiased selection:bg-amber-600/30 selection:text-amber-200">
       {/* Accent line */}
       <div className="h-0.5 w-full bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700" />
 
       {/* ── TOP BAR ── */}
-      <header className="bg-[#14120f] border-b border-amber-900/30 px-4 h-11 flex items-center justify-between sticky top-0 z-30 shadow-md gap-2">
+      <header className="bg-[#f8f3ea] border-b border-amber-600/30 px-4 h-11 flex items-center justify-between sticky top-0 z-30 shadow-md gap-2">
         <div className="flex items-center gap-2 shrink-0">
-          <h1 className="text-sm font-bold font-serif text-slate-100 whitespace-nowrap">
+          <h1 className="text-sm font-bold font-serif text-slate-800 whitespace-nowrap">
             Where Winds Meet <span className="text-amber-500">Calc</span>
           </h1>
           <span className="text-[10px] font-mono font-bold text-amber-500/60 border border-amber-500/20 rounded px-1.5 bg-amber-500/5">T91</span>
@@ -1603,7 +1603,7 @@ export default function App() {
               setCharsData(newData);
               localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
             }}
-            className="bg-slate-950 border border-slate-800 text-amber-500 rounded px-2 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+            className="bg-white border border-stone-200 text-amber-500 rounded px-2 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500/50"
           >
             {charsData.chars.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -1659,9 +1659,9 @@ export default function App() {
               a.setAttribute("download", `WWM_Builds_${new Date().toISOString().slice(0,10)}.json`);
               document.body.appendChild(a); a.click(); a.remove();
             }}
-            className="px-2 py-0.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 rounded text-[11px] flex items-center gap-1 transition-colors shrink-0"
+            className="px-2 py-0.5 bg-white hover:bg-slate-900 border border-stone-200 text-slate-600 rounded text-[11px] flex items-center gap-1 transition-colors shrink-0"
           ><Download className="w-3 h-3 text-amber-500" /> Export</button>
-          <label className="px-2 py-0.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 rounded text-[11px] flex items-center gap-1 cursor-pointer transition-colors shrink-0">
+          <label className="px-2 py-0.5 bg-white hover:bg-slate-900 border border-stone-200 text-slate-600 rounded text-[11px] flex items-center gap-1 cursor-pointer transition-colors shrink-0">
             <Upload className="w-3 h-3 text-amber-500" /> Import
             <input type="file" accept=".json" className="hidden" onChange={(e) => {
               const file = e.target.files?.[0];
@@ -1687,14 +1687,14 @@ export default function App() {
           <button onClick={handleSaveAsDefault} className="px-2 py-0.5 text-[11px] font-bold text-amber-500 border border-amber-500/20 bg-amber-500/5 rounded transition-colors flex items-center gap-1 shrink-0">
             <Database className="w-3 h-3" /> Save
           </button>
-          <button onClick={handleResetAll} className="px-2 py-0.5 text-[11px] text-slate-300 border border-slate-700/60 rounded transition-colors flex items-center gap-1 shrink-0">
+          <button onClick={handleResetAll} className="px-2 py-0.5 text-[11px] text-slate-600 border border-slate-700/60 rounded transition-colors flex items-center gap-1 shrink-0">
             <RotateCw className="w-3 h-3 text-amber-500" /> Reset
           </button>
         </div>
       </header>
 
       {/* ── SCHEME + SUBNAV BAR ── */}
-      <div className="bg-[#0a0908] border-b border-amber-900/15 px-4 h-10 flex items-center justify-between sticky top-11 z-20 gap-3 shadow-sm">
+      <div className="bg-[#ede6d9] border-b border-amber-500/25 px-4 h-10 flex items-center justify-between sticky top-11 z-20 gap-3 shadow-sm">
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none min-w-0">
           <span className="text-[10px] text-slate-500 font-mono shrink-0 uppercase tracking-wider">Scheme:</span>
           {activeChar?.schemes.map(s => (
@@ -1703,7 +1703,7 @@ export default function App() {
               className={`flex items-center gap-1 px-2 py-0.5 rounded cursor-pointer transition-all border text-[11px] shrink-0 ${
                 charsData.activeSchemeId === s.id
                   ? "bg-amber-500 text-slate-950 font-bold border-amber-500"
-                  : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900"
+                  : "bg-stone-200/60 text-slate-500 hover:text-slate-700 border-stone-300"
               }`}
               onClick={() => { const nd = { ...charsData, activeSchemeId: s.id }; setCharsData(nd); localStorage.setItem("wwm_chars_v3", JSON.stringify(nd)); }}
             >
@@ -1749,7 +1749,7 @@ export default function App() {
               className={`px-2 py-1 text-[11px] rounded font-semibold transition-colors whitespace-nowrap ${
                 activeTab === tab.key
                   ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                  : "text-slate-500 hover:text-slate-300"
+                  : "text-slate-500 hover:text-slate-600"
               }`}
             >{tab.label}</button>
           ))}
@@ -1762,8 +1762,8 @@ export default function App() {
           <div className="flex gap-4 items-start">
             {/* Gear Library Sidebar — quick reference list of all owned gear with %grad */}
             <aside className="hidden xl:flex xl:flex-col gap-2 w-60 shrink-0 sticky top-2 max-h-[calc(100vh-1rem)] overflow-y-auto pr-1">
-              <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-3">
-                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5 mb-2">
+              <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-3">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-600/30 pb-1.5 mb-2">
                   <Shield className="w-3.5 h-3.5 text-amber-500" /> Gear Library
                 </span>
                 <div className="space-y-1.5">
@@ -1779,7 +1779,7 @@ export default function App() {
                       <div
                         key={item.id}
                         onClick={() => { setActiveTab("gear"); setSelectedSlot(item.slot); }}
-                        className="flex items-center gap-2 bg-slate-950/60 border border-slate-900 hover:border-amber-500/40 rounded-lg p-1.5 cursor-pointer transition-colors"
+                        className="flex items-center gap-2 bg-stone-100/70 border border-stone-300 hover:border-amber-500/40 rounded-lg p-1.5 cursor-pointer transition-colors"
                         title={item.name}
                       >
                         {(() => {
@@ -1792,13 +1792,13 @@ export default function App() {
                               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
                           ) : (
-                            <div className={`w-7 h-7 shrink-0 rounded-md bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
+                            <div className={`w-7 h-7 shrink-0 rounded-md bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-stone-400/20 border border-white/10`}>
                               <span className="text-[13px] leading-none">{slotDef?.icon || "🔹"}</span>
                             </div>
                           );
                         })()}
                         <div className="flex-1 min-w-0">
-                          <div className="text-[11px] text-slate-300 font-medium truncate">{item.name}</div>
+                          <div className="text-[11px] text-slate-600 font-medium truncate">{item.name}</div>
                           <div className="text-[10px] text-slate-500 truncate">{item.slot} · {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
                         </div>
                         <div className={`text-[11px] font-mono font-bold shrink-0 ${totalGradDelta >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
@@ -1814,7 +1814,7 @@ export default function App() {
           <div className="flex-1 min-w-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Sidebar Controls (Inputs & Modifiers) - 4 Cols */}
-            <div className="lg:col-span-12 flex items-center gap-3 mb-3 p-2 bg-slate-950/40 rounded-lg border border-slate-900">
+            <div className="lg:col-span-12 flex items-center gap-3 mb-3 p-2 bg-stone-200/60 rounded-lg border border-stone-300">
               {BUILD_WEAPONS[selectedBuild]?.map(weaponKey => (
                 <div key={weaponKey} className="flex items-center gap-2">
                   <img
@@ -1832,7 +1832,7 @@ export default function App() {
             </div>
 
             {/* Equipped Slots Grid — gear overview + %grad contribution + mis-tune flags */}
-            <div className="lg:col-span-12 bg-[#141210] border border-amber-900/10 rounded-xl p-4">
+            <div className="lg:col-span-12 bg-[#f4eee2] border border-amber-500/20 rounded-xl p-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-amber-500" /> Equipped Slots
@@ -1866,7 +1866,7 @@ export default function App() {
                         return <img src={setImgUrl} alt={item.set} className="w-9 h-9 object-contain mx-auto rounded" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />;
                       }
                       return (
-                        <div className={`w-9 h-9 mx-auto rounded-lg bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
+                        <div className={`w-9 h-9 mx-auto rounded-lg bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-stone-400/20 border border-white/10`}>
                           <span className="text-lg leading-none">{slot.icon}</span>
                         </div>
                       );
@@ -1875,7 +1875,7 @@ export default function App() {
                   };
                   if (!item) {
                     return (
-                      <div key={slot.name} className="bg-slate-950/40 border border-slate-900 rounded-lg p-2 text-center opacity-50">
+                      <div key={slot.name} className="bg-stone-200/60 border border-stone-300 rounded-lg p-2 text-center opacity-50">
                         <SlotIcon />
                         <div className="text-[11px] text-slate-500 mt-1">{slot.name}</div>
                         <div className="text-[11px] text-slate-600 mt-1">— empty —</div>
@@ -1892,7 +1892,7 @@ export default function App() {
                     <div
                       key={item.id}
                       onClick={() => { setActiveTab("gear"); setSelectedSlot(slot.name); }}
-                      className="bg-slate-950/60 border border-slate-900 hover:border-amber-500/40 rounded-lg p-2 cursor-pointer transition-colors"
+                      className="bg-stone-100/70 border border-stone-300 hover:border-amber-500/40 rounded-lg p-2 cursor-pointer transition-colors"
                       title={item.name}
                     >
                       <div className="flex items-center justify-between">
@@ -1901,7 +1901,7 @@ export default function App() {
                           <span className="text-[11px]" title={`${misTuned.length} sub-stat ít/không có giá trị cho ${(BUILD_PROFILES as any)[selectedBuild]?.label}: ${misTuned.map(s => s.type).join(", ")}`}>⚠️</span>
                         )}
                       </div>
-                      <div className="text-[11px] text-slate-300 font-medium truncate mt-1">{item.name}</div>
+                      <div className="text-[11px] text-slate-600 font-medium truncate mt-1">{item.name}</div>
                       <div className="text-[10.5px] text-slate-500 truncate">{ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
                       <div className={`text-[12px] font-mono font-bold mt-1 ${totalGradDelta >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
                         {totalGradDelta >= 0 ? "+" : ""}{totalGradDelta.toFixed(2)}% grad
@@ -1912,17 +1912,17 @@ export default function App() {
               </div>
             </div>
 
-            <div className="lg:col-span-4 bg-[#141210] border border-amber-900/10 rounded-xl p-5 space-y-6">
+            <div className="lg:col-span-4 bg-[#f4eee2] border border-amber-500/20 rounded-xl p-5 space-y-6">
               {/* Build Path Dropdown */}
-              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
-                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+              <div className="bg-[#f0e9da] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-600/30 pb-1.5">
                   <span className="text-base">⚔️</span> Build Path Selection
                 </span>
                 <div>
                   <select
                     value={selectedBuild}
                     onChange={e => setSelectedBuild(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 text-amber-400 rounded px-2.5 py-2 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                    className="w-full bg-white border border-stone-200 text-amber-400 rounded px-2.5 py-2 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                   >
                     {Object.entries(BUILD_PROFILES).map(([key, b]) => (
                       <option key={key} value={key}>{b.label}</option>
@@ -1934,21 +1934,21 @@ export default function App() {
                   const b = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
                   if (!b) return null;
                   return (
-                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[13px] space-y-1.5 text-slate-300 antialiased">
-                      <div className="flex justify-between text-slate-400">
+                    <div className="bg-stone-100/70 rounded p-2.5 border border-stone-300 text-[13px] space-y-1.5 text-slate-600 antialiased">
+                      <div className="flex justify-between text-slate-500">
                         <span>Weapons:</span>
                         <span className="text-amber-500 font-medium text-right text-[12px]">{b.weapons}</span>
                       </div>
-                      <div className="font-mono text-[12px] text-slate-400 border-t border-slate-900/60 pt-1.5">
+                      <div className="font-mono text-[12px] text-slate-500 border-t border-stone-300/60 pt-1.5">
                         <span className="text-slate-500 block">Graduation Targets:</span>
                         <div className="grid grid-cols-2 gap-y-1 gap-x-2 mt-1">
-                          <div>Max PA: <span className="text-slate-200">{b.gradTargets.maxOuter}</span></div>
-                          <div>Min PA: <span className="text-slate-200">{b.gradTargets.minOuter}</span></div>
-                          <div>Pen: <span className="text-slate-200">{b.gradTargets.outerPen}%</span></div>
-                          <div>Crit: <span className="text-slate-200">{b.gradTargets.crit}%</span></div>
+                          <div>Max PA: <span className="text-slate-700">{b.gradTargets.maxOuter}</span></div>
+                          <div>Min PA: <span className="text-slate-700">{b.gradTargets.minOuter}</span></div>
+                          <div>Pen: <span className="text-slate-700">{b.gradTargets.outerPen}%</span></div>
+                          <div>Crit: <span className="text-slate-700">{b.gradTargets.crit}%</span></div>
                         </div>
                       </div>
-                      <div className="text-slate-400 border-t border-slate-900/60 pt-1.5 leading-relaxed text-[12.5px]">
+                      <div className="text-slate-500 border-t border-stone-300/60 pt-1.5 leading-relaxed text-[12.5px]">
                         <span className="text-amber-500/90 font-bold">Strategy:</span> {b.notes}
                       </div>
                     </div>
@@ -1957,15 +1957,15 @@ export default function App() {
               </div>
 
               {/* Armor Set Selector */}
-              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
-                <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+              <div className="bg-[#f0e9da] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-[#6b5030] uppercase flex items-center gap-1.5 border-b border-amber-600/30 pb-1.5">
                   <Shield className="w-3.5 h-3.5 text-amber-500" /> Active Armor Set Selector
                 </span>
                 <div>
                   <select
                     value={panel.set}
                     onChange={e => handleStatChange("set", e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 text-amber-100 rounded px-2.5 py-2 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                    className="w-full bg-white border border-stone-200 text-amber-100 rounded px-2.5 py-2 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                   >
                     {Object.entries(ARMOR_SETS).map(([key, s]) => (
                       <option key={key} value={key}>{s.name}</option>
@@ -1981,7 +1981,7 @@ export default function App() {
                   const isMismatched = panel.set !== "none" && !isRecommended;
                   
                   return (
-                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[13px] space-y-2 text-slate-300">
+                    <div className="bg-stone-100/70 rounded p-2.5 border border-stone-300 text-[13px] space-y-2 text-slate-600">
                       <div className="flex flex-wrap gap-1">
                         {isRecommended && (
                           <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-900/40">
@@ -1994,14 +1994,14 @@ export default function App() {
                           </span>
                         )}
                         {panel.set === "none" && (
-                          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 font-bold border border-slate-850">
+                          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-500 font-bold border border-slate-850">
                             No active bonus
                           </span>
                         )}
                       </div>
                       
                       {panel.set !== "none" && (
-                        <div className="font-sans text-[13px] space-y-1.5 text-slate-400 border-t border-slate-900/60 pt-1.5 leading-normal">
+                        <div className="font-sans text-[13px] space-y-1.5 text-slate-500 border-t border-stone-300/60 pt-1.5 leading-normal">
                           <div>
                             <span className="text-amber-500 font-bold">2pc:</span> {s.desc2pc || "—"}
                           </div>
@@ -2016,9 +2016,9 @@ export default function App() {
               </div>
 
               {/* Gear-Driven Panel Toggle */}
-              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-2 shadow-md">
+              <div className="bg-[#f0e9da] border border-amber-900/20 rounded-xl p-4 space-y-2 shadow-md">
                 <label className="flex items-center justify-between gap-2 cursor-pointer">
-                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5">
+                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#6b5030] uppercase flex items-center gap-1.5">
                     <Database className="w-3.5 h-3.5 text-amber-500" /> Auto Panel From Gear
                   </span>
                   <input
@@ -2036,11 +2036,11 @@ export default function App() {
               </div>
 
               {/* Custom Rotation & DPS */}
-              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
+              <div className="bg-[#f0e9da] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
                 <button
                   type="button"
                   onClick={() => setIsCustomRotationOpen(!isCustomRotationOpen)}
-                  className="w-full flex justify-between items-center text-[12.5px] font-mono font-bold tracking-widest text-[#a19683] uppercase border-b border-amber-950/40 pb-1.5 focus:outline-none"
+                  className="w-full flex justify-between items-center text-[12.5px] font-mono font-bold tracking-widest text-[#6b5030] uppercase border-b border-amber-600/30 pb-1.5 focus:outline-none"
                 >
                   <span className="flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" /> Custom Rotation DPS
@@ -2058,7 +2058,7 @@ export default function App() {
                       <div className="space-y-1.5">
                         {rotSkills.map(s => (
                           <div key={s.name} className="flex items-center justify-between gap-2">
-                            <span className="text-[11.5px] text-slate-300 truncate flex-1">{s.name}</span>
+                            <span className="text-[11.5px] text-slate-600 truncate flex-1">{s.name}</span>
                             <div className="flex items-center gap-1 shrink-0">
                               <span className="text-[10px] text-slate-600 font-mono">hits/60s</span>
                               <input
@@ -2066,21 +2066,21 @@ export default function App() {
                                 value={(hitsState[s.name] || 0) === 0 ? "" : (hitsState[s.name] || 0)}
                                 placeholder="0"
                                 onChange={e => setHitsState(prev => ({ ...prev, [s.name]: parseInt(e.target.value) || 0 }))}
-                                className="w-14 bg-slate-950 border border-slate-800 rounded p-1 text-xs text-center text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500/50"
+                                className="w-14 bg-white border border-stone-200 rounded p-1 text-xs text-center text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500/50"
                               />
                             </div>
                           </div>
                         ))}
                       </div>
-                      <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 space-y-1 mt-1">
+                      <div className="bg-stone-100/70 rounded p-2.5 border border-stone-300 space-y-1 mt-1">
                         <div className="flex justify-between items-center">
-                          <span className="text-[11.5px] text-slate-400">Custom DPS:</span>
+                          <span className="text-[11.5px] text-slate-500">Custom DPS:</span>
                           <span className="font-mono text-sm font-extrabold text-amber-400">
                             {customRotDps !== null ? Math.round(customRotDps).toLocaleString() : <span className="text-slate-600 text-xs">— nhập hits để tính</span>}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-[11.5px] text-slate-400">Preset DPS:</span>
+                          <span className="text-[11.5px] text-slate-500">Preset DPS:</span>
                           <span className="font-mono text-xs text-slate-500">{Math.round(rotationStats.dps).toLocaleString()}</span>
                         </div>
                       </div>
@@ -2090,9 +2090,9 @@ export default function App() {
               </div>
 
               {/* Reset/Save Default Quick Group */}
-              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
+              <div className="bg-[#f0e9da] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5">
+                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#6b5030] uppercase flex items-center gap-1.5">
                     <Sliders className="w-3.5 h-3.5 text-amber-500" /> Default Setup
                   </span>
                   {hasCustomConfig && (
@@ -2105,7 +2105,7 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-2 text-center">
                   <button
                     onClick={handleSaveAsDefault}
-                    className="py-1.5 px-2 text-sm font-mono font-bold text-[#ede5ce] bg-amber-900/30 hover:bg-amber-900/50 border border-amber-500/20 rounded transition-all flex items-center justify-center gap-1 hover:text-amber-300 shadow-sm"
+                    className="py-1.5 px-2 text-sm font-mono font-bold text-[#2c1f08] bg-amber-900/30 hover:bg-amber-900/50 border border-amber-500/20 rounded transition-all flex items-center justify-center gap-1 hover:text-amber-300 shadow-sm"
                     title="Save present parameters & buffs as default when loading pages"
                   >
                     <Database className="w-3.5 h-3.5 text-amber-500" /> Save default
@@ -2137,8 +2137,8 @@ export default function App() {
                   <Sliders className="w-3.5 h-3.5" /> Dungeon Parameters
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-3 bg-slate-950/60 p-2 rounded-lg border border-slate-900/60">
-                    <label className="text-sm text-slate-300 font-medium">Dungeon Level</label>
+                  <div className="flex items-center justify-between gap-3 bg-stone-100/70 p-2 rounded-lg border border-stone-300/60">
+                    <label className="text-sm text-slate-600 font-medium">Dungeon Level</label>
                     <select
                       value={tierKey}
                       onChange={(e) => setTierKey(e.target.value)}
@@ -2156,35 +2156,35 @@ export default function App() {
                   {tierKey === "custom" && (
                     <div className="grid grid-cols-2 gap-2 bg-[#201d18]/40 p-2.5 rounded border border-amber-900/20">
                       <div>
-                        <label className="text-[12px] text-slate-400 block mb-1">Defense</label>
+                        <label className="text-[12px] text-slate-500 block mb-1">Defense</label>
                         <input
                           type="number"
                           value={customDef}
                           onChange={(e) => setCustomDef(parseInt(e.target.value) || 0)}
-                          className="w-full bg-slate-950 text-slate-200 border border-slate-800 text-sm text-right px-2 py-1 rounded"
+                          className="w-full bg-white text-slate-700 border border-stone-200 text-sm text-right px-2 py-1 rounded"
                         />
                       </div>
                       <div>
-                        <label className="text-[12px] text-slate-400 block mb-1">Judge Resistance</label>
+                        <label className="text-[12px] text-slate-500 block mb-1">Judge Resistance</label>
                         <input
                           type="number"
                           step="0.05"
                           value={customRes}
                           onChange={(e) => setCustomRes(parseFloat(e.target.value) || 0)}
-                          className="w-full bg-slate-950 text-slate-200 border border-slate-800 text-sm text-right px-2 py-1 rounded"
+                          className="w-full bg-white text-slate-700 border border-stone-200 text-sm text-right px-2 py-1 rounded"
                         />
                       </div>
                     </div>
                   )}
 
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900/40 text-[12px] text-slate-400 font-mono space-y-1.5 leading-relaxed">
+                  <div className="bg-stone-200/60 p-3 rounded-lg border border-stone-300/40 text-[12px] text-slate-500 font-mono space-y-1.5 leading-relaxed">
                     <div className="flex justify-between">
                       <span>Target Base Defense:</span>
                       <span className="text-amber-500 font-bold">{activeTier.def}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Judgment Res factor:</span>
-                      <span className="text-slate-300">×{(1 + activeTier.judgeRes).toFixed(2)}</span>
+                      <span className="text-slate-600">×{(1 + activeTier.judgeRes).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -2192,119 +2192,119 @@ export default function App() {
 
               {/* Attributes block */}
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-500/20">
                   Physical attributes
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Min Physical Atk</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Min Physical Atk</span>
                     <input
                       type="number"
                       value={panel.minOuter}
                       onChange={(e) => handleStatChange("minOuter", parseInt(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-20 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Max Physical Atk</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Max Physical Atk</span>
                     <input
                       type="number"
                       value={panel.maxOuter}
                       onChange={(e) => handleStatChange("maxOuter", parseInt(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono font-bold"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-20 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Physical Penetration %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Physical Penetration %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.outerPen}
                       onChange={(e) => handleStatChange("outerPen", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-500/20">
                   Bamboocut Dust attributes
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Min Bamboocut Atk</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Min Bamboocut Atk</span>
                     <input
                       type="number"
                       value={panel.minPz}
                       onChange={(e) => handleStatChange("minPz", parseInt(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-20 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Max Bamboocut Atk</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Max Bamboocut Atk</span>
                     <input
                       type="number"
                       value={panel.maxPz}
                       onChange={(e) => handleStatChange("maxPz", parseInt(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono font-bold"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-20 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Bamboocut Pen %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Bamboocut Pen %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.pzPen}
                       onChange={(e) => handleStatChange("pzPen", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Bamboocut DMG Bonus %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Bamboocut DMG Bonus %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.pzDmg}
                       onChange={(e) => handleStatChange("pzDmg", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono font-bold"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono font-bold"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-500/20">
                   Hit and Critical Rates
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-900/60">
+                  <div className="bg-stone-100/70 p-2 rounded-lg border border-stone-300/60">
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-slate-400">Precision Rate %</span>
+                      <span className="text-slate-500">Precision Rate %</span>
                       <input
                         type="number"
                         step="0.1"
                         value={panel.prec}
                         onChange={(e) => handleStatChange("prec", parseFloat(e.target.value) || 0)}
-                        className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                        className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                       />
                     </div>
-                    <div className="text-[11.5px] text-slate-500 mt-1 leading-normal font-sans border-t border-slate-900/40 pt-1">
+                    <div className="text-[11.5px] text-slate-500 mt-1 leading-normal font-sans border-t border-stone-300/40 pt-1">
                       Enter your actual panel value (e.g. 103.7%). Base 65% is not reduced by boss resistance.
                     </div>
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Critical Rate %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Critical Rate %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.crit}
                       onChange={(e) => handleStatChange("crit", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400 font-medium">Direct Critical Rate %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500 font-medium">Direct Critical Rate %</span>
                     <input
                       type="number"
                       step="0.1"
@@ -2313,82 +2313,82 @@ export default function App() {
                       className="bg-transparent border-none text-right text-emerald-400 focus:outline-none w-16 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Affinity Rate %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Affinity Rate %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.aff}
                       onChange={(e) => handleStatChange("aff", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-500/20">
                   Damage Multipliers
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Crit DMG Bonus %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Crit DMG Bonus %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.critDmg}
                       onChange={(e) => handleStatChange("critDmg", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Affinity DMG %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Affinity DMG %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.affDmg}
                       onChange={(e) => handleStatChange("affDmg", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Rope Dart DMG %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Rope Dart DMG %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.ropeBonus}
                       onChange={(e) => handleStatChange("ropeBonus", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Umbrella Action DMG %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Umbrella Action DMG %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.umbBonus}
                       onChange={(e) => handleStatChange("umbBonus", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">All Weapons DMG %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">All Weapons DMG %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.allArts}
                       onChange={(e) => handleStatChange("allArts", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Boss DMG Boost %</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Boss DMG Boost %</span>
                     <input
                       type="number"
                       step="0.1"
                       value={panel.bossDmg}
                       onChange={(e) => handleStatChange("bossDmg", parseFloat(e.target.value) || 0)}
-                      className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
+                      className="bg-transparent border-none text-right text-slate-800 focus:outline-none w-16 font-mono"
                     />
                   </div>
                   <div className="flex justify-between items-center bg-[#201512]/60 p-2 rounded-lg border border-rose-950/40 text-sm">
@@ -2405,8 +2405,8 @@ export default function App() {
                       className="bg-transparent border-none text-right text-rose-300 focus:outline-none w-16 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                    <span className="text-slate-400">Armor Set Selection</span>
+                  <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                    <span className="text-slate-500">Armor Set Selection</span>
                     <select
                       value={panel.set}
                       onChange={(e) => handleStatChange("set", e.target.value)}
@@ -2417,16 +2417,16 @@ export default function App() {
                       ))}
                     </select>
                   </div>
-                  <div className="bg-[#141210] p-3 rounded-lg border border-slate-900/50 mt-4">
+                  <div className="bg-[#f4eee2] p-3 rounded-lg border border-stone-300/50 mt-4">
                     <button onClick={() => setFormlessOpen(!formlessOpen)} className="text-amber-500 font-bold text-sm w-full text-left">Advanced / Formless ATK {formlessOpen ? "▼" : "▶"}</button>
                     {formlessOpen && (
                       <div className="mt-3 space-y-2">
                         <div className="fr flex justify-between text-sm">
-                          <label className="text-slate-400">Formless Min ATK</label>
+                          <label className="text-slate-500">Formless Min ATK</label>
                           <input type="number" value={panel.wuxiangMin ?? 0} onChange={(e) => handleStatChange("wuxiangMin", parseFloat(e.target.value) || 0)} className="bg-slate-900 p-1 w-16 text-right rounded" />
                         </div>
                         <div className="fr flex justify-between text-sm">
-                          <label className="text-slate-400">Formless Max ATK</label>
+                          <label className="text-slate-500">Formless Max ATK</label>
                           <input type="number" value={panel.wuxiangMax ?? 0} onChange={(e) => handleStatChange("wuxiangMax", parseFloat(e.target.value) || 0)} className="bg-slate-900 p-1 w-16 text-right rounded" />
                         </div>
                       </div>
@@ -2436,14 +2436,14 @@ export default function App() {
               </div>
 
               {/* Simulation Options */}
-              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md mt-4">
-                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+              <div className="bg-[#f0e9da] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md mt-4">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-600/30 pb-1.5">
                   <span className="text-base">⚙️</span> Simulation Options
                 </span>
 
                 {/* Bow / Ring Type */}
-                <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
-                  <label htmlFor="sel-bowtype" className="text-slate-400">
+                <div className="flex justify-between items-center bg-stone-100/70 p-2 rounded-lg border border-stone-300/60 text-sm">
+                  <label htmlFor="sel-bowtype" className="text-slate-500">
                     Bow/Ring Type
                   </label>
                   <select
@@ -2467,7 +2467,7 @@ export default function App() {
                       onChange={(e) => setFood(e.target.checked)}
                       className="accent-amber-500 w-4 h-4 cursor-pointer"
                     />
-                    <label htmlFor="chk-food" className="text-slate-300 cursor-pointer">
+                    <label htmlFor="chk-food" className="text-slate-600 cursor-pointer">
                       Scaler Food buff (+90 / +180)
                     </label>
                   </div>
@@ -2479,7 +2479,7 @@ export default function App() {
                       onChange={(e) => setEarlySeason(e.target.checked)}
                       className="accent-amber-500 w-4 h-4 cursor-pointer"
                     />
-                    <label htmlFor="chk-earlyseason" className="text-slate-300 cursor-pointer text-[13px]">
+                    <label htmlFor="chk-earlyseason" className="text-slate-600 cursor-pointer text-[13px]">
                       Early Season Buff (+4.4 / +27.2 Phys ATK)
                     </label>
                   </div>
@@ -2491,7 +2491,7 @@ export default function App() {
                       onChange={(e) => setYishui(e.target.checked)}
                       className="accent-amber-500 w-4 h-4 cursor-pointer"
                     />
-                    <label htmlFor="chk-yishui" className="text-slate-300 cursor-pointer">
+                    <label htmlFor="chk-yishui" className="text-slate-600 cursor-pointer">
                       Song of Yi Buff (+10 Phys Pen)
                     </label>
                   </div>
@@ -2503,7 +2503,7 @@ export default function App() {
                       onChange={(e) => setDatang(e.target.checked)}
                       className="accent-amber-500 w-4 h-4 cursor-pointer"
                     />
-                    <label htmlFor="chk-datang" className="text-slate-300 cursor-pointer text-[13px]">
+                    <label htmlFor="chk-datang" className="text-slate-600 cursor-pointer text-[13px]">
                       Great Tang Song (Q Umbrella +15% Crit DMG)
                     </label>
                   </div>
@@ -2515,7 +2515,7 @@ export default function App() {
                       onChange={(e) => setScript50(e.target.checked)}
                       className="accent-amber-500 w-4 h-4 cursor-pointer"
                     />
-                    <label htmlFor="chk-script50" className="text-slate-300 cursor-pointer text-[13px]">
+                    <label htmlFor="chk-script50" className="text-slate-600 cursor-pointer text-[13px]">
                       Sub-50% HP Active Talent (+15% Direct Crit)
                     </label>
                   </div>
@@ -2523,16 +2523,16 @@ export default function App() {
               </div>
 
               {/* Inner Ways Database Section */}
-              <div className="pt-4 border-t border-slate-800/80">
+              <div className="pt-4 border-t border-stone-200/80">
                 <div className="flex justify-between items-center mb-1">
                   <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest flex items-center gap-1 font-serif">
                     <Database className="w-3.5 h-3.5 text-amber-500" /> Active Inner Ways
                   </h3>
-                  <span className="text-[12px] font-mono px-1.5 py-0.5 rounded bg-slate-950 border border-slate-900 text-amber-400 font-bold">
+                  <span className="text-[12px] font-mono px-1.5 py-0.5 rounded bg-white border border-stone-300 text-amber-400 font-bold">
                     {selectedInnerWays.length}/4 selected
                   </span>
                 </div>
-                <p className="text-[12px] text-slate-400 mb-2.5 leading-snug">
+                <p className="text-[12px] text-slate-500 mb-2.5 leading-snug">
                   Select up to 4 Inner Ways matching your active setup to automatically aggregate their dynamic passive bonus attributes:
                 </p>
 
@@ -2542,16 +2542,16 @@ export default function App() {
                   value={innerWaySearch}
                   onChange={e => setInnerWaySearch(e.target.value)}
                   placeholder="Search inner ways..."
-                  className="w-full mb-2 px-2.5 py-1.5 bg-slate-950/60 border border-slate-800 rounded text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:border-amber-600"
+                  className="w-full mb-2 px-2.5 py-1.5 bg-stone-100/70 border border-stone-200 rounded text-sm text-slate-600 placeholder-slate-600 focus:outline-none focus:border-amber-600"
                 />
-                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[12px]">
+                <div className="flex bg-white p-0.5 rounded border border-stone-300 mb-3 text-[12px]">
                   <button
                     type="button"
                     onClick={() => setInnerWaysFilter("recommended")}
                     className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
                       innerWaysFilter === "recommended"
                         ? "bg-amber-500 text-slate-950"
-                        : "text-slate-400 hover:text-slate-200"
+                        : "text-slate-500 hover:text-slate-700"
                     }`}
                   >
                     Recommended
@@ -2562,14 +2562,14 @@ export default function App() {
                     className={`flex-1 py-1 rounded text-center font-semibold transition-all ${
                       innerWaysFilter === "all"
                         ? "bg-amber-500 text-slate-950"
-                        : "text-slate-400 hover:text-slate-200"
+                        : "text-slate-500 hover:text-slate-700"
                     }`}
                   >
                     All Inner Ways
                   </button>
                 </div>
 
-                <div className="space-y-2 max-h-56 overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-amber-900/40">
+                <div className="space-y-2 max-h-56 overflow-y-auto pr-1 select-none scrollbar-thin scrollbar-thumb-amber-600/30">
                   {INNER_WAYS.filter((iw) => {
                     if (innerWaySearch) {
                       const q = innerWaySearch.toLowerCase();
@@ -2640,10 +2640,10 @@ export default function App() {
                         }}
                         className={`p-2.5 rounded-lg border text-[13px] cursor-pointer transition-all ${
                           isSelected
-                            ? "bg-amber-950/20 border-amber-500 text-[#ede5ce]"
+                            ? "bg-amber-950/20 border-amber-500 text-[#2c1f08]"
                             : disabled
-                            ? "bg-slate-950/20 border-slate-900/60 opacity-40 cursor-not-allowed"
-                            : "bg-slate-950/40 border-slate-900 hover:border-slate-800 text-slate-400"
+                            ? "bg-stone-100/40 border-stone-300/60 opacity-40 cursor-not-allowed"
+                            : "bg-stone-200/60 border-stone-300 hover:border-stone-200 text-slate-500"
                         }`}
                       >
                         <div className="flex justify-between items-center font-semibold mb-1">
@@ -2679,16 +2679,16 @@ export default function App() {
                           </div>
                         )}
                         {iw.note && isSelected && (
-                          <div className="text-[11px] text-[#c9943a] leading-tight font-mono border-t border-amber-900/10 pt-1 mt-1 mb-1">
+                          <div className="text-[11px] text-[#8b5e10] leading-tight font-mono border-t border-amber-500/20 pt-1 mt-1 mb-1">
                             {iw.note}
                           </div>
                         )}
                         {isSelected && (
                           <div 
                             onClick={(e) => e.stopPropagation()}
-                            className="mt-2 pt-1.5 border-t border-amber-900/10 flex justify-between items-center text-[12px] gap-1"
+                            className="mt-2 pt-1.5 border-t border-amber-500/20 flex justify-between items-center text-[12px] gap-1"
                           >
-                            <span className="text-slate-400 font-medium">Select Level:</span>
+                            <span className="text-slate-500 font-medium">Select Level:</span>
                             <div className="flex gap-1">
                               {[1, 2, 3, 4, 5, 6].map((t) => {
                                 const isCurrent = (innerWayTiers[iw.id] ?? 5) === t;
@@ -2699,7 +2699,7 @@ export default function App() {
                                     className={`px-1 rounded font-mono text-[11px] font-bold ${
                                       isCurrent
                                         ? "bg-amber-500 text-slate-950"
-                                        : "bg-slate-900/90 text-slate-400 hover:text-slate-200"
+                                        : "bg-slate-900/90 text-slate-500 hover:text-slate-700"
                                     }`}
                                   >
                                     T{t}
@@ -2718,9 +2718,9 @@ export default function App() {
 
 
               {/* Active Scheme Sync Group */}
-              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 shadow-md space-y-2">
+              <div className="bg-[#f0e9da] border border-amber-900/20 rounded-xl p-4 shadow-md space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase">
+                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#6b5030] uppercase">
                     Active Scheme Sync
                   </span>
                   <span className="text-[12px] text-amber-500 font-bold font-mono">
@@ -2761,34 +2761,34 @@ export default function App() {
 
             <div className="lg:col-span-8 space-y-6">
               {/* Primary Results Display */}
-              <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg relative overflow-hidden">
+              <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-5 shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-3">
                   <span className="text-[11px] font-mono tracking-widest text-[#8a9ea8] uppercase">Season 3 Global</span>
                 </div>
-                <h2 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-900/10 pb-2">
+                <h2 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-500/20 pb-2">
                   <Award className="w-4 h-4 text-amber-400" /> Graduation Damage Analysis
                 </h2>
 
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-5">
-                  <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative">
+                  <div className="bg-stone-200/60 border border-stone-300 p-3.5 rounded-lg text-center relative">
                     <div className="text-[11px] font-mono tracking-wider text-slate-500 uppercase">Rotation Score damage</div>
-                    <div className="text-xl font-bold font-serif text-slate-100 mt-1">
+                    <div className="text-xl font-bold font-serif text-slate-800 mt-1">
                       {Math.round(rotationStats.totalDmg).toLocaleString()}
                     </div>
                   </div>
-                  <div className="bg-[#1b1511]/40 border border-amber-950/40 p-3.5 rounded-lg text-center relative">
+                  <div className="bg-[#1b1511]/40 border border-amber-600/30 p-3.5 rounded-lg text-center relative">
                     <div className="text-[11px] font-mono tracking-wider text-amber-400/80 uppercase">Expected Graduation Rate</div>
-                    <div className="text-2xl font-black font-serif text-[#c9943a] mt-1">
+                    <div className="text-2xl font-black font-serif text-[#8b5e10] mt-1">
                       {rotationStats.gradRate.toFixed(1)}%
                     </div>
                   </div>
-                  <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative">
+                  <div className="bg-stone-200/60 border border-stone-300 p-3.5 rounded-lg text-center relative">
                     <div className="text-[11px] font-mono tracking-wider text-slate-500 uppercase">Baseline Target (Same Tier)</div>
-                    <div className="text-xl font-bold font-serif text-slate-400 mt-1">
+                    <div className="text-xl font-bold font-serif text-slate-500 mt-1">
                       {Math.round(baselineScore).toLocaleString()}
                     </div>
                   </div>
-                  <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative flex flex-col justify-center">
+                  <div className="bg-stone-200/60 border border-stone-300 p-3.5 rounded-lg text-center relative flex flex-col justify-center">
                     <div className="text-[11px] font-mono tracking-wider text-slate-500 uppercase">Gap to 100%</div>
                     <div className={`text-xl font-bold font-serif mt-1 ${rotationStats.gradRate >= 100 ? "text-emerald-400" : "text-rose-400"}`}>
                       {rotationStats.gradRate >= 100 ? "✓ Graduated" : `-${(100 - rotationStats.gradRate).toFixed(1)}%`}
@@ -2798,12 +2798,12 @@ export default function App() {
 
                 {/* Progress bar and metrics */}
                 <div className="space-y-2 bg-[#0e0d0b] p-4 rounded-xl border border-amber-900/5">
-                  <div className="flex justify-between text-[12px] uppercase font-mono tracking-wider text-slate-400">
+                  <div className="flex justify-between text-[12px] uppercase font-mono tracking-wider text-slate-500">
                     <span>Under-Geared</span>
                     <span className="text-amber-500 font-semibold font-serif">Recommended Cap (90%)</span>
                     <span>Fully Graduated (100%+)</span>
                   </div>
-                  <div className="h-2.5 bg-slate-900 rounded-full border border-slate-800 overflow-hidden">
+                  <div className="h-2.5 bg-slate-900 rounded-full border border-stone-200 overflow-hidden">
                     <div
                       style={{ width: `${Math.min(100, rotationStats.gradRate)}%` }}
                       className={`h-full transition-all duration-500 ${
@@ -2821,7 +2821,7 @@ export default function App() {
                 </div>
 
                 {/* Dynamic Advice & Gearing Roadmap */}
-                <div className="mt-4 p-4 rounded-lg text-sm leading-relaxed border bg-slate-950/50 border-slate-900 text-slate-300">
+                <div className="mt-4 p-4 rounded-lg text-sm leading-relaxed border bg-white/50 border-stone-300 text-slate-600">
                   {(() => {
                     const b = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
                     if (!b) return null;
@@ -2851,7 +2851,7 @@ export default function App() {
                             </div>
                           </div>
                         )}
-                        <div className="mt-2.5 pt-2 border-t border-slate-900 text-[12.5px] text-slate-400 font-mono">
+                        <div className="mt-2.5 pt-2 border-t border-stone-300 text-[12.5px] text-slate-500 font-mono">
                           <strong className="text-amber-500">Path Strategy:</strong> {b.notes}
                           <div className="text-rose-400 mt-1">⚠️ Precision: The base 65% is not reduced by Judge Resistance. Effective cap = 100%. Panel ~116% achieves this at T91. DO NOT stack above ~116% panel — diminishing returns become zero at cap.</div>
                         </div>
@@ -2862,52 +2862,52 @@ export default function App() {
               </div>
 
               {/* Hit Zone breakdown block */}
-              <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5">
-                <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-900/10 pb-2">
+              <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-5">
+                <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-500/20 pb-2">
                   <TrendingUp className="w-4 h-4" /> Calculated Hit Probabilities
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-sm">
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900 flex flex-col justify-between">
+                  <div className="bg-stone-200/60 p-3 rounded-lg border border-stone-300 flex flex-col justify-between">
                     <div>
                       <span className="text-[11px] text-slate-500 uppercase font-mono mt-1 block">Precision (Eff)</span>
-                      <strong className="text-slate-100 text-base font-mono mt-1 block">
+                      <strong className="text-slate-800 text-base font-mono mt-1 block">
                         {effPrecision.toFixed(1)}%
                       </strong>
                     </div>
-                    <div className="text-[11px] text-slate-500 mt-2 leading-snug border-t border-slate-900/40 pt-1.5 font-sans">
+                    <div className="text-[11px] text-slate-500 mt-2 leading-snug border-t border-stone-300/40 pt-1.5 font-sans">
                       Base 65% is not reduced by boss resist. Cap = 100%.
                     </div>
                   </div>
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
+                  <div className="bg-stone-200/60 p-3 rounded-lg border border-stone-300">
                     <span className="text-slate-500 block font-mono text-[12px]">Critical</span>
-                    <strong className="text-slate-100 text-base font-mono mt-1 block">
+                    <strong className="text-slate-800 text-base font-mono mt-1 block">
                       {effCritRate.toFixed(1)}%
                     </strong>
                     <div className="text-[11px] text-slate-500 mt-0.5">
                       Cap: 80% effective. Need ~116%+ panel at T91 (÷1.45). Direct Crit Rate bypasses resistance.
                     </div>
                   </div>
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
+                  <div className="bg-stone-200/60 p-3 rounded-lg border border-stone-300">
                     <span className="text-slate-500 block font-mono text-[12px]">Affinity</span>
-                    <strong className="text-slate-100 text-base font-mono mt-1 block">
+                    <strong className="text-slate-800 text-base font-mono mt-1 block">
                       {effAffRate.toFixed(1)}%
                     </strong>
                   </div>
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
+                  <div className="bg-stone-200/60 p-3 rounded-lg border border-stone-300">
                     <span className="text-slate-500 block font-mono text-[12px]">Graze</span>
-                    <strong className="text-slate-100 text-base font-mono mt-1 block">
+                    <strong className="text-slate-800 text-base font-mono mt-1 block">
                       {effGrazeRate.toFixed(1)}%
                     </strong>
                   </div>
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
+                  <div className="bg-stone-200/60 p-3 rounded-lg border border-stone-300">
                     <span className="text-slate-500 block font-mono text-[12px]">Expected Multiplier</span>
-                    <strong className="text-slate-100 text-base font-mono mt-1 block text-amber-500">
+                    <strong className="text-slate-800 text-base font-mono mt-1 block text-amber-500">
                       ×{expectedMultiplier.toFixed(3)}
                     </strong>
                   </div>
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
+                  <div className="bg-stone-200/60 p-3 rounded-lg border border-stone-300">
                     <span className="text-slate-500 block font-mono text-[12px]">Pen Zone</span>
-                    <strong className="text-slate-100 text-base font-mono mt-1 block">
+                    <strong className="text-slate-800 text-base font-mono mt-1 block">
                       {netPhysPen >= 0 ? "+" : ""}
                       {(netPhysPen / 200 * 100).toFixed(1)}%
                     </strong>
@@ -2919,16 +2919,16 @@ export default function App() {
 
 
               {/* Rotation breakdown tables */}
-              <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5">
-                <div className="flex justify-between items-center border-b border-amber-900/10 pb-3 mb-4">
+              <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-5">
+                <div className="flex justify-between items-center border-b border-amber-500/20 pb-3 mb-4">
                   <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 flex items-center gap-1.5 font-serif">
                     <Layers className="w-4 h-4" /> Rotation Skill Damage Breakdown
                   </h3>
-                  <div className="flex gap-1.5 bg-slate-950 p-1 rounded border border-slate-900 text-[12px]">
+                  <div className="flex gap-1.5 bg-white p-1 rounded border border-stone-300 text-[12px]">
                     <button
                       onClick={() => setRotationTab("list")}
                       className={`px-2 py-0.5 rounded ${
-                        rotationTab === "list" ? "bg-amber-500 text-slate-950 font-bold" : "text-slate-400"
+                        rotationTab === "list" ? "bg-amber-500 text-slate-950 font-bold" : "text-slate-500"
                       }`}
                     >
                       Full Rotation
@@ -2936,7 +2936,7 @@ export default function App() {
                     <button
                       onClick={() => setRotationTab("top")}
                       className={`px-2 py-0.5 rounded ${
-                        rotationTab === "top" ? "bg-amber-500 text-slate-950 font-bold" : "text-slate-400"
+                        rotationTab === "top" ? "bg-amber-500 text-slate-950 font-bold" : "text-slate-500"
                       }`}
                     >
                       Top Contributors
@@ -2956,25 +2956,25 @@ export default function App() {
                         <th className="py-2.5 px-3 text-right">%</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900 font-mono text-[13px] text-slate-300">
+                    <tbody className="divide-y divide-slate-900 font-mono text-[13px] text-slate-600">
                       {rotationStats.items
                         .sort((a, b) => (rotationTab === "top" ? b.total - a.total : 0))
                         .map((item, idx) => {
                           const percent = ((item.total / rotationStats.totalDmg) * 100).toFixed(1);
                           return (
-                            <tr key={idx} className="hover:bg-slate-950/40 transition-colors">
+                            <tr key={idx} className="hover:bg-stone-200/60 transition-colors">
                               <td className="py-2 px-3 text-slate-500">{idx + 1}</td>
-                              <td className="py-2 px-3 font-sans font-medium text-slate-200">
+                              <td className="py-2 px-3 font-sans font-medium text-slate-700">
                                 {item.name}
                               </td>
-                              <td className="py-2 px-3 text-right text-slate-400">{item.count}</td>
+                              <td className="py-2 px-3 text-right text-slate-500">{item.count}</td>
                               <td className="py-2 px-3 text-right font-bold text-amber-500/80">
                                 {Math.round(item.perHit).toLocaleString()}
                               </td>
                               <td className="py-2 px-3 text-right font-extrabold text-amber-500">
                                 {Math.round(item.total).toLocaleString()}
                               </td>
-                              <td className="py-2 px-3 text-right text-slate-400">{percent}%</td>
+                              <td className="py-2 px-3 text-right text-slate-500">{percent}%</td>
                             </tr>
                           );
                         })}
@@ -2991,18 +2991,18 @@ export default function App() {
         {/* Tab Stat Priority */}
         {activeTab === "priority" && (
           <div className="space-y-6">
-            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
-              <div className="border-b border-amber-900/15 pb-4 mb-5">
-                <h2 className="text-lg font-bold font-serif text-slate-100 flex items-center gap-2">
+            <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-6 shadow-lg">
+              <div className="border-b border-amber-500/25 pb-4 mb-5">
+                <h2 className="text-lg font-bold font-serif text-slate-800 flex items-center gap-2">
                   <TrendingUp className="text-amber-500 w-5 h-5" /> Stat Priority — Graduation Impact
                 </h2>
-                <p className="text-slate-400 text-sm mt-1">
+                <p className="text-slate-500 text-sm mt-1">
                   Live ranking for <strong className="text-amber-400">{(BUILD_PROFILES as any)[selectedBuild]?.label || "your build"}</strong>, computed from your current panel ({rotationStats.gradRate.toFixed(1)}% graduation). Each row simulates adding/removing <strong>one typical substat roll</strong> on a single sub-stat and shows the resulting change in graduation %.
                 </p>
               </div>
 
               {/* Two-column gain/loss ranking */}
-              <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-900 text-sm text-amber-500/95 flex items-center gap-2 mb-4">
+              <div className="bg-stone-200/60 rounded-xl p-3 border border-stone-300 text-sm text-amber-500/95 flex items-center gap-2 mb-4">
                 <span className="text-lg">💡</span>
                 <span>
                   Calculated against the <strong>Global Tier 91 (Lv95)</strong> boss constants (Defense 350, Judgment Resist ×1.45), using your live panel and active build's rotation.
@@ -3022,9 +3022,9 @@ export default function App() {
                       return (
                         <div key={g.key} className="flex items-center gap-2 text-sm">
                           <span className="w-4 text-slate-600 font-mono text-right text-[12px]">{idx + 1}</span>
-                          <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
+                          <span className="w-32 text-slate-600 font-medium truncate">{g.label}</span>
                           <span className="w-12 text-slate-500 font-mono text-right text-[12px]">+{g.roll}{g.unit}</span>
-                          <div className="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden">
+                          <div className="flex-1 h-2 bg-white rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-emerald-700 to-emerald-400"
                               style={{ width: `${width}%` }}
@@ -3051,9 +3051,9 @@ export default function App() {
                       return (
                         <div key={g.key} className="flex items-center gap-2 text-sm">
                           <span className="w-4 text-slate-600 font-mono text-right text-[12px]">{idx + 1}</span>
-                          <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
+                          <span className="w-32 text-slate-600 font-medium truncate">{g.label}</span>
                           <span className="w-12 text-slate-500 font-mono text-right text-[12px]">-{g.roll}{g.unit}</span>
-                          <div className="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden">
+                          <div className="flex-1 h-2 bg-white rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-rose-700 to-rose-400"
                               style={{ width: `${width}%` }}
@@ -3075,11 +3075,11 @@ export default function App() {
             </div>
 
             {/* General T91 Priority Rules Guide */}
-            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
-              <h3 className="text-sm uppercase tracking-widest font-extrabold text-amber-500 font-serif border-b border-amber-900/10 pb-2 mb-4">
+            <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-6 shadow-lg">
+              <h3 className="text-sm uppercase tracking-widest font-extrabold text-amber-500 font-serif border-b border-amber-500/20 pb-2 mb-4">
                 General Theorycrafting Guide · T91 Global (http://spongem.com/yysls/)
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm text-slate-300 leading-relaxed">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm text-slate-600 leading-relaxed">
                 <div className="space-y-3">
                   <p>
                     <strong className="text-amber-400">1. Physical Penetration (Phys Pen)</strong>: The most crucial core attribute until reaching the optimal cap in dungeon content (e.g., 51.2% for T91). Every point of Phys Pen below this threshold provides massive exponential damage amplification.
@@ -3107,9 +3107,9 @@ export default function App() {
         {/* Tab Gear Stock Manager */}
         {activeTab === "gear" && (
           <div className="space-y-6">
-            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
+            <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-6">
               {/* TOP BAR */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-amber-900/10 pb-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-amber-500/20 pb-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-2">
                     <h2 className="text-base font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
@@ -3155,7 +3155,7 @@ export default function App() {
                           className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-mono font-bold border transition-all ${
                             isSelected
                               ? "bg-amber-500 text-slate-950 border-amber-500 shadow-md shadow-amber-500/10"
-                              : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900/60"
+                              : "bg-stone-200/60 text-slate-500 hover:text-slate-700 border-stone-300/60"
                           }`}
                         >
                           <span>{tab.icon}</span>
@@ -3163,8 +3163,8 @@ export default function App() {
                           {count > 0 && (
                             <span className={`text-[11px] px-1 py-0.2 rounded-full font-mono ${
                               isSelected 
-                                ? "bg-slate-950/20 text-slate-950" 
-                                : "bg-slate-800 text-slate-400"
+                                ? "bg-stone-100/40 text-slate-950" 
+                                : "bg-slate-800 text-slate-500"
                             }`}>
                               {count}
                             </span>
@@ -3188,7 +3188,7 @@ export default function App() {
                     <select
                       value={gearSortBy}
                       onChange={(e) => setGearSortBy(e.target.value as "name" | "mastery")}
-                      className="bg-slate-950 border border-slate-900 rounded px-2.5 py-1 text-[12px] font-mono text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                      className="bg-white border border-stone-300 rounded px-2.5 py-1 text-[12px] font-mono text-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                     >
                       <option value="name">Alphabetical</option>
                       <option value="mastery">Mastery (⚔ High to Low)</option>
@@ -3198,12 +3198,12 @@ export default function App() {
               </div>
 
               {/* Mobile Sort Controls */}
-              <div className="md:hidden flex items-center justify-between mb-4 bg-slate-950/25 p-2 rounded-lg border border-slate-900">
-                <span className="text-[12px] text-slate-400 uppercase font-mono">Sort Items:</span>
+              <div className="md:hidden flex items-center justify-between mb-4 bg-white/25 p-2 rounded-lg border border-stone-300">
+                <span className="text-[12px] text-slate-500 uppercase font-mono">Sort Items:</span>
                 <select
                   value={gearSortBy}
                   onChange={(e) => setGearSortBy(e.target.value as "name" | "mastery")}
-                  className="bg-slate-950 border border-slate-900 rounded px-2 py-1 text-[12px] font-mono text-[#ede5ce] focus:outline-none"
+                  className="bg-white border border-stone-300 rounded px-2 py-1 text-[12px] font-mono text-[#2c1f08] focus:outline-none"
                 >
                   <option value="name">Alphabetical</option>
                   <option value="mastery">Mastery (⚔ High to Low)</option>
@@ -3219,11 +3219,11 @@ export default function App() {
                     const allGear = getActiveGear();
                     if (allGear.length === 0) {
                       return (
-                        <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
-                          <p className="text-slate-400 text-sm">No gear in this slot. Add your first item →</p>
+                        <div className="bg-stone-100/40 border border-dashed border-stone-300/60 p-12 rounded-xl text-center">
+                          <p className="text-slate-500 text-sm">No gear in this slot. Add your first item →</p>
                           <button
                             onClick={openAddModal}
-                            className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-sm transition-all"
+                            className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-stone-200 rounded font-bold text-sm transition-all"
                           >
                             Create first item
                           </button>
@@ -3275,11 +3275,11 @@ export default function App() {
                           <div className="space-y-3">
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex items-center gap-2 min-w-0">
-                                <span className="text-lg bg-slate-950/60 w-8 h-8 rounded-lg flex items-center justify-center border border-slate-900 shrink-0">
+                                <span className="text-lg bg-stone-100/70 w-8 h-8 rounded-lg flex items-center justify-center border border-stone-300 shrink-0">
                                   {slotIcon}
                                 </span>
                                 <div className="min-w-0">
-                                  <h4 className="text-sm font-bold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
+                                  <h4 className="text-sm font-bold text-slate-800 group-hover:text-amber-400 transition-colors truncate">
                                     {item.name}
                                   </h4>
                                   {item.mastery !== undefined && (
@@ -3302,13 +3302,13 @@ export default function App() {
                               </div>
                             </div>
 
-                            <div className="text-[12px] text-slate-300 bg-slate-950/60 p-2.5 rounded border border-slate-900 font-mono space-y-1">
+                            <div className="text-[12px] text-slate-600 bg-stone-100/70 p-2.5 rounded border border-stone-300 font-mono space-y-1">
                               <div className="flex items-center justify-between">
                                 <span className="text-slate-500">Main Stat:</span>
                                 <span className="text-slate-205 font-medium">{item.main || "None"}</span>
                               </div>
                               {item.set && item.set !== "none" && (
-                                <div className="flex items-center justify-between border-t border-slate-900/50 pt-1 mt-1">
+                                <div className="flex items-center justify-between border-t border-stone-300/50 pt-1 mt-1">
                                   <span className="text-slate-500">Set Bonus:</span>
                                   <span className="text-[#2ebd85] font-bold flex items-center gap-1">
                                     {SET_EMOJI[item.set] || "🔹"} {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}
@@ -3317,12 +3317,12 @@ export default function App() {
                               )}
                             </div>
 
-                            <div className="space-y-1.5 border-t border-slate-900/40 pt-2.5">
+                            <div className="space-y-1.5 border-t border-stone-300/40 pt-2.5">
                               {item.subs.map((sub, sidx) => (
                                 <div key={sidx} className="flex items-center justify-between text-[13px] font-mono leading-tight">
                                   <span className="text-slate-505">{sub.type}</span>
                                   <div className="flex items-center gap-1">
-                                    <span className={`font-semibold ${sub.isTuned ? "text-amber-400" : "text-slate-300"}`}>
+                                    <span className={`font-semibold ${sub.isTuned ? "text-amber-400" : "text-slate-600"}`}>
                                       {sub.val}
                                     </span>
                                     {sub.isTuned && (
@@ -3349,11 +3349,11 @@ export default function App() {
 
                       if (slotItems.length === 0) {
                         return (
-                          <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
-                            <p className="text-slate-400 text-sm">No gear in this slot. Add your first item →</p>
+                          <div className="bg-stone-100/40 border border-dashed border-stone-300/60 p-12 rounded-xl text-center">
+                            <p className="text-slate-500 text-sm">No gear in this slot. Add your first item →</p>
                             <button
                               onClick={openAddModal}
-                              className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-sm transition-all"
+                              className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-stone-200 rounded font-bold text-sm transition-all"
                             >
                               Create first "{gearFilterSlot}" item
                             </button>
@@ -3384,7 +3384,7 @@ export default function App() {
                       <div className="space-y-6">
                         {slotsWithItems.map(({ slot, items }) => (
                           <div key={slot.name} className="space-y-3">
-                            <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500/80 font-mono border-b border-amber-950/40 pb-1.5 flex items-center gap-2">
+                            <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500/80 font-mono border-b border-amber-600/30 pb-1.5 flex items-center gap-2">
                               <span className="text-base">{slot.icon}</span>
                               <span>{slot.name} Section</span>
                               <span className="text-[12px] text-slate-500 font-normal">({items.length} item{items.length > 1 ? "s" : ""})</span>
@@ -3401,7 +3401,7 @@ export default function App() {
 
                 {/* RIGHT SIDE (30%): live stats sidebar */}
                 <div className="lg:col-span-3 lg:sticky lg:top-4 h-fit space-y-4">
-                  <div className="bg-[#141210] border border-amber-900/20 rounded-xl p-4 space-y-4">
+                  <div className="bg-[#f4eee2] border border-amber-900/20 rounded-xl p-4 space-y-4">
                     <div className="border-b border-amber-955/40 pb-3">
                       <div className="flex items-center gap-2 mb-1.5">
                         <span className="text-base">📊</span>
@@ -3409,27 +3409,27 @@ export default function App() {
                           Current Panel
                         </h3>
                       </div>
-                      <p className="text-[12px] text-slate-400 font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-slate-900 inline-block">
+                      <p className="text-[12px] text-slate-500 font-mono bg-stone-100/80 px-2 py-0.5 rounded border border-stone-300 inline-block">
                         {selectedBuild} · {activeTier.name}
                       </p>
                     </div>
 
                     {/* Section 1: Attack Stats */}
-                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                    <div className="space-y-2 border-b border-stone-300 pb-3">
                       <div className="flex items-center justify-between text-sm font-mono">
-                        <span className="text-slate-400">Physical Attack</span>
+                        <span className="text-slate-500">Physical Attack</span>
                         <span className="text-white font-bold text-right leading-none">
                           {Math.round(adjustedPanel.minOuter)}~{Math.round(adjustedPanel.maxOuter)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm font-mono">
-                        <span className="text-slate-400">Bamboocut Atk</span>
+                        <span className="text-slate-500">Bamboocut Atk</span>
                         <span className="text-slate-350 font-medium text-right leading-none">
                           {Math.round(adjustedPanel.minPz)}~{Math.round(adjustedPanel.maxPz)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm font-mono">
-                        <span className="text-slate-400">Phys Penetration</span>
+                        <span className="text-slate-500">Phys Penetration</span>
                         <span className="text-slate-350 font-medium text-right leading-none">
                           {adjustedPanel.outerPen.toFixed(1)}%
                         </span>
@@ -3437,7 +3437,7 @@ export default function App() {
                     </div>
 
                     {/* Section 2: Critical & Precision Stats */}
-                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                    <div className="space-y-2 border-b border-stone-300 pb-3">
                       {(() => {
                         const precCapPanel = Math.round(65 + (100-65) * (1 + activeTier.judgeRes));
                         const hasPrecCap = adjustedPanel.prec >= precCapPanel;
@@ -3450,25 +3450,25 @@ export default function App() {
                         return (
                           <>
                             <div className="flex items-center justify-between text-sm font-mono">
-                              <span className="text-slate-400">Precision</span>
+                              <span className="text-slate-500">Precision</span>
                               <span className={`font-bold text-right leading-none ${hasPrecCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
                                 {adjustedPanel.prec.toFixed(1)}% {hasPrecCap && "(Cap)"}
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-sm font-mono">
-                              <span className="text-slate-400">Critical Rate</span>
+                              <span className="text-slate-500">Critical Rate</span>
                               <span className={`font-bold text-right leading-none ${hasCritCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
                                 {adjustedPanel.crit.toFixed(1)}% {hasCritCap && "(Cap)"}
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-sm font-mono">
-                              <span className="text-slate-400">Affinity Rate</span>
+                              <span className="text-slate-500">Affinity Rate</span>
                               <span className={`font-bold text-right leading-none ${hasAffCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
                                 {adjustedPanel.aff.toFixed(1)}% {hasAffCap && "(Cap)"}
                               </span>
                             </div>
                             <div className="flex items-center justify-between text-sm font-mono">
-                              <span className="text-slate-400">Direct Crit</span>
+                              <span className="text-slate-500">Direct Crit</span>
                               <span className="text-slate-355 font-medium text-right leading-none">
                                 {adjustedPanel.dcrit.toFixed(1)}%
                               </span>
@@ -3479,29 +3479,29 @@ export default function App() {
                     </div>
 
                     {/* Section 3: Damage Modifiers */}
-                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                    <div className="space-y-2 border-b border-stone-300 pb-3">
                       <div className="flex items-center justify-between text-sm font-mono">
-                        <span className="text-slate-400">Crit DMG Bonus</span>
+                        <span className="text-slate-500">Crit DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.critDmg.toFixed(1)}%</span>
                       </div>
                       <div className="flex items-center justify-between text-sm font-mono">
-                        <span className="text-slate-400">Affinity DMG Bonus</span>
+                        <span className="text-slate-500">Affinity DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.affDmg.toFixed(1)}%</span>
                       </div>
                       <div className="flex items-center justify-between text-sm font-mono">
-                        <span className="text-slate-400">Phys DMG Bonus</span>
+                        <span className="text-slate-500">Phys DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.outerDmg.toFixed(1)}%</span>
                       </div>
                       <div className="flex items-center justify-between text-sm font-mono">
-                        <span className="text-slate-400">Boss DMG Bonus</span>
+                        <span className="text-slate-500">Boss DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.bossDmg.toFixed(1)}%</span>
                       </div>
                     </div>
 
                     {/* Section 4: Weapon Bonuses */}
-                    <div className="space-y-2 border-b border-slate-900 pb-3">
+                    <div className="space-y-2 border-b border-stone-300 pb-3">
                       <div className={`flex items-center justify-between text-sm font-mono py-1 rounded px-1.5 transition-all ${
-                        adjustedPanel.umbBonus > 0 ? "bg-amber-955/25 border border-amber-900/20 text-amber-400 font-bold" : "text-slate-400"
+                        adjustedPanel.umbBonus > 0 ? "bg-amber-955/25 border border-amber-900/20 text-amber-400 font-bold" : "text-slate-500"
                       }`}>
                         <span>Umbrella Bonus</span>
                         <span className={adjustedPanel.umbBonus > 0 ? "text-amber-400" : "text-slate-350"}>
@@ -3517,7 +3517,7 @@ export default function App() {
                         </div>
                       )}
                       <div className="flex items-center justify-between text-sm font-mono px-1.5">
-                        <span className="text-slate-400">All Weapon Bonus</span>
+                        <span className="text-slate-500">All Weapon Bonus</span>
                         <span className="text-slate-350 leading-none">{adjustedPanel.allArts.toFixed(1)}%</span>
                       </div>
                     </div>
@@ -3551,15 +3551,15 @@ export default function App() {
                         const emptyStr = "░".repeat(emptyBlocks);
 
                         return (
-                          <div className={`bg-[#0c0a09] border border-amber-900/10 p-3.5 rounded-lg space-y-3.5 text-center ${gc.glow}`}>
+                          <div className={`bg-[#0c0a09] border border-amber-500/20 p-3.5 rounded-lg space-y-3.5 text-center ${gc.glow}`}>
                             <div className="text-3xl font-black font-serif tracking-tight">
                               <span className={gc.text}>{gradRate.toFixed(1)}%</span>
                             </div>
                             
                             <div className="space-y-2">
-                              <div className="text-sm font-mono text-slate-300 flex items-center justify-center gap-1.5 leading-none">
+                              <div className="text-sm font-mono text-slate-600 flex items-center justify-center gap-1.5 leading-none">
                                 <span className={gc.text}>[{filledStr}{emptyStr}]</span>
-                                <span className="text-slate-400 font-bold">{gradRate.toFixed(1)}/100</span>
+                                <span className="text-slate-500 font-bold">{gradRate.toFixed(1)}/100</span>
                               </div>
                               <div className="text-[11px] text-slate-500 font-mono">
                                 Relative to baseline target
@@ -3575,13 +3575,13 @@ export default function App() {
               </div>
 
               {/* Relaying Cooldown Tracker Section */}
-              <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 mt-6 shadow-lg">
-                <div className="border-b border-amber-900/15 pb-4 mb-5 flex justify-between items-center flex-wrap gap-3">
+              <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-6 mt-6 shadow-lg">
+                <div className="border-b border-amber-500/25 pb-4 mb-5 flex justify-between items-center flex-wrap gap-3">
                   <div>
                     <h3 className="text-base font-bold font-serif text-slate-150 flex items-center gap-2">
                       ⏱ Relaying Cooldown Tracker
                     </h3>
-                    <p className="text-slate-400 text-sm mt-1">
+                    <p className="text-slate-500 text-sm mt-1">
                       Track the remaining 7-day cooldown of your relayed gear.
                     </p>
                   </div>
@@ -3637,13 +3637,13 @@ export default function App() {
                       });
 
                       return (
-                        <div key={item.id} className="bg-[#181512] border border-amber-900/10 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div key={item.id} className="bg-[#181512] border border-amber-500/20 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                           <div className="space-y-1 w-full md:w-auto">
                             <div className="flex items-baseline gap-2 flex-wrap">
-                              <span className="font-bold text-base text-slate-200">{item.itemName}</span>
+                              <span className="font-bold text-base text-slate-700">{item.itemName}</span>
                               <span className="text-[12px] text-slate-500 font-mono font-medium">&#183; {item.slot}</span>
                             </div>
-                            <div className="text-sm text-slate-400 font-mono">
+                            <div className="text-sm text-slate-500 font-mono">
                               Relayed: {dateFormatted}
                             </div>
                           </div>
@@ -3654,7 +3654,7 @@ export default function App() {
                                 <span className={textColor}>[{progressStr}]</span>
                                 <span className={`font-bold ${textColor}`}>{remainingText}</span>
                               </div>
-                              <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-900">
+                              <div className="w-full bg-white rounded-full h-1.5 overflow-hidden border border-stone-300">
                                 <div 
                                   className={`h-full rounded-full transition-all duration-300 ${progressFillColor}`}
                                   style={{ width: `${progressPct}%` }}
@@ -3683,8 +3683,8 @@ export default function App() {
         {/* Tab Item Compare */}
         {activeTab === "compare" && (
           <div className="space-y-6">
-            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
-              <div className="mb-4 border-b border-amber-900/10 pb-3">
+            <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-6">
+              <div className="mb-4 border-b border-amber-500/20 pb-3">
                 <h2 className="text-base font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
                   <TrendingUp className="w-4 h-4" /> Item Comparison & Graduation Deltas
                 </h2>
@@ -3707,7 +3707,7 @@ export default function App() {
                       className={`relative flex items-center gap-2.5 p-3 rounded-lg border transition-all text-left ${
                         isSelected
                           ? "bg-amber-500 text-slate-950 border-amber-500 font-bold shadow-md shadow-amber-500/5"
-                          : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900/60 hover:border-slate-800"
+                          : "bg-stone-200/60 text-slate-500 hover:text-slate-700 border-stone-300/60 hover:border-stone-200"
                       }`}
                     >
                       <span className="text-lg">{slot.icon}</span>
@@ -3722,7 +3722,7 @@ export default function App() {
                       
                       {/* Gold dot indicator if possesses items */}
                       {hasItems && (
-                        <span className={`absolute top-2 right-2 w-1.5 h-1.5 rounded-full ${isSelected ? "bg-slate-950" : "bg-amber-500 animate-pulse"}`} />
+                        <span className={`absolute top-2 right-2 w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white" : "bg-amber-500 animate-pulse"}`} />
                       )}
                     </button>
                   );
@@ -3731,7 +3731,7 @@ export default function App() {
 
               {/* Comparison list section */}
               <div>
-                <h3 className="text-sm uppercase font-bold tracking-widest text-slate-400 font-mono mb-4">
+                <h3 className="text-sm uppercase font-bold tracking-widest text-slate-500 font-mono mb-4">
                   Graduation ranking for slot: <span className="text-amber-500 font-serif">{selectedSlot}</span>
                 </h3>
 
@@ -3739,8 +3739,8 @@ export default function App() {
                   const slotItems = getActiveGear().filter(it => it.slot === selectedSlot);
                   if (slotItems.length === 0) {
                     return (
-                      <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center font-mono">
-                        <p className="text-slate-400 text-sm">No items in this slot to compare.</p>
+                      <div className="bg-stone-100/40 border border-dashed border-stone-300/60 p-8 rounded-lg text-center font-mono">
+                        <p className="text-slate-500 text-sm">No items in this slot to compare.</p>
                         <p className="text-[12px] text-slate-500 mt-1">Go to the "🛡 Gear" tab to add items for comparison.</p>
                       </div>
                     );
@@ -3772,14 +3772,14 @@ export default function App() {
                             key={item.id}
                             className={`p-4 rounded-xl border relative transition-all ${qualityClass}`}
                           >
-                            <div className="absolute top-4 left-4 w-7 h-7 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center font-bold text-sm text-amber-500 font-serif shadow-inner">
+                            <div className="absolute top-4 left-4 w-7 h-7 rounded-full bg-white border border-stone-200 flex items-center justify-center font-bold text-sm text-amber-500 font-serif shadow-inner">
                               #{rank}
                             </div>
 
                             <div className="pl-10">
-                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-900/40 pb-2 mb-3">
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-300/40 pb-2 mb-3">
                                 <div>
-                                  <h4 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                                  <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                                     <span>{item.name}</span>
                                     {isBest && (
                                       <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold uppercase tracking-wider scale-90">
@@ -3808,13 +3808,13 @@ export default function App() {
                                   const subDeltaString = sub.delta > 0 ? `+${sub.delta.toFixed(2)}` : "0.00";
                                   
                                   return (
-                                    <div key={sidx} className="bg-slate-950/60 p-2 rounded border border-slate-900/60 flex items-center justify-between font-mono text-[12px]">
+                                    <div key={sidx} className="bg-stone-100/70 p-2 rounded border border-stone-300/60 flex items-center justify-between font-mono text-[12px]">
                                       <div className="truncate text-slate-500 flex items-center gap-1 shrink md:shrink-0 pr-1">
                                         <span>{sub.type}</span>
                                         {sub.isTuned && <span className="text-amber-500 text-[11px]">✦</span>}
                                       </div>
                                       <div className="text-right shrink-0">
-                                        <div className="text-slate-300 font-semibold">{sub.val}</div>
+                                        <div className="text-slate-600 font-semibold">{sub.val}</div>
                                         <div className="text-emerald-400 text-[11px] font-bold mt-0.5">
                                           +{subDeltaString}% grad
                                         </div>
@@ -3838,22 +3838,22 @@ export default function App() {
         {/* Tab Cultivate */}
         {activeTab === "cultivate" && (
           <div className="space-y-6">
-            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
-              <div className="border-b border-amber-900/15 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-6 shadow-lg">
+              <div className="border-b border-amber-500/25 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                   <h2 className="text-lg font-bold font-serif text-slate-105 flex items-center gap-2">
                     🎯 Cultivation Summary
                   </h2>
-                  <p className="text-slate-400 text-sm mt-1">
+                  <p className="text-slate-500 text-sm mt-1">
                     Compare your current accumulated gear substats with the graduation panel targets.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-mono text-slate-400">Select Class:</span>
+                  <span className="text-sm font-mono text-slate-500">Select Class:</span>
                   <select
                     value={cultivateClass}
                     onChange={(e) => setCultivateClass(e.target.value)}
-                    className="bg-slate-950 border border-amber-900/30 hover:border-amber-500/50 text-amber-500 text-sm rounded-lg px-3 py-1.5 focus:outline-none font-bold transition-all cursor-pointer"
+                    className="bg-white border border-amber-600/30 hover:border-amber-500/50 text-amber-500 text-sm rounded-lg px-3 py-1.5 focus:outline-none font-bold transition-all cursor-pointer"
                   >
                     {Object.keys(WWM_DATA.classes).map((cls) => (
                       <option key={cls} value={cls}>
@@ -4068,7 +4068,7 @@ export default function App() {
                   <div className="space-y-6">
                     {/* Header Summary Statistics */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-[#181512] border border-amber-900/10 rounded-xl p-5 flex flex-col justify-center">
+                      <div className="bg-[#181512] border border-amber-500/20 rounded-xl p-5 flex flex-col justify-center">
                         <span className="text-sm font-mono uppercase tracking-wider text-slate-500">
                           Total sub-stat progress
                         </span>
@@ -4077,7 +4077,7 @@ export default function App() {
                           <span className="text-base font-sans font-normal text-slate-500">/ 40</span>
                         </div>
                       </div>
-                      <div className="bg-[#181512] border border-amber-900/10 rounded-xl p-5 flex flex-col justify-center">
+                      <div className="bg-[#181512] border border-amber-500/20 rounded-xl p-5 flex flex-col justify-center">
                         <span className="text-sm font-mono uppercase tracking-wider text-slate-500">
                           Dingyin (Tuned) stats
                         </span>
@@ -4096,7 +4096,7 @@ export default function App() {
                             className={`border rounded-xl p-5 space-y-3 transition-colors ${tile.bgCardClass}`}
                           >
                             <div className="flex justify-between items-start">
-                              <span className="text-base font-bold font-mono tracking-tight text-slate-100">
+                              <span className="text-base font-bold font-mono tracking-tight text-slate-800">
                                 {tile.label}
                               </span>
                               <span className="text-[12px] uppercase tracking-wider text-slate-500 font-mono">
@@ -4114,13 +4114,13 @@ export default function App() {
                             </div>
 
                             <div className="space-y-1.5 pt-1">
-                              <div className="w-full bg-slate-950/60 rounded-full h-2.5 overflow-hidden border border-slate-900">
+                              <div className="w-full bg-stone-100/70 rounded-full h-2.5 overflow-hidden border border-stone-300">
                                 <div 
                                   className={`h-full rounded-full transition-all duration-300 ${tile.progressFillColor}`}
                                   style={{ width: `${tile.progressCapped}%` }}
                                 />
                               </div>
-                              <div className="flex justify-between text-[13px] font-mono text-slate-400">
+                              <div className="flex justify-between text-[13px] font-mono text-slate-500">
                                 <span>Progress</span>
                                 <span className="font-bold">{tile.progressPct.toFixed(1)}%</span>
                               </div>
@@ -4131,7 +4131,7 @@ export default function App() {
                     </div>
 
                     {/* Note at bottom */}
-                    <div className="bg-[#141210]/30 border border-slate-900/40 rounded-xl p-4 text-sm text-slate-400 leading-relaxed font-mono">
+                    <div className="bg-[#f4eee2]/30 border border-stone-300/40 rounded-xl p-4 text-sm text-slate-500 leading-relaxed font-mono">
                       Progress estimates based on Graduation Panel targets (CN Lv105).
                       Tier 91 caps are ~60% of shown values.
                     </div>
@@ -4145,22 +4145,22 @@ export default function App() {
         {/* Modal Editor Overlay */}
         {isItemModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
-            <div className="bg-[#141210] border border-amber-900/20 max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="bg-[#f4eee2] border border-amber-900/20 max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
               {/* Header */}
-              <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">
+              <div className="p-4 bg-stone-100/70 border-b border-amber-500/20 flex justify-between items-center shrink-0">
                 <span className="text-sm font-bold uppercase tracking-wider text-amber-500 font-serif">
                   {editingItem ? "Edit Gear Item" : `Add New Class ${selectedSlot}`}
                 </span>
                 <button
                   onClick={() => setIsItemModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-200 text-base font-mono"
+                  className="text-slate-500 hover:text-slate-700 text-base font-mono"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="p-5 space-y-4 overflow-y-auto min-h-0 text-slate-300 text-sm text-left">
+              <div className="p-5 space-y-4 overflow-y-auto min-h-0 text-slate-600 text-sm text-left">
                 <div>
                   <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                     Slot
@@ -4169,7 +4169,7 @@ export default function App() {
                     type="text"
                     value={selectedSlot}
                     disabled
-                    className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 font-mono text-slate-400 cursor-not-allowed text-sm"
+                    className="w-full bg-white border border-stone-300 rounded px-2.5 py-1.5 font-mono text-slate-500 cursor-not-allowed text-sm"
                   />
                 </div>
 
@@ -4183,7 +4183,7 @@ export default function App() {
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
                       placeholder="e.g. Divine Sky Ring"
-                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full bg-white border border-stone-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     />
                   </div>
                   <div>
@@ -4193,7 +4193,7 @@ export default function App() {
                     <select
                       value={formQuality}
                       onChange={(e) => setFormQuality(e.target.value as any)}
-                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-650"
+                      className="w-full bg-white border border-stone-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-650"
                     >
                       <option value="gold">Gold (Legendary)</option>
                       <option value="purple">Purple (Epic)</option>
@@ -4212,7 +4212,7 @@ export default function App() {
                       value={formMain}
                       onChange={(e) => setFormMain(e.target.value)}
                       placeholder="e.g. Phys Atk 48~112"
-                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full bg-white border border-stone-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     />
                   </div>
                   <div>
@@ -4222,7 +4222,7 @@ export default function App() {
                     <select
                       value={formSet}
                       onChange={(e) => setFormSet(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-650"
+                      className="w-full bg-white border border-stone-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-650"
                     >
                       <option value="none">None</option>
                       <option value="stars">Stars Align (2/2)</option>
@@ -4241,14 +4241,14 @@ export default function App() {
                       value={formMastery}
                       onChange={(e) => setFormMastery(e.target.value)}
                       placeholder="e.g. 832"
-                      className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full bg-white border border-stone-300 rounded px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     />
                   </div>
                 </div>
 
                 {/* Substat Rows */}
-                <div className="space-y-2 border-t border-slate-900 pt-3">
-                  <span className="text-[12px] uppercase font-mono tracking-wider text-slate-400 font-bold block">
+                <div className="space-y-2 border-t border-stone-300 pt-3">
+                  <span className="text-[12px] uppercase font-mono tracking-wider text-slate-500 font-bold block">
                     Sub-stats (Max 6 rows)
                   </span>
                   
@@ -4263,7 +4263,7 @@ export default function App() {
                               updated[sidx] = { ...updated[sidx], type: e.target.value };
                               setFormSubs(updated);
                             }}
-                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[13px] text-slate-350 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                            className="w-full bg-white border border-stone-300 rounded p-1.5 text-[13px] text-slate-350 focus:outline-none focus:ring-1 focus:ring-amber-500"
                           >
                             <option value="Other">Choose Substat / Empty</option>
                             {Object.keys(SUB_MAP).map(t => (
@@ -4282,7 +4282,7 @@ export default function App() {
                               setFormSubs(updated);
                             }}
                             placeholder="e.g. 59.2 or 7.4%"
-                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[13px] font-mono placeholder:text-slate-700"
+                            className="w-full bg-white border border-stone-300 rounded p-1.5 text-[13px] font-mono placeholder:text-stone-400"
                           />
                         </div>
                         
@@ -4308,7 +4308,7 @@ export default function App() {
               </div>
 
               {/* Action Buttons */}
-              <div className="p-4 bg-slate-950/60 border-t border-amber-900/10 flex justify-between items-center shrink-0 gap-2">
+              <div className="p-4 bg-stone-100/70 border-t border-amber-500/20 flex justify-between items-center shrink-0 gap-2">
                 <div>
                   {editingItem && (
                     <button
@@ -4322,7 +4322,7 @@ export default function App() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsItemModalOpen(false)}
-                    className="px-3 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-300 rounded text-sm border border-slate-800 transition-all font-semibold"
+                    className="px-3 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-600 rounded text-sm border border-stone-200 transition-all font-semibold"
                   >
                     Cancel
                   </button>
@@ -4341,28 +4341,28 @@ export default function App() {
         {/* Modal Cooldown Add Overlay */}
         {showAddCooldownModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
-            <div className="bg-[#141210] border border-amber-900/20 max-w-md w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+            <div className="bg-[#f4eee2] border border-amber-900/20 max-w-md w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col">
               {/* Header */}
-              <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">
+              <div className="p-4 bg-stone-100/70 border-b border-amber-500/20 flex justify-between items-center shrink-0">
                 <span className="text-sm font-bold uppercase tracking-wider text-amber-500 font-serif flex items-center gap-1.5">
                   ⏱ Track Relay Cooldown
                 </span>
                 <button
                   onClick={() => setShowAddCooldownModal(false)}
-                  className="text-slate-400 hover:text-slate-200 text-base font-mono cursor-pointer"
+                  className="text-slate-500 hover:text-slate-700 text-base font-mono cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="p-5 space-y-4 text-slate-300 text-sm text-left">
+              <div className="p-5 space-y-4 text-slate-600 text-sm text-left">
                 <div className="space-y-1">
-                  <label className="text-[12px] text-slate-400 font-mono block">Select Gear Item</label>
+                  <label className="text-[12px] text-slate-500 font-mono block">Select Gear Item</label>
                   <select
                     value={cooldownSelectedGearId}
                     onChange={(e) => setCooldownSelectedGearId(e.target.value)}
-                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 cursor-pointer font-medium"
+                    className="w-full bg-white border border-amber-900/20 text-slate-250 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 cursor-pointer font-medium"
                   >
                     <option value="">-- Choose Gear --</option>
                     {getActiveGear().map((item) => (
@@ -4374,21 +4374,21 @@ export default function App() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[12px] text-slate-400 font-mono block">Relay Date</label>
+                  <label className="text-[12px] text-slate-500 font-mono block">Relay Date</label>
                   <input
                     type="date"
                     value={cooldownRelayDate}
                     onChange={(e) => setCooldownRelayDate(e.target.value)}
-                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 font-mono cursor-pointer"
+                    className="w-full bg-white border border-amber-900/20 text-slate-250 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 font-mono cursor-pointer"
                   />
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="p-4 bg-slate-950/40 border-t border-amber-900/10 flex justify-end gap-3 shrink-0">
+              <div className="p-4 bg-stone-200/60 border-t border-amber-500/20 flex justify-end gap-3 shrink-0">
                 <button
                   onClick={() => setShowAddCooldownModal(false)}
-                  className="px-4 py-1.5 border border-amber-900/20 hover:bg-slate-900 text-slate-300 rounded text-sm transition-colors cursor-pointer"
+                  className="px-4 py-1.5 border border-amber-900/20 hover:bg-slate-900 text-slate-600 rounded text-sm transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -4491,13 +4491,13 @@ export default function App() {
                 <div className="lg:col-span-7 space-y-6">
                   
                   {/* Selector Block */}
-                  <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-amber-900/10 pb-3">
+                  <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-5 shadow-lg space-y-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-amber-500/20 pb-3">
                       <div>
-                        <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-2">
+                        <h3 className="text-base font-bold font-serif text-slate-800 flex items-center gap-2">
                           🔄 Rotation Combat Simulator
                         </h3>
-                        <p className="text-[12px] text-slate-400 mt-0.5">
+                        <p className="text-[12px] text-slate-500 mt-0.5">
                           Set custom hits parsed in combat to calculate authentic class-specific active DPS.
                         </p>
                       </div>
@@ -4506,7 +4506,7 @@ export default function App() {
                         <select
                           value={rotSimClass}
                           onChange={(e) => setRotSimClass(e.target.value)}
-                          className="bg-slate-950 border border-amber-900/45 text-amber-500 text-sm rounded-md px-3 py-1.5 focus:outline-none font-bold"
+                          className="bg-white border border-amber-900/45 text-amber-500 text-sm rounded-md px-3 py-1.5 focus:outline-none font-bold"
                         >
                           {Object.keys(WWM_DATA.classes).map(c => (
                             <option key={c} value={c}>{c}</option>
@@ -4529,7 +4529,7 @@ export default function App() {
 
                     {/* Presets / Helper Buttons */}
                     <div className="flex flex-wrap gap-2 items-center text-sm">
-                      <span className="text-slate-400 font-mono text-[12px] uppercase">Quick Presets:</span>
+                      <span className="text-slate-500 font-mono text-[12px] uppercase">Quick Presets:</span>
                       <button
                         onClick={() => {
                           const updated = { ...hitsState };
@@ -4556,7 +4556,7 @@ export default function App() {
                           simulatorSkills.forEach(s => { updated[s.name] = classPreset[s.name] ?? 0; });
                           setHitsState(updated);
                         }}
-                        className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-sm text-slate-350 hover:text-slate-200 transition-colors"
+                        className="px-2.5 py-1 bg-white hover:bg-slate-900 border border-stone-200 rounded text-sm text-slate-350 hover:text-slate-700 transition-colors"
                       >
                         🔥 Heavy Attack Rotation
                       </button>
@@ -4586,7 +4586,7 @@ export default function App() {
                           simulatorSkills.forEach(s => { updated[s.name] = classPreset[s.name] ?? 0; });
                           setHitsState(updated);
                         }}
-                        className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-sm text-slate-350 hover:text-slate-200 transition-colors"
+                        className="px-2.5 py-1 bg-white hover:bg-slate-900 border border-stone-200 rounded text-sm text-slate-350 hover:text-slate-700 transition-colors"
                       >
                         ⚡ Balanced Rotation
                       </button>
@@ -4605,7 +4605,7 @@ export default function App() {
                     </div>
 
                     {/* Interactive Skills Table */}
-                    <div className="h-[450px] overflow-y-auto pr-1 border border-slate-900 bg-slate-950/20 rounded-lg p-2">
+                    <div className="h-[450px] overflow-y-auto pr-1 border border-stone-300 bg-stone-100/40 rounded-lg p-2">
                       <span className="text-[12px] uppercase font-mono text-slate-500 font-semibold px-2 block mb-2">
                         Active Skills ({simulatorSkills.length}) for {rotSimClass} Weapons:
                       </span>
@@ -4613,9 +4613,9 @@ export default function App() {
                         {simulatorSkills.map((s) => {
                           const hits = hitsState[s.name] || 0;
                           return (
-                            <div key={s.name} className="flex items-center justify-between p-2.5 bg-slate-950/60 rounded border border-slate-900 hover:border-slate-850 transition-colors gap-4">
+                            <div key={s.name} className="flex items-center justify-between p-2.5 bg-stone-100/70 rounded border border-stone-300 hover:border-slate-850 transition-colors gap-4">
                               <div className="min-w-0 flex-1">
-                                <div className="text-sm font-semibold text-slate-200 truncate">{s.name}</div>
+                                <div className="text-sm font-semibold text-slate-700 truncate">{s.name}</div>
                                 <div className="text-[12px] text-slate-500 truncate font-mono">{s.weapon}</div>
                               </div>
                               <div className="flex items-center gap-2">
@@ -4630,7 +4630,7 @@ export default function App() {
                                     const val = parseInt(e.target.value) || 0;
                                     setHitsState(prev => ({ ...prev, [s.name]: val }));
                                   }}
-                                  className="w-16 bg-slate-950 border border-slate-900 rounded p-1 text-sm text-center text-amber-500 font-mono font-bold focus:outline-none focus:border-amber-500/50"
+                                  className="w-16 bg-white border border-stone-300 rounded p-1 text-sm text-center text-amber-500 font-mono font-bold focus:outline-none focus:border-amber-500/50"
                                 />
                               </div>
                             </div>
@@ -4640,7 +4640,7 @@ export default function App() {
                     </div>
 
                     {/* Disclaimer about non-Bamboocut-Dust path skill names */}
-                    <div className="mt-2 text-[12px] text-slate-400 italic leading-relaxed px-1 flex items-start gap-1">
+                    <div className="mt-2 text-[12px] text-slate-500 italic leading-relaxed px-1 flex items-start gap-1">
                       <span className="shrink-0 text-amber-500/80">⚠️</span>
                       <span>
                         Skill names for non-Bamboocut-Dust paths are approximate. Enter hits from your actual damage log for accurate results.
@@ -4653,13 +4653,13 @@ export default function App() {
                 <div className="lg:col-span-5 space-y-6">
                   
                   {/* Core Combat Output Parse Card */}
-                  <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
-                    <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-2 border-b border-amber-900/10 pb-2">
+                  <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-5 shadow-lg space-y-4">
+                    <h3 className="text-base font-bold font-serif text-slate-800 flex items-center gap-2 border-b border-amber-500/20 pb-2">
                       ⚔ Simulated Combat Parse
                     </h3>
                     
                     {/* Big Stats Indicator */}
-                    <div className="grid grid-cols-2 gap-3 bg-slate-950/80 p-4 rounded-xl border border-slate-900">
+                    <div className="grid grid-cols-2 gap-3 bg-stone-100/80 p-4 rounded-xl border border-stone-300">
                       <div>
                         <div className="text-[12px] uppercase font-mono tracking-wider text-slate-500">Total Combat Damage</div>
                         <div className="text-xl font-bold font-serif text-amber-500 mt-0.5">
@@ -4675,10 +4675,10 @@ export default function App() {
                     </div>
 
                     {/* Skill Contributions table */}
-                    <div className="overflow-x-auto rounded-lg border border-slate-900">
+                    <div className="overflow-x-auto rounded-lg border border-stone-300">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr className="bg-slate-950 border-b border-amber-900/10 text-[11px] uppercase tracking-wider font-mono text-slate-500">
+                          <tr className="bg-white border-b border-amber-500/20 text-[11px] uppercase tracking-wider font-mono text-slate-500">
                             <th className="py-2 px-3">Skill Spec</th>
                             <th className="py-2 px-3 text-right">Hits</th>
                             <th className="py-2 px-3 text-right">DMG/hit</th>
@@ -4686,23 +4686,23 @@ export default function App() {
                             <th className="py-2 px-3 text-right">%</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-950 bg-slate-950/25 font-mono text-[13px] text-slate-300">
+                        <tbody className="divide-y divide-slate-950 bg-white/25 font-mono text-[13px] text-slate-600">
                           {currentSimDetails
                             .filter(item => item.hits > 0)
                             .sort((a, b) => b.total - a.total)
                             .map((item, idx) => {
                               const percent = totalSimCurrentDmg > 0 ? ((item.total / totalSimCurrentDmg) * 100).toFixed(1) : "0.0";
                               return (
-                                <tr key={idx} className="hover:bg-slate-950/40 transition-colors">
-                                  <td className="py-2 px-3 font-sans font-medium text-slate-200">
+                                <tr key={idx} className="hover:bg-stone-200/60 transition-colors">
+                                  <td className="py-2 px-3 font-sans font-medium text-slate-700">
                                     {item.name}
                                   </td>
-                                  <td className="py-2 px-3 text-right text-slate-400">{item.hits}</td>
+                                  <td className="py-2 px-3 text-right text-slate-500">{item.hits}</td>
                                   <td className="py-2 px-3 text-right text-slate-450">{Math.round(item.perHit).toLocaleString()}</td>
                                   <td className="py-2 px-3 text-right font-extrabold text-amber-500">
                                     {Math.round(item.total).toLocaleString()}
                                   </td>
-                                  <td className="py-2 px-3 text-right text-slate-400">{percent}%</td>
+                                  <td className="py-2 px-3 text-right text-slate-500">{percent}%</td>
                                 </tr>
                               );
                             })}
@@ -4719,12 +4719,12 @@ export default function App() {
                   </div>
 
                   {/* Weapon Swap Simulator Card */}
-                  <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
-                    <div className="border-b border-amber-900/10 pb-2">
-                      <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-1.5">
+                  <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-5 shadow-lg space-y-4">
+                    <div className="border-b border-amber-500/20 pb-2">
+                      <h3 className="text-base font-bold font-serif text-slate-800 flex items-center gap-1.5">
                         🛠 Weapon/Gear Swap Simulator
                       </h3>
-                      <p className="text-[12px] text-slate-400 mt-0.5">
+                      <p className="text-[12px] text-slate-500 mt-0.5">
                         Test how alternate weapons stack up by modifying the Base Physical Attack min & max attributes.
                       </p>
                     </div>
@@ -4733,7 +4733,7 @@ export default function App() {
                       
                       {/* Presets dropdown */}
                       <div className="space-y-1">
-                        <label className="text-[12px] text-slate-400 font-sans font-bold uppercase tracking-wider block">Weapon Base Presets</label>
+                        <label className="text-[12px] text-slate-500 font-sans font-bold uppercase tracking-wider block">Weapon Base Presets</label>
                         <select
                           value={swapWeaponId}
                           onChange={(e) => {
@@ -4745,7 +4745,7 @@ export default function App() {
                               setSwapMaxAtk(found.max);
                             }
                           }}
-                          className="w-full bg-slate-950 border border-slate-900 rounded p-2 text-slate-200 focus:outline-none focus:border-amber-500/50 block w-full"
+                          className="w-full bg-white border border-stone-300 rounded p-2 text-slate-700 focus:outline-none focus:border-amber-500/50 block w-full"
                         >
                           {PREDEFINED_WEAPONS.map(w => (
                             <option key={w.id} value={w.id}>{w.name}</option>
@@ -4756,7 +4756,7 @@ export default function App() {
                       {/* Inputs min & max */}
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <label className="text-[12px] text-slate-400 font-sans block">New Min Base Atk</label>
+                          <label className="text-[12px] text-slate-500 font-sans block">New Min Base Atk</label>
                           <input
                             type="number"
                             value={swapMinAtk}
@@ -4764,11 +4764,11 @@ export default function App() {
                               setSwapMinAtk(parseInt(e.target.value) || 0);
                               setSwapWeaponId("custom");
                             }}
-                            className="w-full bg-slate-950 border border-slate-900 rounded p-2 text-slate-100 placeholder:text-slate-705 focus:outline-none focus:border-amber-500/50"
+                            className="w-full bg-white border border-stone-300 rounded p-2 text-slate-800 placeholder:text-slate-705 focus:outline-none focus:border-amber-500/50"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[12px] text-slate-400 font-sans block">New Max Base Atk</label>
+                          <label className="text-[12px] text-slate-500 font-sans block">New Max Base Atk</label>
                           <input
                             type="number"
                             value={swapMaxAtk}
@@ -4776,24 +4776,24 @@ export default function App() {
                               setSwapMaxAtk(parseInt(e.target.value) || 0);
                               setSwapWeaponId("custom");
                             }}
-                            className="w-full bg-slate-950 border border-slate-900 rounded p-2 text-slate-100 placeholder:text-slate-705 focus:outline-none focus:border-amber-500/50"
+                            className="w-full bg-white border border-stone-300 rounded p-2 text-slate-800 placeholder:text-slate-705 focus:outline-none focus:border-amber-500/50"
                           />
                         </div>
                       </div>
 
                       {/* Swap Comparison results banner */}
-                      <div className="bg-slate-950 rounded-xl p-4 border border-slate-900">
+                      <div className="bg-white rounded-xl p-4 border border-stone-300">
                         <div className="text-[12px] uppercase font-bold text-slate-500 tracking-wider">Recalculated Weapon Comparison</div>
                         
                         <div className="mt-2.5 flex items-baseline justify-between">
-                          <div className="text-slate-400 text-sm">Simulated DPS:</div>
+                          <div className="text-slate-500 text-sm">Simulated DPS:</div>
                           <div className="text-lg font-bold text-amber-500">
                             {totalSimSwappedDps.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                           </div>
                         </div>
 
-                        <div className="mt-2 flex items-center justify-between border-t border-slate-900 pt-2 text-sm">
-                          <span className="text-slate-400">Total Parse Gain/Loss:</span>
+                        <div className="mt-2 flex items-center justify-between border-t border-stone-300 pt-2 text-sm">
+                          <span className="text-slate-500">Total Parse Gain/Loss:</span>
                           {swapDpsDiffPct >= 0 ? (
                             <span className="font-extrabold text-emerald-500 text-base">
                               +{swapDpsDiffPct.toFixed(2)}% DPS Increase
@@ -4824,25 +4824,25 @@ export default function App() {
         {/* Tab Profiles Manager */}
         {activeTab === "profiles" && (
           <div className="space-y-6">
-            <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
-              <h2 className="text-lg font-bold font-serif text-slate-100 flex items-center gap-2 border-b border-amber-900/15 pb-4 mb-5">
+            <div className="bg-[#f4eee2] border border-amber-500/20 rounded-xl p-6 shadow-lg">
+              <h2 className="text-lg font-bold font-serif text-slate-800 flex items-center gap-2 border-b border-amber-500/25 pb-4 mb-5">
                 <Database className="text-amber-500 w-5 h-5" /> Gear Sets Management & Comparisons Matrix
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Save active panel box */}
-                <div className="bg-slate-950/40 border border-slate-900 rounded-xl p-4 space-y-4 md:col-span-1">
+                <div className="bg-stone-200/60 border border-stone-300 rounded-xl p-4 space-y-4 md:col-span-1">
                   <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest font-mono">
                     Save Active Panel Setup
                   </h3>
                   <div className="space-y-2">
-                    <label className="text-[13px] text-slate-400 block font-medium">Profile Name</label>
+                    <label className="text-[13px] text-slate-500 block font-medium">Profile Name</label>
                     <input
                       type="text"
                       placeholder="e.g., T91 Gold Set, Pen Focused..."
                       value={newProfileName}
                       onChange={(e) => setNewProfileName(e.target.value)}
-                      className="w-full bg-slate-900 text-slate-100 border border-slate-800 text-sm px-3 py-2 rounded focus:outline-none focus:border-amber-500 font-medium"
+                      className="w-full bg-slate-900 text-slate-800 border border-stone-200 text-sm px-3 py-2 rounded focus:outline-none focus:border-amber-500 font-medium"
                     />
                   </div>
                   <button
@@ -4867,8 +4867,8 @@ export default function App() {
                     Save Profile
                   </button>
 
-                  <div className="border-t border-slate-900 pt-3">
-                    <h4 className="text-[12px] uppercase tracking-wider font-extrabold text-slate-400 mb-2 font-mono">
+                  <div className="border-t border-stone-300 pt-3">
+                    <h4 className="text-[12px] uppercase tracking-wider font-extrabold text-slate-500 mb-2 font-mono">
                       Backups & Cross-sync
                     </h4>
                     <div className="space-y-2 text-[12px] text-slate-500">
@@ -4909,7 +4909,7 @@ export default function App() {
 
                 {/* Profiles catalogs */}
                 <div className="md:col-span-2 space-y-4">
-                  <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest font-mono flex justify-between items-center">
+                  <h3 className="text-sm font-bold text-slate-600 uppercase tracking-widest font-mono flex justify-between items-center">
                     <span>Saved Configurations ({profiles.length})</span>
                     {profiles.length > 0 && (
                       <button
@@ -4926,7 +4926,7 @@ export default function App() {
                   </h3>
 
                   {profiles.length === 0 ? (
-                    <div className="bg-[#0e0d0b] border border-slate-900 rounded-xl p-8 text-center text-slate-500 text-sm">
+                    <div className="bg-[#0e0d0b] border border-stone-300 rounded-xl p-8 text-center text-slate-500 text-sm">
                       No stored configurations found. Current indicators will be lost on page reload if not saved. Record your setup using the panel on the left!
                     </div>
                   ) : (
@@ -4940,17 +4940,17 @@ export default function App() {
                             className={`border rounded-xl p-4 transition-all relative ${
                               isComparing
                                 ? "bg-amber-950/10 border-amber-500/65"
-                                : "bg-slate-950/40 border-slate-900 hover:border-slate-800"
+                                : "bg-stone-200/60 border-stone-300 hover:border-stone-200"
                             }`}
                           >
                             <span className="text-[11px] font-mono text-slate-500 block">
                               {prof.timestamp}
                             </span>
-                            <h4 className="text-base font-bold text-slate-100 font-serif mt-1 truncate">
+                            <h4 className="text-base font-bold text-slate-800 font-serif mt-1 truncate">
                               {prof.name}
                             </h4>
 
-                            <div className="grid grid-cols-2 gap-2 mt-2.5 text-[12px] font-mono border-t border-slate-900 pt-2.5">
+                            <div className="grid grid-cols-2 gap-2 mt-2.5 text-[12px] font-mono border-t border-stone-300 pt-2.5">
                               <div>
                                 <span className="text-slate-500 block">Graduation:</span>
                                 <strong className="text-amber-500 text-sm">
@@ -4959,7 +4959,7 @@ export default function App() {
                               </div>
                               <div>
                                 <span className="text-slate-500 block">DPS Score:</span>
-                                <strong className="text-slate-200">
+                                <strong className="text-slate-700">
                                   {Math.round(dyn.dps).toLocaleString()}/s
                                 </strong>
                               </div>
@@ -4971,7 +4971,7 @@ export default function App() {
                                   setPanel(prof.panel);
                                   alert(`Successfully restored configuration "${prof.name}" to active panel!`);
                                 }}
-                                className="flex-1 bg-slate-905 border border-slate-800 hover:bg-slate-900 text-slate-200 text-[13px] py-1.5 px-2 rounded text-center transition-colors font-bold cursor-pointer"
+                                className="flex-1 bg-slate-905 border border-stone-200 hover:bg-slate-900 text-slate-700 text-[13px] py-1.5 px-2 rounded text-center transition-colors font-bold cursor-pointer"
                               >
                                 Equip Build
                               </button>
@@ -4986,7 +4986,7 @@ export default function App() {
                                 className={`flex-1 border text-[13px] py-1.5 px-2 rounded font-bold transition-all text-center cursor-pointer ${
                                   isComparing
                                     ? "bg-amber-500 text-slate-950 border-amber-600 hover:bg-amber-400 font-extrabold"
-                                    : "bg-slate-905 border-slate-800 text-amber-500/95 hover:bg-slate-900"
+                                    : "bg-slate-905 border-stone-200 text-amber-500/95 hover:bg-slate-900"
                                 }`}
                               >
                                 {isComparing ? "✓ Selected" : "Compare"}
@@ -4999,7 +4999,7 @@ export default function App() {
                                     setCompareProfileIds(compareProfileIds.filter((id) => id !== prof.id));
                                   }
                                 }}
-                                className="border border-slate-900 hover:bg-rose-950/10 hover:border-rose-900 text-rose-500 text-sm px-2.5 rounded transition-colors cursor-pointer"
+                                className="border border-stone-300 hover:bg-rose-950/10 hover:border-rose-900 text-rose-500 text-sm px-2.5 rounded transition-colors cursor-pointer"
                                 title="Delete profile"
                               >
                                 &times;
@@ -5032,8 +5032,8 @@ export default function App() {
               ];
 
               return (
-                <div className="bg-[#141210]/95 border-2 border-amber-500 rounded-xl p-5 shadow-2xl relative">
-                  <div className="flex justify-between items-center border-b border-amber-900/10 pb-3 mb-4">
+                <div className="bg-[#f4eee2]/95 border-2 border-amber-500 rounded-xl p-5 shadow-2xl relative">
+                  <div className="flex justify-between items-center border-b border-amber-500/20 pb-3 mb-4">
                     <h3 className="text-base font-serif font-bold text-amber-500 uppercase tracking-wider">
                       Multi Gear Sets Comparison Matrix ({selectedProfs.length} builds selected)
                     </h3>
@@ -5048,7 +5048,7 @@ export default function App() {
                   <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left text-sm border-collapse font-sans min-w-[700px]">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 text-[12px] uppercase font-mono">
+                        <tr className="border-b border-stone-200 text-slate-500 text-[12px] uppercase font-mono">
                           <th className="py-2.5 px-3">Attribute / Substat</th>
                           <th className="py-2.5 px-3 text-right text-amber-400 bg-amber-500/5">Active Configuration</th>
                           {selectedProfs.map((p) => (
@@ -5062,8 +5062,8 @@ export default function App() {
                         {keysToCompare.map((item) => {
                           const activeVal = adjustedPanel[item.key] as number;
                           return (
-                            <tr key={item.key} className="border-b border-slate-900 text-sm font-mono hover:bg-slate-900/20">
-                              <td className="py-2.5 px-3 font-sans font-medium text-slate-300">{item.label}</td>
+                            <tr key={item.key} className="border-b border-stone-300 text-sm font-mono hover:bg-slate-900/20">
+                              <td className="py-2.5 px-3 font-sans font-medium text-slate-600">{item.label}</td>
                               <td className="py-2.5 px-3 text-right text-amber-400 font-bold bg-amber-500/5">
                                 {activeVal.toFixed(item.key === "minOuter" || item.key === "maxOuter" || item.key === "maxPz" || item.key === "minPz" ? 0 : 1)}
                                 {item.unit}
@@ -5073,7 +5073,7 @@ export default function App() {
                                 const diff = activeVal - compVal;
                                 return (
                                   <td key={p.id} className="py-2.5 px-3 text-right">
-                                    <div className="text-slate-100 font-medium">
+                                    <div className="text-slate-800 font-medium">
                                       {compVal.toFixed(item.key === "minOuter" || item.key === "maxOuter" || item.key === "maxPz" || item.key === "minPz" ? 0 : 1)}
                                       {item.unit}
                                     </div>
@@ -5090,7 +5090,7 @@ export default function App() {
                         })}
 
                         {/* Graduation Rate */}
-                        <tr className="border-b border-slate-900 text-sm font-mono bg-amber-500/5 font-bold">
+                        <tr className="border-b border-stone-300 text-sm font-mono bg-amber-500/5 font-bold">
                           <td className="py-3 px-3 font-sans text-amber-400">Graduation Rate</td>
                           <td className="py-3 px-3 text-right text-amber-500 font-extrabold bg-amber-500/10">
                             {rotationStats.gradRate.toFixed(1)}%
@@ -5100,7 +5100,7 @@ export default function App() {
                             const diff = rotationStats.gradRate - dyn.gradRate;
                             return (
                               <td key={p.id} className="py-3 px-3 text-right">
-                                <div className="text-slate-200 font-extrabold">{dyn.gradRate.toFixed(1)}%</div>
+                                <div className="text-slate-700 font-extrabold">{dyn.gradRate.toFixed(1)}%</div>
                                 <div className={`text-[11px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
                                   {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.abs(diff).toFixed(1) : "equal"}
@@ -5112,9 +5112,9 @@ export default function App() {
                         </tr>
 
                         {/* Skill DPS */}
-                        <tr className="border-b border-slate-900 text-sm font-mono bg-amber-400/5 font-bold">
+                        <tr className="border-b border-stone-300 text-sm font-mono bg-amber-400/5 font-bold">
                           <td className="py-3 px-3 font-sans text-amber-400 font-serif">Rotation Skill DPS</td>
-                          <td className="py-3 px-3 text-right text-slate-100 font-extrabold bg-amber-500/10">
+                          <td className="py-3 px-3 text-right text-slate-800 font-extrabold bg-amber-500/10">
                             {Math.round(rotationStats.dps).toLocaleString()}/s
                           </td>
                           {selectedProfs.map((p) => {
@@ -5122,7 +5122,7 @@ export default function App() {
                             const diff = rotationStats.dps - dyn.dps;
                             return (
                               <td key={p.id} className="py-3 px-3 text-right">
-                                <div className="text-slate-200 font-extrabold">{Math.round(dyn.dps).toLocaleString()}/s</div>
+                                <div className="text-slate-700 font-extrabold">{Math.round(dyn.dps).toLocaleString()}/s</div>
                                 <div className={`text-[11px] font-bold ${diff > 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
                                   {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.round(Math.abs(diff)).toLocaleString() : ""}
