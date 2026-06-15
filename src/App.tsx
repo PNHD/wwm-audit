@@ -101,7 +101,7 @@ const BUILD_TIPS: Record<string, string[]> = {
     "🔩 Phys Pen → 51.2% net (panel value - 20 boss resist)",
     "⚡ Crit Rate → need 116%+ panel to cap at 80% eff (÷1.45)",
     "⚠️ Bamboocut ATK contributes ~15-20% of rotation damage",
-    "✦ Attuned Bonus: Drunken Spring Skill DMG (定音增伤) — crucial!",
+    "✦ Attuned Bonus: Drunken Spring Skill DMG (Weapon Attuned DMG) — crucial!",
     "🍖 Food buff adds +90/+180 Phys ATK — always use before raids",
   ],
   "bellstrike-umbra": [
@@ -140,15 +140,15 @@ const GRAD_MARKERS = [
 
 
 const ATTUNED_BONUS_LABEL: Record<string, string> = {
-  "bamboocut-dust": "Drunken Spring: Skill DMG Bonus (醉梦游春·武学技增伤)",
-  "bamboocut-wind": "Mortal Rope Dart: Rodent DMG Bonus (绳镖·鼠鼠增伤)",
-  "bamboocut-kite": "Fist: Charged Skill DMG Bonus (手甲·蓄力技增伤)",
-  "bellstrike-umbra": "Strategic Sword: Skill DMG Bonus (积矩九剑·武学技增伤)",
-  "bellstrike-splendor": "Nameless Sword: Charged Skill DMG Bonus (无名剑·蓄力技增伤)",
-  "silkbind-jade": "Vernal Umbrella: Special Skill DMG Bonus (九重春色·特殊技增伤)",
-  "stonesplit-might": "Guandao: Charged/Derived Skill DMG Bonus (陌刀·蓄力技增伤)",
-  "stonesplit-scale": "Guandao: Charged/Derived Skill DMG Bonus (陌刀·蓄力技增伤)",
-  "silkbind-deluge": "Panacea Fan: Healing Bonus",
+  "bamboocut-dust": "Drunken Spring: Skill DMG Bonus (Attuned Weapon Bonus)",
+  "bamboocut-wind": "Mortal Rope Dart: Skill DMG Bonus (Attuned Weapon Bonus)",
+  "bamboocut-kite": "Fist: Charged Skill DMG Bonus (Attuned Weapon Bonus)",
+  "bellstrike-umbra": "Strategic Sword: Skill DMG Bonus (Attuned Weapon Bonus)",
+  "bellstrike-splendor": "Nameless Sword: Charged Skill DMG Bonus (Attuned Weapon Bonus)",
+  "silkbind-jade": "Vernal Umbrella: Special Skill DMG Bonus (Attuned Weapon Bonus)",
+  "stonesplit-might": "Guandao: Charged/Derived Skill DMG Bonus (Attuned Weapon Bonus)",
+  "stonesplit-scale": "Guandao: Charged/Derived Skill DMG Bonus (Attuned Weapon Bonus)",
+  "silkbind-deluge": "Panacea Fan: Healing Bonus (Attuned Weapon Bonus)",
 };
 
 const INITIAL_PANEL: PanelStats = {
@@ -333,14 +333,14 @@ const BUILD_PROFILES = {
 
 const ARMOR_SETS = {
   "stars": {
-    name: "Stars Align (连星)",
+    name: "Stars Align",
     stat2pc: { minOuter: 64 },
     desc2pc: "2/3: Min Physical Attack +64",
     desc4pc: "4/4: Hitting boss/player or 2+ enemies: gain 1 Stars Align stack (5 sec, +3% martial art skill DMG + up to +1% per meter over 4m, max 5 stacks)",
     recommended: ["bamboocut-dust"],
   },
   "eaglerise": {
-    name: "Eaglerise (飞隼)",
+    name: "Eaglerise",
     stat2pc: { aff: 6.1 },
     desc2pc: "2/4: +6.1% Affinity Rate",
     desc3pc: "3/4: Outgoing Healing +10%",
@@ -348,49 +348,49 @@ const ARMOR_SETS = {
     recommended: ["bamboocut-wind", "stonesplit-might"],
   },
   "stormrain": {
-    name: "Stormrain (时雨)",
+    name: "Stormrain",
     stat2pc: { prec: 10.8 },
     desc2pc: "2/4: +10.8% Precision Rate",
     desc4pc: "4/4: Dealing damage over time OR healing grants 1 stack: increases damage and healing by X%",
     recommended: ["bellstrike-umbra"],
   },
   "jadeware": {
-    name: "Jadeware (玉斗)",
+    name: "Jadeware",
     stat2pc: { maxOuter: 106 },
     desc2pc: "+106 Max Physical ATK",
     desc4pc: "Martial Art Skill activates Jadeware: Increases Affinity DMG when dealing Affinity damage",
     recommended: ["bellstrike-umbra", "bellstrike-splendor"],
   },
   "ironweave": {
-    name: "Ironweave (铁衣)",
+    name: "Ironweave",
     stat2pc: {},
     desc2pc: "+Physical Defense",
     desc4pc: "Shield duration +2s. If shield broken, gain additional DMG reduction",
     recommended: [],
   },
   "shakenhill": {
-    name: "Shakenhill (撼天)",
+    name: "Shakenhill",
     stat2pc: { prec: 10.8 },
     desc2pc: "+10.8% Precision Rate",
     desc4pc: "After Light Attack/Airborne Light Attack, Heavy Attack DMG increased",
     recommended: ["silkbind-jade"],
   },
   "swallowreturn": {
-    name: "Swallow Return (燕归)",
+    name: "Swallow Return",
     stat2pc: { minOuter: 106 },
     desc2pc: "+106 Min Physical ATK",
     desc4pc: "Light Attacks deal +15% DMG to targets above 50% HP",
     recommended: ["bamboocut-wind"],
   },
   "rainwhisper": {
-    name: "Rainwhisper (涟鱼)",
+    name: "Rainwhisper",
     stat2pc: {},
     desc2pc: "+Max HP",
     desc4pc: "+10% Critical DMG and healing. Additional effects.",
     recommended: ["stonesplit-might"],
   },
   "ivorybloom": {
-    name: "Ivorybloom (杏林)",
+    name: "Ivorybloom",
     stat2pc: { crit: 12.1 },
     desc2pc: "+12.1% Critical Rate",
     desc4pc: "At Max HP, +5% chance to deal Critical damage",
@@ -1412,7 +1412,7 @@ export default function App() {
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-amber-500/80 border border-amber-500/30 rounded px-2 py-0.5 bg-amber-500/5 font-bold">
-              Where Winds Meet · 燕云十六声
+              Where Winds Meet · Yan Yun Shi Liu Sheng
             </span>
             <span className="text-[10px] uppercase tracking-wider text-slate-400 font-mono">
               Grade 95 / Gear Tier 91
@@ -3805,17 +3805,17 @@ export default function App() {
                     gradKey = "Boss DMG Bonus";
                     isPercentage = true;
                     fallbackTarget = 12.0;
-                  } else if (nameLower.includes("strength") || nameLower.includes("劲")) {
+                  } else if (nameLower.includes("strength")) {
                     gearType = "Strength";
                     gradKey = "Strength";
                     isPercentage = false;
                     fallbackTarget = 120;
-                  } else if (nameLower.includes("power") || nameLower.includes("势")) {
+                  } else if (nameLower.includes("power")) {
                     gearType = "Power";
                     gradKey = "Power";
                     isPercentage = false;
                     fallbackTarget = 120;
-                  } else if (nameLower.includes("agility") || nameLower.includes("敏")) {
+                  } else if (nameLower.includes("agility")) {
                     gearType = "Agility";
                     gradKey = "Agility";
                     isPercentage = false;
@@ -3876,12 +3876,12 @@ export default function App() {
                     currentVal = currentSubsSum["Attr Pen"] || 0;
                   } else if (label.toLowerCase().includes("phys dmg")) {
                     currentVal = currentSubsSum["Phys DMG%"] || 0;
-                  } else if (label.toLowerCase().includes("strength") || label.toLowerCase().includes("劲")) {
-                    currentVal = currentSubsSum["Strength"] || currentSubsSum["Strength (劲)"] || currentSubsSum["jin"] || 0;
-                  } else if (label.toLowerCase().includes("power") || label.toLowerCase().includes("势")) {
-                    currentVal = currentSubsSum["Power"] || currentSubsSum["Power (势)"] || currentSubsSum["shi"] || 0;
-                  } else if (label.toLowerCase().includes("agility") || label.toLowerCase().includes("敏")) {
-                    currentVal = currentSubsSum["Agility"] || currentSubsSum["Agility (敏)"] || currentSubsSum["min"] || 0;
+                  } else if (label.toLowerCase().includes("strength")) {
+                    currentVal = currentSubsSum["Strength"] || 0;
+                  } else if (label.toLowerCase().includes("power")) {
+                    currentVal = currentSubsSum["Power"] || 0;
+                  } else if (label.toLowerCase().includes("agility")) {
+                    currentVal = currentSubsSum["Agility"] || 0;
                   } else {
                     currentVal = currentSubsSum[config.gearType] || 0;
                   }
