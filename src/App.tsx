@@ -3791,7 +3791,7 @@ export default function App() {
                                     Main: {item.main}
                                   </div>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-right flex flex-col items-end gap-1.5">
                                   <div className="text-sm font-mono font-extrabold text-amber-400">
                                     +{entry.total.toFixed(2)}% graduation
                                   </div>
@@ -3800,6 +3800,17 @@ export default function App() {
                                       -{gapToBest.toFixed(2)}% vs best
                                     </div>
                                   )}
+                                  <button
+                                    onClick={() => {
+                                      const gear = getActiveGear();
+                                      const others = gear.filter(g => g.id !== item.id);
+                                      const reordered = [item, ...others];
+                                      saveActiveGear(reordered);
+                                    }}
+                                    className="text-[11px] px-2 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold font-mono uppercase tracking-wide transition-colors"
+                                  >
+                                    ⚔ Equip
+                                  </button>
                                 </div>
                               </div>
 
