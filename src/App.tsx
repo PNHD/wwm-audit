@@ -1891,7 +1891,7 @@ export default function App() {
         {activeTab === "calculator" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Sidebar Controls (Inputs & Modifiers) - 4 Cols */}
-            <div className="flex items-center gap-3 mb-3 p-2 bg-slate-950/40 rounded-lg border border-slate-900">
+            <div className="lg:col-span-12 flex items-center gap-3 mb-3 p-2 bg-slate-950/40 rounded-lg border border-slate-900">
               {BUILD_WEAPONS[selectedBuild]?.map(weaponKey => (
                 <div key={weaponKey} className="flex items-center gap-2">
                   <img
