@@ -483,6 +483,7 @@ export default function App() {
   }, [autoGearPanel]);
 
   const [activeTab, setActiveTab ] = useState<"calculator" | "priority" | "gear" | "compare" | "simulators" | "ocr" | "profiles" | "rot-sim" | "cultivate">("calculator");
+  const [analysisMenuOpen, setAnalysisMenuOpen] = useState(false);
   const [rotationTab, setRotationTab] = useState<"list" | "top">("list");
 
   const [rotSimClass, setRotSimClass] = useState<string>("Bamboocut-Dust");
@@ -1839,17 +1840,45 @@ export default function App() {
               <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
             )}
           </button>
-          <button
-            onClick={() => setActiveTab("priority")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "priority" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            📊 Priority
-            {activeTab === "priority" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
+          <div className="relative">
+            <button
+              onClick={() => setAnalysisMenuOpen(v => !v)}
+              className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors flex items-center gap-1 ${
+                ["priority", "compare", "cultivate", "simulators", "rot-sim"].includes(activeTab)
+                  ? "text-amber-500 font-extrabold"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              📊 Analysis ▾
+              {["priority", "compare", "cultivate", "simulators", "rot-sim"].includes(activeTab) && (
+                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
+              )}
+            </button>
+            {analysisMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setAnalysisMenuOpen(false)} />
+                <div className="absolute left-0 top-full mt-1 bg-[#1c1a17] border border-amber-900/30 rounded-lg shadow-xl z-50 py-1 min-w-[170px]">
+                  {[
+                    { key: "priority", label: "📊 Stat Priority" },
+                    { key: "compare", label: "⚖ Item Compare" },
+                    { key: "cultivate", label: "🎯 Cultivate" },
+                    { key: "simulators", label: "🛠 Gear Sim" },
+                    { key: "rot-sim", label: "🔄 Rotation Sim" },
+                  ].map(opt => (
+                    <button
+                      key={opt.key}
+                      onClick={() => { setActiveTab(opt.key as any); setAnalysisMenuOpen(false); }}
+                      className={`block w-full text-left px-3 py-2 text-xs whitespace-nowrap transition-colors ${
+                        activeTab === opt.key ? "text-amber-500 font-bold bg-amber-500/5" : "text-slate-300 hover:bg-slate-800/60"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
-          </button>
+          </div>
           <button
             onClick={() => setActiveTab("gear")}
             className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
@@ -1858,50 +1887,6 @@ export default function App() {
           >
             🛡 Gear
             {activeTab === "gear" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("compare")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "compare" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            ⚖ Compare
-            {activeTab === "compare" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("cultivate")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "cultivate" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            🎯 Cultivate
-            {activeTab === "cultivate" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("simulators")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "simulators" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            🛠 Gear Sim
-            {activeTab === "simulators" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("rot-sim")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "rot-sim" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            🔄 Rotation Sim
-            {activeTab === "rot-sim" && (
               <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
             )}
           </button>
