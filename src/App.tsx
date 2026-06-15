@@ -3,6 +3,7 @@ import {
   Shield,
   HelpCircle,
   TrendingUp,
+  TrendingDown,
   Award,
   Zap,
   RotateCw,
@@ -425,8 +426,6 @@ export default function App() {
   const [activeTab, setActiveTab ] = useState<"calculator" | "priority" | "gear" | "compare" | "simulators" | "ocr" | "profiles" | "rot-sim" | "cultivate">("calculator");
   const [rotationTab, setRotationTab] = useState<"list" | "top">("list");
 
-  // Rotation Sim & Real Marginal Gains states
-  const [priorityClass, setPriorityClass] = useState<string>("Bamboocut-Dust");
   const [rotSimClass, setRotSimClass] = useState<string>("Bamboocut-Dust");
   const [cultivateClass, setCultivateClass] = useState<string>("Bamboocut-Dust");
 
@@ -1254,6 +1253,60 @@ export default function App() {
       gradRate,
     };
   }, [adjustedPanel, activeTier, datang, yishui, baselineScore]);
+
+  // 5. Live Stat Priority: % graduation gain/loss per substat roll, computed against the CURRENT panel
+  const statPriorityList = useMemo(() => {
+    const STAT_ROLLS: { key: keyof PanelStats; label: string; roll: number; unit: string }[] = [
+      { key: "maxOuter", label: "Max Phys ATK", roll: 63.8, unit: "" },
+      { key: "minOuter", label: "Min Phys ATK", roll: 26, unit: "" },
+      { key: "outerPen", label: "Phys Pen", roll: 9.0, unit: "%" },
+      { key: "crit", label: "Crit Rate", roll: 6.5, unit: "%" },
+      { key: "critDmg", label: "Crit DMG", roll: 5.0, unit: "%" },
+      { key: "aff", label: "Affinity Rate", roll: 4.5, unit: "%" },
+      { key: "affDmg", label: "Affinity DMG", roll: 5.0, unit: "%" },
+      { key: "prec", label: "Precision", roll: 5.0, unit: "%" },
+      { key: "maxPz", label: "Max Bamboocut ATK", roll: 30, unit: "" },
+      { key: "pzPen", label: "Bamboocut Pen", roll: 9.0, unit: "%" },
+      { key: "dcrit", label: "Direct Crit Rate", roll: 4.6, unit: "%" },
+      { key: "umbBonus", label: "Umbrella Bonus", roll: 2.0, unit: "%" },
+      { key: "allArts", label: "All Weapon Bonus", roll: 2.0, unit: "%" },
+      { key: "bossDmg", label: "Boss DMG", roll: 2.0, unit: "%" },
+      { key: "outerDmg", label: "Phys DMG", roll: 2.0, unit: "%" },
+    ];
+
+    const gradFor = (p: PanelStats) => {
+      let total = 0;
+      ROTATION.forEach((item) => {
+        const { total: dmg } = calcSkill(item, p, activeTier, {
+          set: p.set || adjustedPanel.set,
+          datang,
+          yishui,
+          buildKey: selectedBuild,
+        });
+        total += dmg;
+      });
+      return (total / baselineScore) * 100;
+    };
+
+    const baseGrad = rotationStats.gradRate;
+
+    const rows = STAT_ROLLS.map(({ key, label, roll, unit }) => {
+      const cur = adjustedPanel[key] as number;
+      const pUp = { ...adjustedPanel, [key]: cur + roll };
+      const gain = gradFor(pUp) - baseGrad;
+
+      const pDown = { ...adjustedPanel, [key]: Math.max(0, cur - roll) };
+      const loss = gradFor(pDown) - baseGrad; // negative or ~zero
+
+      return { key, label, roll, unit, gain, loss };
+    });
+
+    return {
+      base: baseGrad,
+      gains: [...rows].sort((a, b) => b.gain - a.gain),
+      losses: [...rows].sort((a, b) => a.loss - b.loss),
+    };
+  }, [adjustedPanel, activeTier, datang, yishui, selectedBuild, baselineScore, rotationStats.gradRate]);
 
   // Helper to dynamically calculate stats for any stored profile
   const getDynamicProfileStats = (prof: typeof profiles[0]) => {
@@ -2862,93 +2915,86 @@ export default function App() {
         {activeTab === "priority" && (
           <div className="space-y-6">
             <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
-              <div className="border-b border-amber-900/15 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="border-b border-amber-900/15 pb-4 mb-5">
+                <h2 className="text-lg font-bold font-serif text-slate-100 flex items-center gap-2">
+                  <TrendingUp className="text-amber-500 w-5 h-5" /> Stat Priority — Graduation Impact
+                </h2>
+                <p className="text-slate-400 text-xs mt-1">
+                  Live ranking for <strong className="text-amber-400">{(BUILD_PROFILES as any)[selectedBuild]?.label || "your build"}</strong>, computed from your current panel ({rotationStats.gradRate.toFixed(1)}% graduation). Each row simulates adding/removing <strong>one typical substat roll</strong> on a single sub-stat and shows the resulting change in graduation %.
+                </p>
+              </div>
+
+              {/* Two-column gain/loss ranking */}
+              <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-900 text-xs text-amber-500/95 flex items-center gap-2 mb-4">
+                <span className="text-lg">💡</span>
+                <span>
+                  Calculated against the <strong>Global Tier 91 (Lv95)</strong> boss constants (Defense 350, Judgment Resist ×1.45), using your live panel and active build's rotation.
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Gains column */}
                 <div>
-                  <h2 className="text-lg font-bold font-serif text-slate-100 flex items-center gap-2">
-                    <TrendingUp className="text-amber-500 w-5 h-5" /> Theorycrafting Stat Priority & Marginal Gains (Excel Verified)
-                  </h2>
-                  <p className="text-slate-400 text-xs mt-1">
-                    Authentic marginal gains from game parsing sheets, displayed as % DPS increase per optimized substat roll.
-                  </p>
+                  <h3 className="text-[11px] uppercase tracking-wider font-bold text-emerald-400 mb-2 flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5" /> Adding +1 substat roll
+                  </h3>
+                  <div className="space-y-1.5">
+                    {statPriorityList.gains.map((g, idx) => {
+                      const maxGain = statPriorityList.gains[0].gain || 1;
+                      const width = maxGain > 0 ? Math.max(0, (g.gain / maxGain) * 100) : 0;
+                      return (
+                        <div key={g.key} className="flex items-center gap-2 text-xs">
+                          <span className="w-4 text-slate-600 font-mono text-right text-[10px]">{idx + 1}</span>
+                          <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
+                          <span className="w-12 text-slate-500 font-mono text-right text-[10px]">+{g.roll}{g.unit}</span>
+                          <div className="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-emerald-700 to-emerald-400"
+                              style={{ width: `${width}%` }}
+                            />
+                          </div>
+                          <span className="w-16 font-mono text-right font-bold text-emerald-400">
+                            +{g.gain.toFixed(3)}%
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs font-mono text-slate-400">Select Class:</span>
-                  <select
-                    value={priorityClass}
-                    onChange={(e) => setPriorityClass(e.target.value)}
-                    className="bg-slate-950 border border-amber-900/30 hover:border-amber-500/50 text-amber-500 text-xs rounded-lg px-3 py-1.5 focus:outline-none font-bold transition-all cursor-pointer"
-                  >
-                    {Object.keys(WWM_DATA.classes).map((cls) => (
-                      <option key={cls} value={cls}>
-                        {cls}
-                      </option>
-                    ))}
-                  </select>
+
+                {/* Losses column */}
+                <div>
+                  <h3 className="text-[11px] uppercase tracking-wider font-bold text-rose-400 mb-2 flex items-center gap-1.5">
+                    <TrendingDown className="w-3.5 h-3.5" /> Removing 1 substat roll
+                  </h3>
+                  <div className="space-y-1.5">
+                    {statPriorityList.losses.map((g, idx) => {
+                      const maxLoss = Math.abs(statPriorityList.losses[0].loss) || 1;
+                      const width = maxLoss > 0 ? Math.max(0, (Math.abs(g.loss) / maxLoss) * 100) : 0;
+                      return (
+                        <div key={g.key} className="flex items-center gap-2 text-xs">
+                          <span className="w-4 text-slate-600 font-mono text-right text-[10px]">{idx + 1}</span>
+                          <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
+                          <span className="w-12 text-slate-500 font-mono text-right text-[10px]">-{g.roll}{g.unit}</span>
+                          <div className="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-rose-700 to-rose-400"
+                              style={{ width: `${width}%` }}
+                            />
+                          </div>
+                          <span className="w-16 font-mono text-right font-bold text-rose-400">
+                            {g.loss.toFixed(3)}%
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* Marginal gains list */}
-              <div className="space-y-4">
-                {(() => {
-                  const classData = WWM_DATA.classes[priorityClass] || { marginalGains: [] };
-                  const gains = classData.marginalGains;
-                  const maxVal = gains.length > 0 ? Math.max(...gains.map(g => g.gainPct || 0)) : 1;
-
-                  return (
-                    <div className="space-y-4">
-                      <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-900 text-xs text-amber-500/95 flex items-center gap-2">
-                        <span className="text-lg">💡</span>
-                        <span>
-                          <strong>Calibration Environment</strong>: Calculations modeled against target boss defense 559 (Lv105 CN). The priority rankings and relative scaling apply with over 97% precision to <strong>Global Tier 91 (Lv95)</strong>.
-                        </span>
-                      </div>
-
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                          <thead>
-                            <tr className="border-b border-amber-900/10 text-[10px] uppercase tracking-wider font-mono text-slate-500">
-                              <th className="py-2 px-3">Rank</th>
-                              <th className="py-2 px-3">Stat Attribute</th>
-                              <th className="py-2 px-3 text-right">DPS Gain Roll</th>
-                              <th className="py-2 px-3">Relative Scaling</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-9 w-full">
-                            {gains.map((g, idx) => {
-                              const pct = g.gainPct || 0;
-                              const relativeWidth = maxVal > 0 ? (pct / maxVal) * 100 : 0;
-                              
-                              return (
-                                <tr key={idx} className="hover:bg-slate-950/30 transition-colors text-xs">
-                                  <td className="py-3 px-3">
-                                    <span className="w-5 h-5 flex items-center justify-center rounded-full bg-slate-950 border border-amber-500/20 text-amber-500 font-mono font-bold text-[10px]">
-                                      {idx + 1}
-                                    </span>
-                                  </td>
-                                  <td className="py-3 px-3 font-sans font-medium text-slate-200">
-                                    {g.stat}
-                                  </td>
-                                  <td className="py-3 px-3 text-right font-mono font-bold text-amber-500">
-                                    +{pct.toFixed(4)}%
-                                  </td>
-                                  <td className="py-3 px-3 pr-6 min-w-[150px] md:min-w-[250px]">
-                                    <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden flex items-center">
-                                      <div
-                                        style={{ width: `${relativeWidth}%` }}
-                                        className="h-full bg-gradient-to-r from-amber-700 to-amber-500 rounded-full transition-all duration-500"
-                                      />
-                                    </div>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
+              <p className="text-[10px] text-slate-500 mt-4 italic">
+                Note: if a stat is already past its cap (e.g. Precision/Crit/Affinity at 100%/80%/40% effective), adding more shows ~0% gain — that's expected, not a bug. A near-zero loss means you have "slack" on that stat to relay elsewhere.
+              </p>
             </div>
 
             {/* General T91 Priority Rules Guide */}
@@ -4969,7 +5015,49 @@ export default function App() {
                             return (
                               <td key={p.id} className="py-3 px-3 text-right">
                                 <div className="text-slate-200 font-extrabold">{dyn.gradRate.toFixed(1)}%</div>
+                                <div className={`text-[9px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
+                                  {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
+                                  {diff !== 0 ? Math.abs(diff).toFixed(1) : "equal"}
+                                  {diff !== 0 ? "%" : ""}
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+
+                        {/* Skill DPS */}
+                        <tr className="border-b border-slate-900 text-xs font-mono bg-amber-400/5 font-bold">
+                          <td className="py-3 px-3 font-sans text-amber-400 font-serif">Rotation Skill DPS</td>
+                          <td className="py-3 px-3 text-right text-slate-100 font-extrabold bg-amber-500/10">
+                            {Math.round(rotationStats.dps).toLocaleString()}/s
+                          </td>
+                          {selectedProfs.map((p) => {
+                            const dyn = getDynamicProfileStats(p);
+                            const diff = rotationStats.dps - dyn.dps;
+                            return (
+                              <td key={p.id} className="py-3 px-3 text-right">
+                                <div className="text-slate-200 font-extrabold">{Math.round(dyn.dps).toLocaleString()}/s</div>
                                 <div className={`text-[9px] font-bold ${diff > 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
+                                  {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
+                                  {diff !== 0 ? Math.round(Math.abs(diff)).toLocaleString() : ""}
+                                  {diff !== 0 ? "/s" : "equal"}
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+} 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
                                   {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.abs(diff).toFixed(1) : ""}
                                   {diff !== 0 ? "%" : "equal"}
