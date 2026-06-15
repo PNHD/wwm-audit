@@ -3178,6 +3178,7 @@ export default function App() {
 
                       const slotObj = SLOTS.find(s => s.name === item.slot);
                       const slotIcon = slotObj?.icon || "🥋";
+                      const gradContribution = getGearItemCompareStats(item).totalGradDelta;
 
                       return (
                         <div
@@ -3211,9 +3212,17 @@ export default function App() {
                                   )}
                                 </div>
                               </div>
-                              <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded leading-none shrink-0 ${labelStyle}`}>
-                                {labelText}
-                              </span>
+                              <div className="flex flex-col items-end gap-1 shrink-0">
+                                <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded leading-none ${labelStyle}`}>
+                                  {labelText}
+                                </span>
+                                <span
+                                  className={`text-[9px] font-mono font-extrabold leading-none ${gradContribution > 0 ? "text-emerald-400" : "text-slate-500"}`}
+                                  title="Approximate graduation % this item's substats contribute to your current panel"
+                                >
+                                  +{gradContribution.toFixed(2)}% grad
+                                </span>
+                              </div>
                             </div>
 
                             <div className="text-[10px] text-slate-300 bg-slate-950/60 p-2.5 rounded border border-slate-900 font-mono space-y-1">
@@ -3707,11 +3716,11 @@ export default function App() {
                                 </div>
                                 <div className="text-right">
                                   <div className="text-xs font-mono font-extrabold text-amber-400">
-                                    +{entry.total.toFixed(2)} score contribution
+                                    +{entry.total.toFixed(2)}% graduation
                                   </div>
                                   {!isBest && (
                                     <div className="text-[10px] font-mono font-semibold text-rose-400">
-                                      -{gapToBest.toFixed(2)} vs best
+                                      -{gapToBest.toFixed(2)}% vs best
                                     </div>
                                   )}
                                 </div>
@@ -3730,7 +3739,7 @@ export default function App() {
                                       <div className="text-right shrink-0">
                                         <div className="text-slate-300 font-semibold">{sub.val}</div>
                                         <div className="text-emerald-400 text-[9px] font-bold mt-0.5">
-                                          +{subDeltaString} index
+                                          +{subDeltaString}% grad
                                         </div>
                                       </div>
                                     </div>
@@ -5019,48 +5028,6 @@ export default function App() {
                                   {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.abs(diff).toFixed(1) : "equal"}
                                   {diff !== 0 ? "%" : ""}
-                                </div>
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        {/* Skill DPS */}
-                        <tr className="border-b border-slate-900 text-xs font-mono bg-amber-400/5 font-bold">
-                          <td className="py-3 px-3 font-sans text-amber-400 font-serif">Rotation Skill DPS</td>
-                          <td className="py-3 px-3 text-right text-slate-100 font-extrabold bg-amber-500/10">
-                            {Math.round(rotationStats.dps).toLocaleString()}/s
-                          </td>
-                          {selectedProfs.map((p) => {
-                            const dyn = getDynamicProfileStats(p);
-                            const diff = rotationStats.dps - dyn.dps;
-                            return (
-                              <td key={p.id} className="py-3 px-3 text-right">
-                                <div className="text-slate-200 font-extrabold">{Math.round(dyn.dps).toLocaleString()}/s</div>
-                                <div className={`text-[9px] font-bold ${diff > 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
-                                  {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
-                                  {diff !== 0 ? Math.round(Math.abs(diff)).toLocaleString() : ""}
-                                  {diff !== 0 ? "/s" : "equal"}
-                                </div>
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-} 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
-                                  {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
-                                  {diff !== 0 ? Math.abs(diff).toFixed(1) : ""}
-                                  {diff !== 0 ? "%" : "equal"}
                                 </div>
                               </td>
                             );
