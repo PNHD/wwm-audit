@@ -29,6 +29,7 @@ import {
 import { PanelStats, TierConstants } from "./types";
 import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils/calc";
 import { INNER_WAYS } from "./data/innerways";
+import { INNER_WAY_IMAGES, WEAPON_IMAGES_G8, MYSTIC_SKILL_IMAGES } from "./data/game8Images";
 import { WWM_DATA } from "./data/wwmData";
 import OcrScanner from "./components/OcrScanner";
 import StatSwapSimulator from "./components/StatSwapSimulator";
@@ -46,22 +47,22 @@ const PATH_ICONS: Record<string, string> = {
 };
 
 const WEAPON_ICONS: Record<string, string> = {
-  "everspring-umbrella":  "https://static0.fextralifeimages.com/file/wherewindsmeet/c/c4/Everspring-umbrella-martial-art-weapon-where-winds-meet-wiki-guide.webp",
-  "unfettered-rope-dart": "https://static0.fextralifeimages.com/file/wherewindsmeet/0/02/Unfettered-rope-dart-martial-art-weapon-where-winds-meet-wiki-guide.webp",
-  "nameless-sword":       "https://static0.fextralifeimages.com/file/wherewindsmeet/8/80/Nameless-sword-weapon-icon-where-winds-meet-wiki-guide.png",
-  "nameless-spear":       "https://static0.fextralifeimages.com/file/wherewindsmeet/9/9c/Nameless-spear-weapon-icon-where-winds-meet-wiki-guide.png",
-  "strategic-sword":      "https://static0.fextralifeimages.com/file/wherewindsmeet/9/96/Strategic-sword-weapon-icon-where-winds-meet-wiki-guide.png",
-  "heavenquaker-spear":   "https://static0.fextralifeimages.com/file/wherewindsmeet/b/b3/Heavenquaker-spear-weapon-icon-where-winds-meet-wiki-guide.png",
-  "infernal-twinblades":  "https://static0.fextralifeimages.com/file/wherewindsmeet/f/f0/Infernal-twinblades-weapon-icon-where-winds-meet-wiki-guide.png",
-  "mortal-rope-dart":     "https://static0.fextralifeimages.com/file/wherewindsmeet/8/80/Mortal-rope-dart-weapon-icon-where-winds-meet-wiki-guide.png",
-  "inkwell-fan":          "https://static0.fextralifeimages.com/file/wherewindsmeet/4/4e/Inkwell-fan-weapon-icon-where-winds-meet-wiki-guide.png",
-  "vernal-umbrella":      "https://static0.fextralifeimages.com/file/wherewindsmeet/a/a7/Ninefold-umbrella-weapon-icon-where-winds-meet-wiki-guide.png",
-  "panacea-fan":          "https://static0.fextralifeimages.com/file/wherewindsmeet/thumb/1/18/Panacea-fan-weapon-icon-where-winds-meet-wiki-guide.png/150px-Panacea-fan-weapon-icon-where-winds-meet-wiki-guide.png",
-  "soulshade-umbrella":   "https://static0.fextralifeimages.com/file/wherewindsmeet/c/c7/Soulshade-umbrella-weapon-icon-where-winds-meet-wiki-guide.png",
-  "stormbreaker-spear":   "https://static0.fextralifeimages.com/file/wherewindsmeet/8/8a/Stormbreaker-spear-weapon-icon-where-winds-meet-wiki-guide.png",
-  "thundercry-blade":     "https://static0.fextralifeimages.com/file/wherewindsmeet/2/27/Thundercry-blade-weapon-icon-where-winds-meet-wiki-guide.png",
-  "snowparting-blade":    "https://static0.fextralifeimages.com/file/wherewindsmeet/f/fd/Snowparting-blade-martial-art-weapon-where-winds-meet-wiki-guide.webp",
-  "phalanxbane-blade":    "https://static0.fextralifeimages.com/file/wherewindsmeet/f/f7/Phalanxbane-blade-martial-art-weapon-where-winds-meet-wiki-guide.webp",
+  "everspring-umbrella":  "https://img.game8.co/4430818/297cc2ff59c95b609826c3f16417a977.png/show",
+  "unfettered-rope-dart": "https://img.game8.co/4430816/34be69ae243ab24cfd2ef4208913976d.png/show",
+  "nameless-sword":       "https://img.game8.co/4331129/77b21e0bf5e89a2b56ec428ad539790e.png/show",
+  "nameless-spear":       "https://img.game8.co/4331136/6b761bc6828f99151a4aa642a8a62189.png/show",
+  "strategic-sword":      "https://img.game8.co/4331134/8a36324f07a767dfdf96d0a4a44d53e0.png/show",
+  "heavenquaker-spear":   "https://img.game8.co/4331140/cb8ca4a2628cfa314f57093b439ddbe8.png/show",
+  "infernal-twinblades":  "https://img.game8.co/4331138/86eafaaa238d530270e4e83a468fec0d.png/show",
+  "mortal-rope-dart":     "https://img.game8.co/4331135/d8110f837c4c6cc0ec60ad7308af2914.png/show",
+  "inkwell-fan":          "https://img.game8.co/4331137/a0072135916f15e728532b63809870fe.png/show",
+  "vernal-umbrella":      "https://img.game8.co/4331139/93c90a21eb6db4dc78ab626eeaa897d5.png/show",
+  "panacea-fan":          "https://img.game8.co/4331130/238c76e9c24a5e8cdd0696ce15d8bddb.png/show",
+  "soulshade-umbrella":   "https://img.game8.co/4331131/18d8da0221d8b6097c9b9b769f210b2b.png/show",
+  "stormbreaker-spear":   "https://img.game8.co/4331133/75c9ac76d2976e4f975f6a3ae2168558.png/show",
+  "thundercry-blade":     "https://img.game8.co/4331132/6ed777b5efce723ef006466cd0af82b4.png/show",
+  "snowparting-blade":    "https://img.game8.co/4379371/9e29ccb3c7098715eb1fcdd70c92b7a1.png/show",
+  "phalanxbane-blade":    "https://img.game8.co/4331132/6ed777b5efce723ef006466cd0af82b4.png/show",
 };
 
 const BUILD_WEAPONS: Record<string, [string, string]> = {
@@ -2608,9 +2609,13 @@ export default function App() {
                       >
                         <div className="flex justify-between items-center font-semibold mb-1">
                           <span className="flex items-center gap-2">
-                            <div className={`w-7 h-7 rounded flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${CAT_COLORS[iw.cat] || "bg-slate-700"}`}>
-                              {iw.name.charAt(0)}
-                            </div>
+                            {INNER_WAY_IMAGES[iw.name] ? (
+                              <img src={INNER_WAY_IMAGES[iw.name]} alt={iw.name} className="w-7 h-7 rounded object-cover flex-shrink-0 border border-white/10" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
+                            ) : (
+                              <div className={`w-7 h-7 rounded flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${CAT_COLORS[iw.cat] || "bg-slate-700"}`}>
+                                {iw.name.charAt(0)}
+                              </div>
+                            )}
                             <span>
                               {iw.name}
                               {isSelected && (
