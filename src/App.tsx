@@ -242,6 +242,23 @@ const SLOTS = [
   { name: "Bow/Ring", icon: "🏹" }
 ];
 
+// Gradient colors per armor set (used for Equipped Slots icon badges since no
+// verified per-piece CDN images exist for armor — keeps each set visually
+// distinct without fabricating image URLs)
+const SET_BADGE_COLORS: Record<string, string> = {
+  "stars":         "from-amber-500 to-yellow-700",      // Moonflare
+  "eaglerise":     "from-sky-500 to-blue-700",          // Hawking
+  "stormrain":     "from-teal-400 to-cyan-700",         // Eaglerise
+  "jadeware":      "from-emerald-400 to-green-700",     // Jadeware
+  "ivorybloom":    "from-pink-400 to-rose-700",         // Ivorybloom
+  "rainwhisper":   "from-indigo-400 to-blue-800",       // Rainwhisper
+  "pursuing":      "from-purple-400 to-violet-700",     // Pursuing Shadow
+  "shakenhill":    "from-stone-400 to-stone-700",
+  "swallowreturn": "from-orange-400 to-orange-700",
+  "ironweave":     "from-slate-400 to-slate-700",
+  "none":          "from-slate-600 to-slate-800",
+};
+
 const DEFAULT_GEAR: GearItem[] = [
   { id:"g1", slot:"Umbrella", name:"Swiftwing Cloud Umbrella", quality:"gold", main:"Phys Atk 48~112", set:"stars",
     subs:[{type:"Max Phys Atk",val:"59.2"},{type:"Max Phys Atk",val:"63.8"},{type:"Umbrella Bonus",val:"5.1%"},{type:"Min Phys Atk",val:"62.9"},{type:"Crit Rate",val:"7.4%"},{type:"Phys Pen",val:"7.4"}]},
@@ -377,6 +394,20 @@ const BUILD_PROFILES = {
     notes: "Focus on healing power > personal DPS. Do NOT chase Bamboocut ATK or high pen.",
     priorityStats: ["maxOuter","crit","aff","outerPen","allArts"],
   },
+};
+
+const SET_EMOJI: Record<string, string> = {
+  "stars": "🌙",          // Moonflare
+  "eaglerise": "🦅",       // Hawking
+  "stormrain": "🌧️",       // Eaglerise
+  "jadeware": "💚",        // Jadeware
+  "ivorybloom": "🌸",      // Ivorybloom
+  "rainwhisper": "💧",     // Rainwhisper
+  "pursuing": "👥",        // Pursuing Shadow
+  "shakenhill": "⛰️",
+  "swallowreturn": "🕊️",
+  "ironweave": "🛡️",
+  "none": "🔹",
 };
 
 const ARMOR_SETS = {
@@ -1978,16 +2009,29 @@ export default function App() {
                   const [bw1, bw2] = BUILD_WEAPONS[selectedBuild] || [];
                   const weaponIconKey = slot.name === "Umbrella" ? bw1 : slot.name === "Rope Dart" ? bw2 : undefined;
                   const slotIconUrl = weaponIconKey ? WEAPON_ICONS[weaponIconKey] : undefined;
-                  const SlotIcon = () => slotIconUrl ? (
-                    <img
-                      src={slotIconUrl}
-                      alt={slot.name}
-                      className="w-9 h-9 object-contain mx-auto"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  ) : (
-                    <span className="text-2xl">{slot.icon}</span>
-                  );
+                  const setKey = item?.set as keyof typeof ARMOR_SETS | undefined;
+                  const badgeGradient = SET_BADGE_COLORS[setKey || "none"] || SET_BADGE_COLORS.none;
+                  const SlotIcon = () => {
+                    if (slotIconUrl) {
+                      return (
+                        <img
+                          src={slotIconUrl}
+                          alt={slot.name}
+                          className="w-9 h-9 object-contain mx-auto"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                      );
+                    }
+                    if (item) {
+                      // Armor piece: colored badge by armor-set (no verified per-piece CDN icons)
+                      return (
+                        <div className={`w-9 h-9 mx-auto rounded-lg bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
+                          <span className="text-lg leading-none">{slot.icon}</span>
+                        </div>
+                      );
+                    }
+                    return <span className="text-2xl">{slot.icon}</span>;
+                  };
                   if (!item) {
                     return (
                       <div key={slot.name} className="bg-slate-950/40 border border-slate-900 rounded-lg p-2 text-center opacity-50">
@@ -3374,7 +3418,7 @@ export default function App() {
                                 <div className="flex items-center justify-between border-t border-slate-900/50 pt-1 mt-1">
                                   <span className="text-slate-500">Set Bonus:</span>
                                   <span className="text-[#2ebd85] font-bold flex items-center gap-1">
-                                    {item.set === "stars" ? "⭐ Stars Align" : item.set === "eaglerise" ? "🦅 Eaglerise" : item.set === "pursuing" ? "👥 Pursuing Shadow" : item.set === "stormrain" ? "⛈️ Stormrain" : item.set === "shakenhill" ? "⛰️ Shakenhill" : item.set}
+                                    {SET_EMOJI[item.set] || "🔹"} {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}
                                   </span>
                                 </div>
                               )}
