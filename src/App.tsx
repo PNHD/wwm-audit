@@ -29,7 +29,7 @@ import {
 import { PanelStats, TierConstants } from "./types";
 import { TIERS, calcSkill, calcBaseline, ROTATION, ROTATION_TIME } from "./utils/calc";
 import { INNER_WAYS } from "./data/innerways";
-import { INNER_WAY_IMAGES, WEAPON_IMAGES_G8, MYSTIC_SKILL_IMAGES } from "./data/game8Images";
+import { INNER_WAY_IMAGES, WEAPON_IMAGES_G8, MYSTIC_SKILL_IMAGES, ARMOR_SET_IMAGES } from "./data/game8Images";
 import { WWM_DATA } from "./data/wwmData";
 import OcrScanner from "./components/OcrScanner";
 import StatSwapSimulator from "./components/StatSwapSimulator";
@@ -1782,18 +1782,21 @@ export default function App() {
                         className="flex items-center gap-2 bg-slate-950/60 border border-slate-900 hover:border-amber-500/40 rounded-lg p-1.5 cursor-pointer transition-colors"
                         title={item.name}
                       >
-                        {iconUrl ? (
-                          <img
-                            src={iconUrl}
-                            alt={item.slot}
-                            className="w-7 h-7 object-contain shrink-0"
-                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                          />
-                        ) : (
-                          <div className={`w-7 h-7 shrink-0 rounded-md bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
-                            <span className="text-[13px] leading-none">{slotDef?.icon || "🔹"}</span>
-                          </div>
-                        )}
+                        {(() => {
+                          const imgSrc = iconUrl || ARMOR_SET_IMAGES[item.set as string];
+                          return imgSrc ? (
+                            <img
+                              src={imgSrc}
+                              alt={item.slot}
+                              className="w-7 h-7 object-contain shrink-0 rounded"
+                              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                            />
+                          ) : (
+                            <div className={`w-7 h-7 shrink-0 rounded-md bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
+                              <span className="text-[13px] leading-none">{slotDef?.icon || "🔹"}</span>
+                            </div>
+                          );
+                        })()}
                         <div className="flex-1 min-w-0">
                           <div className="text-[11px] text-slate-300 font-medium truncate">{item.name}</div>
                           <div className="text-[10px] text-slate-500 truncate">{item.slot} · {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
@@ -1858,7 +1861,10 @@ export default function App() {
                       );
                     }
                     if (item) {
-                      // Armor piece: colored badge by armor-set (no verified per-piece CDN icons)
+                      const setImgUrl = ARMOR_SET_IMAGES[item.set as string];
+                      if (setImgUrl) {
+                        return <img src={setImgUrl} alt={item.set} className="w-9 h-9 object-contain mx-auto rounded" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />;
+                      }
                       return (
                         <div className={`w-9 h-9 mx-auto rounded-lg bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
                           <span className="text-lg leading-none">{slot.icon}</span>

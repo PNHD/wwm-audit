@@ -70,6 +70,26 @@ export const INNER_WAY_IMAGES: Record<string, string> = {
   "Trapped Beast":        "https://img.game8.co/4334814/533460ff7e7e68e9d4f56aa85e8ff9e6.png/show",
 };
 
+// Armor set icons — keyed by ARMOR_SETS key used in App.tsx
+export const ARMOR_SET_IMAGES: Record<string, string> = {
+  "stars":         "https://img.game8.co/4340527/6b39b3e6dc0a81ce209201ed85fcbc0c.png/show", // Moonflare
+  "eaglerise":     "https://img.game8.co/4340529/cd5de45556a17520878e718e4a88602e.png/show", // Hawkwing
+  "stormrain":     "https://img.game8.co/4340522/ad9bd78010d19ad35156e01599c7a12f.png/show", // Eaglerise
+  "jadeware":      "https://img.game8.co/4340528/9d97861867f4dc7573951016f4a3edee.png/show", // Jadeware
+  "ironweave":     "https://img.game8.co/4340531/81105015eaf63f6035444d20152122a2.png/show", // Flawless Defense
+  "shakenhill":    "https://img.game8.co/4340525/49d65a9c9bf9a09472d75785c2b87624.png/show", // Swaying Heights
+  "swallowreturn": "https://img.game8.co/4340523/30808bf140aee3a1f43199a28e798048.png/show", // Swallowcall
+  "rainwhisper":   "https://img.game8.co/4340524/c553a57dc2dfe41d531d1dac66a6d91e.png/show", // Rainwhisper
+  "ivorybloom":    "https://img.game8.co/4340533/540b0a810129451307a6a203ab95b192.png/show", // Ivorybloom
+  "pursuing":      "https://img.game8.co/4340534/776a788d1e0426ee5e438f6ffa1a8da9.png/show", // Agile Steps (proxy)
+  "calmwaters":    "https://img.game8.co/4340530/9134ca9931c119f026b2dd002628a214.png/show", // Calmwaters
+  "swiftgale":     "https://img.game8.co/4340537/d99e1a627f9c50fe80daba8223dba6f3.png/show", // Swift Gale
+  "veilwillow":    "https://img.game8.co/4340532/c0cd16ea2d9da31e0d57bcb014320d96.png/show", // Veil of the Willow
+  "formbend":      "https://img.game8.co/4340536/87d470ca8a867ec427483e2821d3f79c.png/show", // Formbend
+  "beyondchill":   "https://img.game8.co/4340526/c6eb1a2ff0c84affca3030adde0f3ff8.png/show", // Beyond the Chill
+  "whirlsnow":     "https://img.game8.co/4340535/b19e666f46335ed3f9c1da0838cdff76.png/show", // Whirlsnow
+};
+
 export const MYSTIC_SKILL_IMAGES: Record<string, string> = {
   "Tai Chi":          "https://img.game8.co/4334734/f5e6841fc9db980a7f96e75f5ac5e93c.png/show",
   "Meridian Touch":   "https://img.game8.co/4334720/e7bd643ee78270ea735ab6daed21f7f6.png/show",
