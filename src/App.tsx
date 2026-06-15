@@ -280,6 +280,53 @@ const SUB_MAP: Record<string, keyof PanelStats> = {
   "Boss DMG%": "bossDmg",
 };
 
+// --- Gear-driven panel engine -------------------------------------------------
+// Parses a gear sub-stat display value like "59.2", "5.1%", "1.8% (set)" into a number.
+const parseSubValue = (val: string): number => {
+  const m = val.match(/-?\d+(\.\d+)?/);
+  return m ? parseFloat(m[0]) : 0;
+};
+
+// Sums all sub-stat values from a gear list into PanelStats keys via SUB_MAP.
+const sumGearSubs = (gear: GearItem[]): Partial<Record<keyof PanelStats, number>> => {
+  const sums: Partial<Record<keyof PanelStats, number>> = {};
+  gear.forEach(item => {
+    item.subs.forEach(sub => {
+      const key = SUB_MAP[sub.type];
+      if (!key) return;
+      const v = parseSubValue(sub.val);
+      sums[key] = (sums[key] || 0) + v;
+    });
+  });
+  return sums;
+};
+
+// Back-calculated "no-gear" base panel: INITIAL_PANEL minus the contribution of
+// DEFAULT_GEAR's sub-stats, for every stat that SUB_MAP can derive from gear.
+// By construction, computeGearPanel(DEFAULT_GEAR) === INITIAL_PANEL exactly.
+const BASE_PANEL_NO_GEAR: PanelStats = (() => {
+  const defaultSum = sumGearSubs(DEFAULT_GEAR);
+  const base = { ...INITIAL_PANEL };
+  (Object.keys(defaultSum) as (keyof PanelStats)[]).forEach(k => {
+    (base[k] as number) = (base[k] as number) - (defaultSum[k] || 0);
+  });
+  return base;
+})();
+
+// Computes the full panel for an equipped gear list: base (no-gear) stats + sum
+// of all sub-stats across the 8 equipped items, mapped via SUB_MAP. Fields not
+// covered by SUB_MAP (set, attunedBonus, dcrit, daff, wuxiang*, bossDmg, etc.)
+// are carried over from `current` unchanged.
+const computeGearPanel = (current: PanelStats, gear: GearItem[]): PanelStats => {
+  const gearSum = sumGearSubs(gear);
+  const next = { ...current };
+  (Object.values(SUB_MAP) as (keyof PanelStats)[]).forEach(key => {
+    (next[key] as number) = (BASE_PANEL_NO_GEAR[key] as number) + (gearSum[key] || 0);
+  });
+  return next;
+};
+// ---------------------------------------------------------------------------
+
 const BUILD_PROFILES = {
   "bamboocut-dust": {
     label: "Bamboocut-Dust", weapons: "Everspring Umbrella + Unfettered Rope Dart",
@@ -334,25 +381,25 @@ const BUILD_PROFILES = {
 
 const ARMOR_SETS = {
   "stars": {
-    name: "Stars Align",
-    stat2pc: { minOuter: 64 },
-    desc2pc: "2/3: Min Physical Attack +64",
-    desc4pc: "4/4: Hitting boss/player or 2+ enemies: gain 1 Stars Align stack (5 sec, +3% martial art skill DMG + up to +1% per meter over 4m, max 5 stacks)",
+    name: "Moonflare",
+    stat2pc: { minOuter: 106 },
+    desc2pc: "2/4: Min Physical Attack +106",
+    desc4pc: "4/4: Hitting boss or 2+ enemies grants a Stars Align stack (5 sec): +3% Martial Art Skill DMG per stack, max 5 stacks = +15%. Stacks are lost when hit.",
     recommended: ["bamboocut-dust"],
   },
   "eaglerise": {
-    name: "Eaglerise",
+    name: "Hawking",
     stat2pc: { aff: 6.1 },
     desc2pc: "2/4: +6.1% Affinity Rate",
     desc3pc: "3/4: Outgoing Healing +10%",
-    desc4pc: "4/4: When Affinity DMG triggers, gain Eaglerise: +2% Physical ATK per stack (5s, max 5 stacks = +10% Phys ATK)",
+    desc4pc: "4/4: When Affinity DMG triggers, gain a stack: +2% Physical ATK per stack (5s, max 5 stacks = +10% Phys ATK)",
     recommended: ["bamboocut-wind", "stonesplit-might"],
   },
   "stormrain": {
-    name: "Stormrain",
+    name: "Eaglerise",
     stat2pc: { prec: 10.8 },
     desc2pc: "2/4: +10.8% Precision Rate",
-    desc4pc: "4/4: Dealing damage over time OR healing grants 1 stack: increases damage and healing by X%",
+    desc4pc: "4/4: Dealing damage over time OR healing grants a stack that increases DMG and healing.",
     recommended: ["bellstrike-umbra"],
   },
   "jadeware": {
@@ -394,7 +441,7 @@ const ARMOR_SETS = {
     name: "Ivorybloom",
     stat2pc: { crit: 12.1 },
     desc2pc: "+12.1% Critical Rate",
-    desc4pc: "At Max HP, +5% chance to deal Critical damage",
+    desc4pc: "At Max HP: +5% Critical chance and +15% Critical heal/DMG",
     recommended: ["silkbind-deluge"],
   },
   "none": { name: "No Set / Mixed", stat2pc: {}, desc2pc: "—", desc4pc: "—", recommended: [] },
@@ -422,6 +469,18 @@ export default function App() {
     const config = getCustomConfig();
     return config?.panel ?? INITIAL_PANEL;
   });
+
+  // Auto-compute panel stats (Min/Max Phys Atk, Pen, Crit, Aff, Bamboocut Atk, etc.)
+  // from the 8 equipped gear pieces, instead of manual entry.
+  const [autoGearPanel, setAutoGearPanel] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    const stored = localStorage.getItem("wwm_auto_gear_panel");
+    return stored === null ? true : stored === "1";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("wwm_auto_gear_panel", autoGearPanel ? "1" : "0");
+  }, [autoGearPanel]);
 
   const [activeTab, setActiveTab ] = useState<"calculator" | "priority" | "gear" | "compare" | "simulators" | "ocr" | "profiles" | "rot-sim" | "cultivate">("calculator");
   const [rotationTab, setRotationTab] = useState<"list" | "top">("list");
@@ -610,6 +669,16 @@ export default function App() {
     setCharsData(newData);
     localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
   };
+
+  // When "Auto from Gear" is on, derive Min/Max Phys Atk, Pen, Crit, Aff, Bamboocut
+  // Atk, etc. from the 8 equipped gear pieces (Gear tab) and overwrite those fields
+  // in `panel`. Other fields (set, attunedBonus, dcrit/daff, wuxiang, boss dmg %)
+  // stay manually-controlled.
+  useEffect(() => {
+    if (!autoGearPanel) return;
+    const gear = getActiveGear();
+    setPanel(prev => computeGearPanel(prev, gear));
+  }, [autoGearPanel, activeScheme?.gear]);
 
   const STEPS: Record<string, number> = {
     "Max Phys Atk": 10,
@@ -1907,6 +1976,59 @@ export default function App() {
                 <div className="text-[9px] text-slate-500">{(BUILD_PROFILES as any)[selectedBuild]?.weapons}</div>
               </div>
             </div>
+
+            {/* Equipped Slots Grid — gear overview + %grad contribution + mis-tune flags */}
+            <div className="lg:col-span-12 bg-[#141210] border border-amber-900/10 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-amber-500" /> Equipped Slots
+                </span>
+                <span className="text-[9px] text-slate-500">
+                  %grad = ước tính graduation mất nếu bỏ toàn bộ sub-stat của món này
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+                {SLOTS.map(slot => {
+                  const item = getActiveGear().find(it => it.slot === slot.name);
+                  if (!item) {
+                    return (
+                      <div key={slot.name} className="bg-slate-950/40 border border-slate-900 rounded-lg p-2 text-center opacity-50">
+                        <div className="text-lg">{slot.icon}</div>
+                        <div className="text-[9px] text-slate-500 mt-1">{slot.name}</div>
+                        <div className="text-[9px] text-slate-600 mt-1">— empty —</div>
+                      </div>
+                    );
+                  }
+                  const priorityStats: string[] = (BUILD_PROFILES as any)[selectedBuild]?.priorityStats || [];
+                  const { totalGradDelta, subsWithDeltas } = getGearItemCompareStats(item);
+                  const misTuned = subsWithDeltas.filter(s => {
+                    const key = SUB_MAP[s.type];
+                    return key && !priorityStats.includes(key);
+                  });
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => { setActiveTab("gear"); setSelectedSlot(slot.name); }}
+                      className="bg-slate-950/60 border border-slate-900 hover:border-amber-500/40 rounded-lg p-2 cursor-pointer transition-colors"
+                      title={item.name}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-base">{slot.icon}</span>
+                        {misTuned.length > 0 && (
+                          <span className="text-[9px]" title={`${misTuned.length} sub-stat ít/không có giá trị cho ${(BUILD_PROFILES as any)[selectedBuild]?.label}: ${misTuned.map(s => s.type).join(", ")}`}>⚠️</span>
+                        )}
+                      </div>
+                      <div className="text-[9px] text-slate-300 font-medium truncate mt-1">{item.name}</div>
+                      <div className="text-[8.5px] text-slate-500 truncate">{ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
+                      <div className={`text-[10px] font-mono font-bold mt-1 ${totalGradDelta >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                        {totalGradDelta >= 0 ? "+" : ""}{totalGradDelta.toFixed(2)}% grad
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="lg:col-span-4 bg-[#141210] border border-amber-900/10 rounded-xl p-5 space-y-6">
               {/* Build Path Dropdown */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
@@ -2008,6 +2130,26 @@ export default function App() {
                     </div>
                   );
                 })()}
+              </div>
+
+              {/* Gear-Driven Panel Toggle */}
+              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-2 shadow-md">
+                <label className="flex items-center justify-between gap-2 cursor-pointer">
+                  <span className="text-[10px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5">
+                    <Database className="w-3.5 h-3.5 text-amber-500" /> Auto Panel From Gear
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={autoGearPanel}
+                    onChange={(e) => setAutoGearPanel(e.target.checked)}
+                    className="w-4 h-4 accent-amber-500"
+                  />
+                </label>
+                <p className="text-[9.5px] text-slate-500 leading-snug">
+                  {autoGearPanel
+                    ? "ON — Min/Max Phys Atk, Pen, Crit, Affinity, Bamboocut Atk, etc. are computed from your 8 equipped items in the Gear tab. Edit gear there to change these stats."
+                    : "OFF — all stats below are entered manually and will not update when you change gear."}
+                </p>
               </div>
 
               {/* Custom Rotation & DPS */}
