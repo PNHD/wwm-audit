@@ -1941,7 +1941,7 @@ export default function App() {
         </div>
       </div>
 
-      <div className="px-6 py-6 max-w-7xl mx-auto">
+      <div className="px-6 py-6 max-w-[1900px] mx-auto w-full">
         {activeTab === "calculator" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Sidebar Controls (Inputs & Modifiers) - 4 Cols */}
