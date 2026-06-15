@@ -570,7 +570,7 @@ export default function App() {
             if (next.has(id)) next.delete(id); else next.add(id);
             return next;
           })}
-          className="w-full flex items-center justify-between text-[9px] font-mono tracking-wider text-amber-500/80 uppercase mb-1"
+          className="w-full flex items-center justify-between text-[11px] font-mono tracking-wider text-amber-500/80 uppercase mb-1"
         >
           <span>{title}</span>
           <span className="text-slate-600">{isOpen ? "▼" : "▶"}</span>
@@ -1534,17 +1534,17 @@ export default function App() {
       <header className="border-b border-amber-900/30 bg-[#14120f] px-6 py-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-amber-500/80 border border-amber-500/30 rounded px-2 py-0.5 bg-amber-500/5 font-bold">
+            <span className="text-[12px] font-mono tracking-[0.2em] uppercase text-amber-500/80 border border-amber-500/30 rounded px-2 py-0.5 bg-amber-500/5 font-bold">
               Where Winds Meet · Yan Yun Shi Liu Sheng
             </span>
-            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-mono">
+            <span className="text-[12px] uppercase tracking-wider text-slate-400 font-mono">
               Grade 95 / Gear Tier 91
             </span>
           </div>
           <h1 className="text-xl md:text-2xl font-bold font-serif text-slate-100 tracking-tight mt-1 flex items-center gap-2">
             Where Winds Meet <span className="text-amber-500"> Build Calculator</span>
           </h1>
-          <p className="text-[10px] text-slate-400 mt-0.5">
+          <p className="text-[12px] text-slate-400 mt-0.5">
             {(BUILD_PROFILES as any)[selectedBuild]?.label || "All Paths"} · Global T91 · Lv95
           </p>
         </div>
@@ -1552,14 +1552,14 @@ export default function App() {
         {/* Global Graduation Meter Block */}
         <div className="flex items-center gap-4 bg-slate-950/60 p-3 rounded-xl border border-slate-900 shadow-lg shrink-0">
           <div className="text-right">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-[#8a9ea8] font-bold">Graduation Status</span>
+            <span className="text-[12px] uppercase font-mono tracking-widest text-[#8a9ea8] font-bold">Graduation Status</span>
             <div className="text-2xl font-black font-serif text-amber-500 mt-0.5 animate-pulse">
               {rotationStats.gradRate.toFixed(1)}%
             </div>
           </div>
           <div className="h-10 w-[1px] bg-slate-800" />
           <div className="text-left">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-slate-500 select-none">
+            <span className="text-[12px] uppercase font-mono tracking-widest text-slate-500 select-none">
               Single-Target DPS
               <span className="text-slate-600 ml-1 cursor-help" title="Single-target sustained DPS over 78.5s rotation vs 1 boss. In-game DPS meter includes AoE &times; mob count, dots, and mystic arts &mdash; typically 5-10x higher.">ⓘ</span>
             </span>
@@ -1595,8 +1595,8 @@ export default function App() {
                   />
                 )}
                 <div className="text-left">
-                  <div className="text-[10px] font-bold tracking-wide">{(profile as any).label}</div>
-                  <div className={`text-[8px] ${isActive ? "text-amber-600" : "text-slate-600"}`}>{(profile as any).tier}</div>
+                  <div className="text-[12px] font-bold tracking-wide">{(profile as any).label}</div>
+                  <div className={`text-[10px] ${isActive ? "text-amber-600" : "text-slate-600"}`}>{(profile as any).tier}</div>
                 </div>
                 {w1 && w2 && (
                   <div className="flex gap-1 ml-1">
@@ -1617,7 +1617,7 @@ export default function App() {
         <div className="flex flex-wrap items-center gap-3">
           {/* Character selection & operations */}
           <div className="flex items-center gap-2">
-            <span className="text-slate-400 font-mono text-[10px] uppercase tracking-wider font-semibold">Hero Profile:</span>
+            <span className="text-slate-400 font-mono text-[12px] uppercase tracking-wider font-semibold">Hero Profile:</span>
             <select
               value={charsData.activeCharId ?? ""}
               onChange={(e) => {
@@ -1694,7 +1694,7 @@ export default function App() {
 
           {/* Scheme Tabs inside Character */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-slate-400 font-mono text-[10px] uppercase tracking-wider font-semibold">Schemes:</span>
+            <span className="text-slate-400 font-mono text-[12px] uppercase tracking-wider font-semibold">Schemes:</span>
             {activeChar?.schemes.map(s => (
               <div
                 key={s.id}
@@ -1787,13 +1787,13 @@ export default function App() {
               downloadAnchor.click();
               downloadAnchor.remove();
             }}
-            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 transition-colors font-mono text-[10px]"
+            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 transition-colors font-mono text-[12px]"
             title="Download database backup"
           >
             <Download className="w-3 h-3 text-amber-500" /> <span>Export</span>
           </button>
           <label
-            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 cursor-pointer transition-colors font-mono text-[10px]"
+            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 cursor-pointer transition-colors font-mono text-[12px]"
             title="Upload/Restore database from file"
           >
             <Upload className="w-3 h-3 text-amber-500" /> <span>Import</span>
@@ -1918,7 +1918,7 @@ export default function App() {
           {hasCustomConfig && (
             <button
               onClick={handleClearCustomDefault}
-              className="px-2 py-1 text-[10px] font-mono tracking-wider text-rose-400 hover:text-rose-300 border border-rose-900/40 bg-rose-950/10 hover:bg-rose-950/20 rounded transition-colors flex items-center gap-1 shrink-0"
+              className="px-2 py-1 text-[12px] font-mono tracking-wider text-rose-400 hover:text-rose-300 border border-rose-900/40 bg-rose-950/10 hover:bg-rose-950/20 rounded transition-colors flex items-center gap-1 shrink-0"
               title="Clear custom default configuration and return to factory settings"
             >
               Clear Default
@@ -1926,14 +1926,14 @@ export default function App() {
           )}
           <button
             onClick={handleSaveAsDefault}
-            className="px-2.5 py-1 text-[10px] font-mono tracking-wider font-bold text-amber-500 hover:text-amber-400 border border-amber-500/20 hover:border-amber-500/40 bg-amber-500/5 hover:bg-amber-500/10 rounded transition-colors flex items-center gap-1 shrink-0"
+            className="px-2.5 py-1 text-[12px] font-mono tracking-wider font-bold text-amber-500 hover:text-amber-400 border border-amber-500/20 hover:border-amber-500/40 bg-amber-500/5 hover:bg-amber-500/10 rounded transition-colors flex items-center gap-1 shrink-0"
             title="Save all current parameters and buffs as your custom default"
           >
             <Database className="w-3 h-3 text-amber-500" /> Save Default
           </button>
           <button
             onClick={handleResetAll}
-            className="px-2.5 py-1 text-[10px] font-mono tracking-wider font-bold text-slate-300 hover:text-slate-100 border border-slate-700/60 hover:border-slate-500/80 bg-slate-850/55 hover:bg-slate-800/85 rounded transition-colors flex items-center gap-1 shrink-0"
+            className="px-2.5 py-1 text-[12px] font-mono tracking-wider font-bold text-slate-300 hover:text-slate-100 border border-slate-700/60 hover:border-slate-500/80 bg-slate-850/55 hover:bg-slate-800/85 rounded transition-colors flex items-center gap-1 shrink-0"
             title="Reset all settings, buffs and stats to default configuration"
           >
             <RotateCw className="w-3 h-3 text-amber-500 animate-spin-hover" /> Reset All
@@ -1957,18 +1957,18 @@ export default function App() {
                 </div>
               ))}
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] text-amber-400 font-bold">{(BUILD_PROFILES as any)[selectedBuild]?.label}</div>
-                <div className="text-[9px] text-slate-500">{(BUILD_PROFILES as any)[selectedBuild]?.weapons}</div>
+                <div className="text-[12px] text-amber-400 font-bold">{(BUILD_PROFILES as any)[selectedBuild]?.label}</div>
+                <div className="text-[11px] text-slate-500">{(BUILD_PROFILES as any)[selectedBuild]?.weapons}</div>
               </div>
             </div>
 
             {/* Equipped Slots Grid — gear overview + %grad contribution + mis-tune flags */}
             <div className="lg:col-span-12 bg-[#141210] border border-amber-900/10 rounded-xl p-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-amber-500" /> Equipped Slots
                 </span>
-                <span className="text-[9px] text-slate-500">
+                <span className="text-[11px] text-slate-500">
                   %grad = ước tính graduation mất nếu bỏ toàn bộ sub-stat của món này
                 </span>
               </div>
@@ -1979,8 +1979,8 @@ export default function App() {
                     return (
                       <div key={slot.name} className="bg-slate-950/40 border border-slate-900 rounded-lg p-2 text-center opacity-50">
                         <div className="text-lg">{slot.icon}</div>
-                        <div className="text-[9px] text-slate-500 mt-1">{slot.name}</div>
-                        <div className="text-[9px] text-slate-600 mt-1">— empty —</div>
+                        <div className="text-[11px] text-slate-500 mt-1">{slot.name}</div>
+                        <div className="text-[11px] text-slate-600 mt-1">— empty —</div>
                       </div>
                     );
                   }
@@ -2000,12 +2000,12 @@ export default function App() {
                       <div className="flex items-center justify-between">
                         <span className="text-base">{slot.icon}</span>
                         {misTuned.length > 0 && (
-                          <span className="text-[9px]" title={`${misTuned.length} sub-stat ít/không có giá trị cho ${(BUILD_PROFILES as any)[selectedBuild]?.label}: ${misTuned.map(s => s.type).join(", ")}`}>⚠️</span>
+                          <span className="text-[11px]" title={`${misTuned.length} sub-stat ít/không có giá trị cho ${(BUILD_PROFILES as any)[selectedBuild]?.label}: ${misTuned.map(s => s.type).join(", ")}`}>⚠️</span>
                         )}
                       </div>
-                      <div className="text-[9px] text-slate-300 font-medium truncate mt-1">{item.name}</div>
-                      <div className="text-[8.5px] text-slate-500 truncate">{ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
-                      <div className={`text-[10px] font-mono font-bold mt-1 ${totalGradDelta >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                      <div className="text-[11px] text-slate-300 font-medium truncate mt-1">{item.name}</div>
+                      <div className="text-[10.5px] text-slate-500 truncate">{ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
+                      <div className={`text-[12px] font-mono font-bold mt-1 ${totalGradDelta >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
                         {totalGradDelta >= 0 ? "+" : ""}{totalGradDelta.toFixed(2)}% grad
                       </div>
                     </div>
@@ -2017,7 +2017,7 @@ export default function App() {
             <div className="lg:col-span-4 bg-[#141210] border border-amber-900/10 rounded-xl p-5 space-y-6">
               {/* Build Path Dropdown */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
-                <span className="text-[10px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
                   <span className="text-sm">⚔️</span> Build Path Selection
                 </span>
                 <div>
@@ -2036,12 +2036,12 @@ export default function App() {
                   const b = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
                   if (!b) return null;
                   return (
-                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[11px] space-y-1.5 text-slate-300 antialiased">
+                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[13px] space-y-1.5 text-slate-300 antialiased">
                       <div className="flex justify-between text-slate-400">
                         <span>Weapons:</span>
-                        <span className="text-amber-500 font-medium text-right text-[10px]">{b.weapons}</span>
+                        <span className="text-amber-500 font-medium text-right text-[12px]">{b.weapons}</span>
                       </div>
-                      <div className="font-mono text-[10px] text-slate-400 border-t border-slate-900/60 pt-1.5">
+                      <div className="font-mono text-[12px] text-slate-400 border-t border-slate-900/60 pt-1.5">
                         <span className="text-slate-500 block">Graduation Targets:</span>
                         <div className="grid grid-cols-2 gap-y-1 gap-x-2 mt-1">
                           <div>Max PA: <span className="text-slate-200">{b.gradTargets.maxOuter}</span></div>
@@ -2050,7 +2050,7 @@ export default function App() {
                           <div>Crit: <span className="text-slate-200">{b.gradTargets.crit}%</span></div>
                         </div>
                       </div>
-                      <div className="text-slate-400 border-t border-slate-900/60 pt-1.5 leading-relaxed text-[10.5px]">
+                      <div className="text-slate-400 border-t border-slate-900/60 pt-1.5 leading-relaxed text-[12.5px]">
                         <span className="text-amber-500/90 font-bold">Strategy:</span> {b.notes}
                       </div>
                     </div>
@@ -2060,7 +2060,7 @@ export default function App() {
 
               {/* Armor Set Selector */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
-                <span className="text-[10px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
                   <Shield className="w-3.5 h-3.5 text-amber-500" /> Active Armor Set Selector
                 </span>
                 <div>
@@ -2083,27 +2083,27 @@ export default function App() {
                   const isMismatched = panel.set !== "none" && !isRecommended;
                   
                   return (
-                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[11px] space-y-2 text-slate-300">
+                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[13px] space-y-2 text-slate-300">
                       <div className="flex flex-wrap gap-1">
                         {isRecommended && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-900/40">
+                          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-900/40">
                             ✓ Recommended Set
                           </span>
                         )}
                         {isMismatched && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-505 text-amber-400 font-bold border border-amber-900/40">
+                          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-505 text-amber-400 font-bold border border-amber-900/40">
                             ⚠ Mismatched Set
                           </span>
                         )}
                         {panel.set === "none" && (
-                          <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 font-bold border border-slate-850">
+                          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 font-bold border border-slate-850">
                             No active bonus
                           </span>
                         )}
                       </div>
                       
                       {panel.set !== "none" && (
-                        <div className="font-sans text-[11px] space-y-1.5 text-slate-400 border-t border-slate-900/60 pt-1.5 leading-normal">
+                        <div className="font-sans text-[13px] space-y-1.5 text-slate-400 border-t border-slate-900/60 pt-1.5 leading-normal">
                           <div>
                             <span className="text-amber-500 font-bold">2pc:</span> {s.desc2pc || "—"}
                           </div>
@@ -2120,7 +2120,7 @@ export default function App() {
               {/* Gear-Driven Panel Toggle */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-2 shadow-md">
                 <label className="flex items-center justify-between gap-2 cursor-pointer">
-                  <span className="text-[10px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5">
+                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5">
                     <Database className="w-3.5 h-3.5 text-amber-500" /> Auto Panel From Gear
                   </span>
                   <input
@@ -2130,7 +2130,7 @@ export default function App() {
                     className="w-4 h-4 accent-amber-500"
                   />
                 </label>
-                <p className="text-[9.5px] text-slate-500 leading-snug">
+                <p className="text-[11.5px] text-slate-500 leading-snug">
                   {autoGearPanel
                     ? "ON — Min/Max Phys Atk, Pen, Crit, Affinity, Bamboocut Atk, etc. are computed from your 8 equipped items in the Gear tab. Edit gear there to change these stats."
                     : "OFF — all stats below are entered manually and will not update when you change gear."}
@@ -2142,7 +2142,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setIsCustomRotationOpen(!isCustomRotationOpen)}
-                  className="w-full flex justify-between items-center text-[10.5px] font-mono font-bold tracking-widest text-[#a19683] uppercase border-b border-amber-950/40 pb-1.5 focus:outline-none"
+                  className="w-full flex justify-between items-center text-[12.5px] font-mono font-bold tracking-widest text-[#a19683] uppercase border-b border-amber-950/40 pb-1.5 focus:outline-none"
                 >
                   <span className="flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" /> Custom Rotation & DPS
@@ -2153,7 +2153,7 @@ export default function App() {
                 {isCustomRotationOpen && (
                   <div className="space-y-3 pt-1">
                     <div>
-                      <label className="block text-[9px] uppercase font-mono text-slate-500 mb-1">
+                      <label className="block text-[11px] uppercase font-mono text-slate-500 mb-1">
                         Active Skill Rotation String:
                       </label>
                       <textarea
@@ -2165,14 +2165,14 @@ export default function App() {
                       />
                     </div>
                     
-                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[10.5px] text-slate-400 space-y-1.5 antialiased">
+                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[12.5px] text-slate-400 space-y-1.5 antialiased">
                       <div className="flex justify-between items-center text-slate-300">
                         <span>Est. Speedrun DPS:</span>
                         <span className="font-mono text-xs text-amber-400 font-extrabold">
                           {(rotationStats.dps * 0.96).toFixed(0)} ~ {(rotationStats.dps * 1.04).toFixed(0)}
                         </span>
                       </div>
-                      <p className="text-[9.5px] text-slate-500 leading-snug">
+                      <p className="text-[11.5px] text-slate-500 leading-snug">
                         💡 <strong>Calculates a rough DPS expectation; actual raid DPS will vary based on boss movement, mechanics, and lag.</strong>
                       </p>
                     </div>
@@ -2183,11 +2183,11 @@ export default function App() {
               {/* Reset/Save Default Quick Group */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5">
+                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase flex items-center gap-1.5">
                     <Sliders className="w-3.5 h-3.5 text-amber-500" /> Default Setup
                   </span>
                   {hasCustomConfig && (
-                    <span className="text-[9px] bg-emerald-950 text-emerald-400 font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-900/40 animate-pulse">
+                    <span className="text-[11px] bg-emerald-950 text-emerald-400 font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-900/40 animate-pulse">
                       Custom Default Active
                     </span>
                   )}
@@ -2214,7 +2214,7 @@ export default function App() {
                   <div className="text-center pt-1 block">
                     <button
                       onClick={handleClearCustomDefault}
-                      className="text-[10px] font-mono text-slate-500 hover:text-rose-400 transition-colors w-full"
+                      className="text-[12px] font-mono text-slate-500 hover:text-rose-400 transition-colors w-full"
                     >
                       ⚠ Delete Custom Default (Restore Factory Baseline)
                     </button>
@@ -2247,7 +2247,7 @@ export default function App() {
                   {tierKey === "custom" && (
                     <div className="grid grid-cols-2 gap-2 bg-[#201d18]/40 p-2.5 rounded border border-amber-900/20">
                       <div>
-                        <label className="text-[10px] text-slate-400 block mb-1">Defense</label>
+                        <label className="text-[12px] text-slate-400 block mb-1">Defense</label>
                         <input
                           type="number"
                           value={customDef}
@@ -2256,7 +2256,7 @@ export default function App() {
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-slate-400 block mb-1">Judge Resistance</label>
+                        <label className="text-[12px] text-slate-400 block mb-1">Judge Resistance</label>
                         <input
                           type="number"
                           step="0.05"
@@ -2268,7 +2268,7 @@ export default function App() {
                     </div>
                   )}
 
-                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900/40 text-[10px] text-slate-400 font-mono space-y-1.5 leading-relaxed">
+                  <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900/40 text-[12px] text-slate-400 font-mono space-y-1.5 leading-relaxed">
                     <div className="flex justify-between">
                       <span>Target Base Defense:</span>
                       <span className="text-amber-500 font-bold">{activeTier.def}</span>
@@ -2380,7 +2380,7 @@ export default function App() {
                         className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                       />
                     </div>
-                    <div className="text-[9.5px] text-slate-500 mt-1 leading-normal font-sans border-t border-slate-900/40 pt-1">
+                    <div className="text-[11.5px] text-slate-500 mt-1 leading-normal font-sans border-t border-slate-900/40 pt-1">
                       Enter your actual panel value (e.g. 103.7%). Base 65% is not reduced by boss resistance.
                     </div>
                   </div>
@@ -2486,7 +2486,7 @@ export default function App() {
                     <label>
                       <span className="text-amber-500 font-bold">Attuned Bonus</span>
                       <br/>
-                      <span className="text-[9px] text-slate-500">{ATTUNED_BONUS_LABEL[selectedBuild] || "Skill DMG Bonus"}</span>
+                      <span className="text-[11px] text-slate-500">{ATTUNED_BONUS_LABEL[selectedBuild] || "Skill DMG Bonus"}</span>
                     </label>
                     <input
                       type="number"
@@ -2501,7 +2501,7 @@ export default function App() {
                     <select
                       value={panel.set}
                       onChange={(e) => handleStatChange("set", e.target.value)}
-                      className="bg-slate-900 border-none text-[11px] text-amber-500 font-medium px-2 py-0.5 rounded focus:outline-none"
+                      className="bg-slate-900 border-none text-[13px] text-amber-500 font-medium px-2 py-0.5 rounded focus:outline-none"
                     >
                       {Object.entries(ARMOR_SETS).map(([key, s]) => (
                         <option key={key} value={key}>{s.name}</option>
@@ -2560,7 +2560,7 @@ export default function App() {
                     onChange={(e) => setDatang(e.target.checked)}
                     className="accent-amber-500 w-4 h-4 cursor-pointer"
                   />
-                  <label htmlFor="chk-datang" className="text-slate-300 cursor-pointer text-[11px]">
+                  <label htmlFor="chk-datang" className="text-slate-300 cursor-pointer text-[13px]">
                     Great Tang Song (Q Umbrella +15% Crit DMG)
                   </label>
                 </div>
@@ -2572,7 +2572,7 @@ export default function App() {
                     onChange={(e) => setScript50(e.target.checked)}
                     className="accent-amber-500 w-4 h-4 cursor-pointer"
                   />
-                  <label htmlFor="chk-script50" className="text-slate-300 cursor-pointer text-[11px]">
+                  <label htmlFor="chk-script50" className="text-slate-300 cursor-pointer text-[13px]">
                     Sub-50% HP Active Talent (+15% Direct Crit)
                   </label>
                 </div>
@@ -2584,11 +2584,11 @@ export default function App() {
                   <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest flex items-center gap-1 font-serif">
                     <Database className="w-3.5 h-3.5 text-amber-500" /> Active Inner Ways
                   </h3>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-950 border border-slate-900 text-amber-400 font-bold">
+                  <span className="text-[12px] font-mono px-1.5 py-0.5 rounded bg-slate-950 border border-slate-900 text-amber-400 font-bold">
                     {selectedInnerWays.length}/4 selected
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-400 mb-2.5 leading-snug">
+                <p className="text-[12px] text-slate-400 mb-2.5 leading-snug">
                   Select up to 4 Inner Ways matching your active setup to automatically aggregate their dynamic passive bonus attributes:
                 </p>
 
@@ -2600,7 +2600,7 @@ export default function App() {
                   placeholder="Search inner ways..."
                   className="w-full mb-2 px-2.5 py-1.5 bg-slate-950/60 border border-slate-800 rounded text-xs text-slate-300 placeholder-slate-600 focus:outline-none focus:border-amber-600"
                 />
-                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[10px]">
+                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[12px]">
                   <button
                     type="button"
                     onClick={() => setInnerWaysFilter("recommended")}
@@ -2694,7 +2694,7 @@ export default function App() {
                             setSelectedInnerWays([...selectedInnerWays, iw.id]);
                           }
                         }}
-                        className={`p-2.5 rounded-lg border text-[11px] cursor-pointer transition-all ${
+                        className={`p-2.5 rounded-lg border text-[13px] cursor-pointer transition-all ${
                           isSelected
                             ? "bg-amber-950/20 border-amber-500 text-[#ede5ce]"
                             : disabled
@@ -2710,35 +2710,35 @@ export default function App() {
                             <span>
                               {iw.name}
                               {isSelected && (
-                                <span className="text-[10px] text-amber-500 font-mono ml-1">
+                                <span className="text-[12px] text-amber-500 font-mono ml-1">
                                   (T{iwTierNum})
                                 </span>
                               )}
                             </span>
                           </span>
                           {isBestT91 && (
-                            <span className="text-[8px] bg-red-950/85 text-red-300 font-mono scale-90 px-1 rounded uppercase font-bold tracking-wider">
+                            <span className="text-[10px] bg-red-950/85 text-red-300 font-mono scale-90 px-1 rounded uppercase font-bold tracking-wider">
                               Best T91
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] text-slate-500 leading-normal mb-1">
+                        <div className="text-[12px] text-slate-500 leading-normal mb-1">
                           {iw.desc}
                         </div>
                         {statStrings.length > 0 && (
-                          <div className="text-[9.5px] text-amber-400/80 font-mono leading-tight mb-1 bg-slate-900/40 px-1 py-0.5 rounded">
+                          <div className="text-[11.5px] text-amber-400/80 font-mono leading-tight mb-1 bg-slate-900/40 px-1 py-0.5 rounded">
                             {statStrings.join(" | ")}
                           </div>
                         )}
                         {iw.note && isSelected && (
-                          <div className="text-[9px] text-[#c9943a] leading-tight font-mono border-t border-amber-900/10 pt-1 mt-1 mb-1">
+                          <div className="text-[11px] text-[#c9943a] leading-tight font-mono border-t border-amber-900/10 pt-1 mt-1 mb-1">
                             {iw.note}
                           </div>
                         )}
                         {isSelected && (
                           <div 
                             onClick={(e) => e.stopPropagation()}
-                            className="mt-2 pt-1.5 border-t border-amber-900/10 flex justify-between items-center text-[10px] gap-1"
+                            className="mt-2 pt-1.5 border-t border-amber-900/10 flex justify-between items-center text-[12px] gap-1"
                           >
                             <span className="text-slate-400 font-medium">Select Level:</span>
                             <div className="flex gap-1">
@@ -2748,7 +2748,7 @@ export default function App() {
                                   <button
                                     key={t}
                                     onClick={() => setInnerWayTiers({ ...innerWayTiers, [iw.id]: t })}
-                                    className={`px-1 rounded font-mono text-[9px] font-bold ${
+                                    className={`px-1 rounded font-mono text-[11px] font-bold ${
                                       isCurrent
                                         ? "bg-amber-500 text-slate-950"
                                         : "bg-slate-900/90 text-slate-400 hover:text-slate-200"
@@ -2772,10 +2772,10 @@ export default function App() {
               {/* Active Scheme Sync Group */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 shadow-md space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-mono font-bold tracking-widest text-[#a19683] uppercase">
+                  <span className="text-[12px] font-mono font-bold tracking-widest text-[#a19683] uppercase">
                     Active Scheme Sync
                   </span>
-                  <span className="text-[10px] text-amber-500 font-bold font-mono">
+                  <span className="text-[12px] text-amber-500 font-bold font-mono">
                     {activeScheme ? activeScheme.name : "None Selected"}
                   </span>
                 </div>
@@ -2815,7 +2815,7 @@ export default function App() {
               {/* Primary Results Display */}
               <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-3">
-                  <span className="text-[9px] font-mono tracking-widest text-[#8a9ea8] uppercase">Season 3 Global</span>
+                  <span className="text-[11px] font-mono tracking-widest text-[#8a9ea8] uppercase">Season 3 Global</span>
                 </div>
                 <h2 className="text-xs uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-900/10 pb-2">
                   <Award className="w-4 h-4 text-amber-400" /> Graduation Damage Analysis
@@ -2823,25 +2823,25 @@ export default function App() {
 
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-5">
                   <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative">
-                    <div className="text-[9px] font-mono tracking-wider text-slate-500 uppercase">Rotation Score damage</div>
+                    <div className="text-[11px] font-mono tracking-wider text-slate-500 uppercase">Rotation Score damage</div>
                     <div className="text-xl font-bold font-serif text-slate-100 mt-1">
                       {Math.round(rotationStats.totalDmg).toLocaleString()}
                     </div>
                   </div>
                   <div className="bg-[#1b1511]/40 border border-amber-950/40 p-3.5 rounded-lg text-center relative">
-                    <div className="text-[9px] font-mono tracking-wider text-amber-400/80 uppercase">Expected Graduation Rate</div>
+                    <div className="text-[11px] font-mono tracking-wider text-amber-400/80 uppercase">Expected Graduation Rate</div>
                     <div className="text-2xl font-black font-serif text-[#c9943a] mt-1">
                       {rotationStats.gradRate.toFixed(1)}%
                     </div>
                   </div>
                   <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative">
-                    <div className="text-[9px] font-mono tracking-wider text-slate-500 uppercase">Baseline Target (Same Tier)</div>
+                    <div className="text-[11px] font-mono tracking-wider text-slate-500 uppercase">Baseline Target (Same Tier)</div>
                     <div className="text-xl font-bold font-serif text-slate-400 mt-1">
                       {Math.round(baselineScore).toLocaleString()}
                     </div>
                   </div>
                   <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative flex flex-col justify-center">
-                    <div className="text-[9px] font-mono tracking-wider text-slate-500 uppercase">Gap to 100%</div>
+                    <div className="text-[11px] font-mono tracking-wider text-slate-500 uppercase">Gap to 100%</div>
                     <div className={`text-xl font-bold font-serif mt-1 ${rotationStats.gradRate >= 100 ? "text-emerald-400" : "text-rose-400"}`}>
                       {rotationStats.gradRate >= 100 ? "✓ Graduated" : `-${(100 - rotationStats.gradRate).toFixed(1)}%`}
                     </div>
@@ -2850,7 +2850,7 @@ export default function App() {
 
                 {/* Progress bar and metrics */}
                 <div className="space-y-2 bg-[#0e0d0b] p-4 rounded-xl border border-amber-900/5">
-                  <div className="flex justify-between text-[10px] uppercase font-mono tracking-wider text-slate-400">
+                  <div className="flex justify-between text-[12px] uppercase font-mono tracking-wider text-slate-400">
                     <span>Under-Geared</span>
                     <span className="text-amber-500 font-semibold font-serif">Recommended Cap (90%)</span>
                     <span>Fully Graduated (100%+)</span>
@@ -2867,7 +2867,7 @@ export default function App() {
                       }`}
                     />
                   </div>
-                  <p className="text-[10px] text-slate-500 mt-2">
+                  <p className="text-[12px] text-slate-500 mt-2">
                     💡 DPS shown is single-target sustained (1 boss). Your in-game meter reading (&gt;36k/s) includes AoE hits on multiple mobs, mystic arts, and dots &mdash; this is normal and expected.
                   </p>
                 </div>
@@ -2903,7 +2903,7 @@ export default function App() {
                             </div>
                           </div>
                         )}
-                        <div className="mt-2.5 pt-2 border-t border-slate-900 text-[10.5px] text-slate-400 font-mono">
+                        <div className="mt-2.5 pt-2 border-t border-slate-900 text-[12.5px] text-slate-400 font-mono">
                           <strong className="text-amber-500">Path Strategy:</strong> {b.notes}
                           <div className="text-rose-400 mt-1">⚠️ Precision: The base 65% is not reduced by Judge Resistance. Effective cap = 100%. Panel ~116% achieves this at T91. DO NOT stack above ~116% panel — diminishing returns become zero at cap.</div>
                         </div>
@@ -2921,44 +2921,44 @@ export default function App() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs">
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900 flex flex-col justify-between">
                     <div>
-                      <span className="text-[9px] text-slate-500 uppercase font-mono mt-1 block">Precision (Eff)</span>
+                      <span className="text-[11px] text-slate-500 uppercase font-mono mt-1 block">Precision (Eff)</span>
                       <strong className="text-slate-100 text-sm font-mono mt-1 block">
                         {effPrecision.toFixed(1)}%
                       </strong>
                     </div>
-                    <div className="text-[9px] text-slate-500 mt-2 leading-snug border-t border-slate-900/40 pt-1.5 font-sans">
+                    <div className="text-[11px] text-slate-500 mt-2 leading-snug border-t border-slate-900/40 pt-1.5 font-sans">
                       Base 65% is not reduced by boss resist. Cap = 100%.
                     </div>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Critical</span>
+                    <span className="text-slate-500 block font-mono text-[12px]">Critical</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effCritRate.toFixed(1)}%
                     </strong>
-                    <div className="text-[9px] text-slate-500 mt-0.5">
+                    <div className="text-[11px] text-slate-500 mt-0.5">
                       Cap: 80% effective. Need ~116%+ panel at T91 (÷1.45). Direct Crit Rate bypasses resistance.
                     </div>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Affinity</span>
+                    <span className="text-slate-500 block font-mono text-[12px]">Affinity</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effAffRate.toFixed(1)}%
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Graze</span>
+                    <span className="text-slate-500 block font-mono text-[12px]">Graze</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {effGrazeRate.toFixed(1)}%
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Expected Multiplier</span>
+                    <span className="text-slate-500 block font-mono text-[12px]">Expected Multiplier</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block text-amber-500">
                       ×{expectedMultiplier.toFixed(3)}
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
-                    <span className="text-slate-500 block font-mono text-[10px]">Pen Zone</span>
+                    <span className="text-slate-500 block font-mono text-[12px]">Pen Zone</span>
                     <strong className="text-slate-100 text-sm font-mono mt-1 block">
                       {netPhysPen >= 0 ? "+" : ""}
                       {(netPhysPen / 200 * 100).toFixed(1)}%
@@ -2976,7 +2976,7 @@ export default function App() {
                   <h3 className="text-xs uppercase tracking-wider font-extrabold text-amber-500 flex items-center gap-1.5 font-serif">
                     <Layers className="w-4 h-4" /> Rotation Skill Damage Breakdown
                   </h3>
-                  <div className="flex gap-1.5 bg-slate-950 p-1 rounded border border-slate-900 text-[10px]">
+                  <div className="flex gap-1.5 bg-slate-950 p-1 rounded border border-slate-900 text-[12px]">
                     <button
                       onClick={() => setRotationTab("list")}
                       className={`px-2 py-0.5 rounded ${
@@ -2999,7 +2999,7 @@ export default function App() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="border-b border-amber-900/20 text-[#8a9ea8] font-mono text-[10px] uppercase">
+                      <tr className="border-b border-amber-900/20 text-[#8a9ea8] font-mono text-[12px] uppercase">
                         <th className="py-2.5 px-3">#</th>
                         <th className="py-2.5 px-3">Skill name</th>
                         <th className="py-2.5 px-3 text-right">Hits</th>
@@ -3008,7 +3008,7 @@ export default function App() {
                         <th className="py-2.5 px-3 text-right">%</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900 font-mono text-[11px] text-slate-300">
+                    <tbody className="divide-y divide-slate-900 font-mono text-[13px] text-slate-300">
                       {rotationStats.items
                         .sort((a, b) => (rotationTab === "top" ? b.total - a.total : 0))
                         .map((item, idx) => {
@@ -3062,7 +3062,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Gains column */}
                 <div>
-                  <h3 className="text-[11px] uppercase tracking-wider font-bold text-emerald-400 mb-2 flex items-center gap-1.5">
+                  <h3 className="text-[13px] uppercase tracking-wider font-bold text-emerald-400 mb-2 flex items-center gap-1.5">
                     <TrendingUp className="w-3.5 h-3.5" /> Adding +1 substat roll
                   </h3>
                   <div className="space-y-1.5">
@@ -3071,9 +3071,9 @@ export default function App() {
                       const width = maxGain > 0 ? Math.max(0, (g.gain / maxGain) * 100) : 0;
                       return (
                         <div key={g.key} className="flex items-center gap-2 text-xs">
-                          <span className="w-4 text-slate-600 font-mono text-right text-[10px]">{idx + 1}</span>
+                          <span className="w-4 text-slate-600 font-mono text-right text-[12px]">{idx + 1}</span>
                           <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
-                          <span className="w-12 text-slate-500 font-mono text-right text-[10px]">+{g.roll}{g.unit}</span>
+                          <span className="w-12 text-slate-500 font-mono text-right text-[12px]">+{g.roll}{g.unit}</span>
                           <div className="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-emerald-700 to-emerald-400"
@@ -3091,7 +3091,7 @@ export default function App() {
 
                 {/* Losses column */}
                 <div>
-                  <h3 className="text-[11px] uppercase tracking-wider font-bold text-rose-400 mb-2 flex items-center gap-1.5">
+                  <h3 className="text-[13px] uppercase tracking-wider font-bold text-rose-400 mb-2 flex items-center gap-1.5">
                     <TrendingDown className="w-3.5 h-3.5" /> Removing 1 substat roll
                   </h3>
                   <div className="space-y-1.5">
@@ -3100,9 +3100,9 @@ export default function App() {
                       const width = maxLoss > 0 ? Math.max(0, (Math.abs(g.loss) / maxLoss) * 100) : 0;
                       return (
                         <div key={g.key} className="flex items-center gap-2 text-xs">
-                          <span className="w-4 text-slate-600 font-mono text-right text-[10px]">{idx + 1}</span>
+                          <span className="w-4 text-slate-600 font-mono text-right text-[12px]">{idx + 1}</span>
                           <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
-                          <span className="w-12 text-slate-500 font-mono text-right text-[10px]">-{g.roll}{g.unit}</span>
+                          <span className="w-12 text-slate-500 font-mono text-right text-[12px]">-{g.roll}{g.unit}</span>
                           <div className="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-rose-700 to-rose-400"
@@ -3119,7 +3119,7 @@ export default function App() {
                 </div>
               </div>
 
-              <p className="text-[10px] text-slate-500 mt-4 italic">
+              <p className="text-[12px] text-slate-500 mt-4 italic">
                 Note: if a stat is already past its cap (e.g. Precision/Crit/Affinity at 100%/80%/40% effective), adding more shows ~0% gain — that's expected, not a bug. A near-zero loss means you have "slack" on that stat to relay elsewhere.
               </p>
             </div>
@@ -3172,7 +3172,7 @@ export default function App() {
                       <Plus className="w-3.5 h-3.5" /> Add Gear
                     </button>
                   </div>
-                  <p className="text-[10px] text-slate-505 mb-3">
+                  <p className="text-[12px] text-slate-505 mb-3">
                     Manage and store alternate gears for the active character scheme.
                   </p>
                   
@@ -3211,7 +3211,7 @@ export default function App() {
                           <span>{tab.icon}</span>
                           <span>{tab.label}</span>
                           {count > 0 && (
-                            <span className={`text-[9px] px-1 py-0.2 rounded-full font-mono ${
+                            <span className={`text-[11px] px-1 py-0.2 rounded-full font-mono ${
                               isSelected 
                                 ? "bg-slate-950/20 text-slate-950" 
                                 : "bg-slate-800 text-slate-400"
@@ -3234,11 +3234,11 @@ export default function App() {
                   </button>
                   
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-500 uppercase font-mono">Sort:</span>
+                    <span className="text-[12px] text-slate-500 uppercase font-mono">Sort:</span>
                     <select
                       value={gearSortBy}
                       onChange={(e) => setGearSortBy(e.target.value as "name" | "mastery")}
-                      className="bg-slate-950 border border-slate-900 rounded px-2.5 py-1 text-[10px] font-mono text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                      className="bg-slate-950 border border-slate-900 rounded px-2.5 py-1 text-[12px] font-mono text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                     >
                       <option value="name">Alphabetical</option>
                       <option value="mastery">Mastery (⚔ High to Low)</option>
@@ -3249,11 +3249,11 @@ export default function App() {
 
               {/* Mobile Sort Controls */}
               <div className="md:hidden flex items-center justify-between mb-4 bg-slate-950/25 p-2 rounded-lg border border-slate-900">
-                <span className="text-[10px] text-slate-400 uppercase font-mono">Sort Items:</span>
+                <span className="text-[12px] text-slate-400 uppercase font-mono">Sort Items:</span>
                 <select
                   value={gearSortBy}
                   onChange={(e) => setGearSortBy(e.target.value as "name" | "mastery")}
-                  className="bg-slate-950 border border-slate-900 rounded px-2 py-1 text-[10px] font-mono text-[#ede5ce] focus:outline-none"
+                  className="bg-slate-950 border border-slate-900 rounded px-2 py-1 text-[12px] font-mono text-[#ede5ce] focus:outline-none"
                 >
                   <option value="name">Alphabetical</option>
                   <option value="mastery">Mastery (⚔ High to Low)</option>
@@ -3333,18 +3333,18 @@ export default function App() {
                                     {item.name}
                                   </h4>
                                   {item.mastery !== undefined && (
-                                    <div className="text-[9px] font-mono font-bold text-amber-500/90 mt-0.5">
+                                    <div className="text-[11px] font-mono font-bold text-amber-500/90 mt-0.5">
                                       ⚔ {item.mastery}
                                     </div>
                                   )}
                                 </div>
                               </div>
                               <div className="flex flex-col items-end gap-1 shrink-0">
-                                <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded leading-none ${labelStyle}`}>
+                                <span className={`text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded leading-none ${labelStyle}`}>
                                   {labelText}
                                 </span>
                                 <span
-                                  className={`text-[9px] font-mono font-extrabold leading-none ${gradContribution > 0 ? "text-emerald-400" : "text-slate-500"}`}
+                                  className={`text-[11px] font-mono font-extrabold leading-none ${gradContribution > 0 ? "text-emerald-400" : "text-slate-500"}`}
                                   title="Approximate graduation % this item's substats contribute to your current panel"
                                 >
                                   +{gradContribution.toFixed(2)}% grad
@@ -3352,7 +3352,7 @@ export default function App() {
                               </div>
                             </div>
 
-                            <div className="text-[10px] text-slate-300 bg-slate-950/60 p-2.5 rounded border border-slate-900 font-mono space-y-1">
+                            <div className="text-[12px] text-slate-300 bg-slate-950/60 p-2.5 rounded border border-slate-900 font-mono space-y-1">
                               <div className="flex items-center justify-between">
                                 <span className="text-slate-500">Main Stat:</span>
                                 <span className="text-slate-205 font-medium">{item.main || "None"}</span>
@@ -3369,14 +3369,14 @@ export default function App() {
 
                             <div className="space-y-1.5 border-t border-slate-900/40 pt-2.5">
                               {item.subs.map((sub, sidx) => (
-                                <div key={sidx} className="flex items-center justify-between text-[11px] font-mono leading-tight">
+                                <div key={sidx} className="flex items-center justify-between text-[13px] font-mono leading-tight">
                                   <span className="text-slate-505">{sub.type}</span>
                                   <div className="flex items-center gap-1">
                                     <span className={`font-semibold ${sub.isTuned ? "text-amber-400" : "text-slate-300"}`}>
                                       {sub.val}
                                     </span>
                                     {sub.isTuned && (
-                                      <span className="text-amber-500 text-[10px] font-extrabold" title="Tuned substat">✦</span>
+                                      <span className="text-amber-500 text-[12px] font-extrabold" title="Tuned substat">✦</span>
                                     )}
                                   </div>
                                 </div>
@@ -3437,7 +3437,7 @@ export default function App() {
                             <h3 className="text-xs uppercase tracking-wider font-extrabold text-amber-500/80 font-mono border-b border-amber-950/40 pb-1.5 flex items-center gap-2">
                               <span className="text-sm">{slot.icon}</span>
                               <span>{slot.name} Section</span>
-                              <span className="text-[10px] text-slate-500 font-normal">({items.length} item{items.length > 1 ? "s" : ""})</span>
+                              <span className="text-[12px] text-slate-500 font-normal">({items.length} item{items.length > 1 ? "s" : ""})</span>
                             </h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                               {items.map(item => renderGearCard(item))}
@@ -3459,7 +3459,7 @@ export default function App() {
                           Current Panel
                         </h3>
                       </div>
-                      <p className="text-[10px] text-slate-400 font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-slate-900 inline-block">
+                      <p className="text-[12px] text-slate-400 font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-slate-900 inline-block">
                         {selectedBuild} · {activeTier.name}
                       </p>
                     </div>
@@ -3574,7 +3574,7 @@ export default function App() {
 
                     {/* Section 5: Graduation Status */}
                     <div className="space-y-2.5 pt-1">
-                      <span className="text-[10px] uppercase tracking-wider font-extrabold text-slate-450 font-serif block">
+                      <span className="text-[12px] uppercase tracking-wider font-extrabold text-slate-450 font-serif block">
                         GRADUATION STATUS
                       </span>
                       {(() => {
@@ -3611,7 +3611,7 @@ export default function App() {
                                 <span className={gc.text}>[{filledStr}{emptyStr}]</span>
                                 <span className="text-slate-400 font-bold">{gradRate.toFixed(1)}/100</span>
                               </div>
-                              <div className="text-[9px] text-slate-500 font-mono">
+                              <div className="text-[11px] text-slate-500 font-mono">
                                 Relative to baseline target
                               </div>
                             </div>
@@ -3691,7 +3691,7 @@ export default function App() {
                           <div className="space-y-1 w-full md:w-auto">
                             <div className="flex items-baseline gap-2 flex-wrap">
                               <span className="font-bold text-sm text-slate-200">{item.itemName}</span>
-                              <span className="text-[10px] text-slate-500 font-mono font-medium">&#183; {item.slot}</span>
+                              <span className="text-[12px] text-slate-500 font-mono font-medium">&#183; {item.slot}</span>
                             </div>
                             <div className="text-xs text-slate-400 font-mono">
                               Relayed: {dateFormatted}
@@ -3700,7 +3700,7 @@ export default function App() {
 
                           <div className="flex items-center gap-4 w-full md:w-auto max-w-md shrink-0 justify-between md:justify-end">
                             <div className="space-y-1 w-48 sm:w-64">
-                              <div className="flex justify-between items-baseline text-[10px] font-mono mb-1">
+                              <div className="flex justify-between items-baseline text-[12px] font-mono mb-1">
                                 <span className={textColor}>[{progressStr}]</span>
                                 <span className={`font-bold ${textColor}`}>{remainingText}</span>
                               </div>
@@ -3738,7 +3738,7 @@ export default function App() {
                 <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
                   <TrendingUp className="w-4 h-4" /> Item Comparison & Graduation Deltas
                 </h2>
-                <p className="text-[10px] text-slate-500 mt-0.5">
+                <p className="text-[12px] text-slate-500 mt-0.5">
                   Understand exactly which gears represent the largest marginal upgrade relative to your active panel. Ranked descending by total simulation contribution.
                 </p>
               </div>
@@ -3762,9 +3762,9 @@ export default function App() {
                     >
                       <span className="text-lg">{slot.icon}</span>
                       <div className="flex-1 min-w-0">
-                        <div className="text-[11px] truncate uppercase tracking-wide font-semibold">{slot.name}</div>
+                        <div className="text-[13px] truncate uppercase tracking-wide font-semibold">{slot.name}</div>
                         {hasItems && (
-                          <div className={`text-[9px] mt-0.5 ${isSelected ? "text-slate-900 font-bold" : "text-slate-500"}`}>
+                          <div className={`text-[11px] mt-0.5 ${isSelected ? "text-slate-900 font-bold" : "text-slate-500"}`}>
                             {itemsInSlot.length} item{itemsInSlot.length > 1 ? "s" : ""}
                           </div>
                         )}
@@ -3791,7 +3791,7 @@ export default function App() {
                     return (
                       <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center font-mono">
                         <p className="text-slate-400 text-xs">No items in this slot to compare.</p>
-                        <p className="text-[10px] text-slate-500 mt-1">Go to the "🛡 Gear" tab to add items for comparison.</p>
+                        <p className="text-[12px] text-slate-500 mt-1">Go to the "🛡 Gear" tab to add items for comparison.</p>
                       </div>
                     );
                   }
@@ -3832,12 +3832,12 @@ export default function App() {
                                   <h4 className="text-xs font-bold text-slate-100 flex items-center gap-2">
                                     <span>{item.name}</span>
                                     {isBest && (
-                                      <span className="text-[8px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold uppercase tracking-wider scale-90">
+                                      <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold uppercase tracking-wider scale-90">
                                         Best Option
                                       </span>
                                     )}
                                   </h4>
-                                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                  <div className="text-[12px] text-slate-500 font-mono mt-0.5">
                                     Main: {item.main}
                                   </div>
                                 </div>
@@ -3846,7 +3846,7 @@ export default function App() {
                                     +{entry.total.toFixed(2)}% graduation
                                   </div>
                                   {!isBest && (
-                                    <div className="text-[10px] font-mono font-semibold text-rose-400">
+                                    <div className="text-[12px] font-mono font-semibold text-rose-400">
                                       -{gapToBest.toFixed(2)}% vs best
                                     </div>
                                   )}
@@ -3858,14 +3858,14 @@ export default function App() {
                                   const subDeltaString = sub.delta > 0 ? `+${sub.delta.toFixed(2)}` : "0.00";
                                   
                                   return (
-                                    <div key={sidx} className="bg-slate-950/60 p-2 rounded border border-slate-900/60 flex items-center justify-between font-mono text-[10px]">
+                                    <div key={sidx} className="bg-slate-950/60 p-2 rounded border border-slate-900/60 flex items-center justify-between font-mono text-[12px]">
                                       <div className="truncate text-slate-500 flex items-center gap-1 shrink md:shrink-0 pr-1">
                                         <span>{sub.type}</span>
-                                        {sub.isTuned && <span className="text-amber-500 text-[9px]">✦</span>}
+                                        {sub.isTuned && <span className="text-amber-500 text-[11px]">✦</span>}
                                       </div>
                                       <div className="text-right shrink-0">
                                         <div className="text-slate-300 font-semibold">{sub.val}</div>
-                                        <div className="text-emerald-400 text-[9px] font-bold mt-0.5">
+                                        <div className="text-emerald-400 text-[11px] font-bold mt-0.5">
                                           +{subDeltaString}% grad
                                         </div>
                                       </div>
@@ -4149,7 +4149,7 @@ export default function App() {
                               <span className="text-sm font-bold font-mono tracking-tight text-slate-100">
                                 {tile.label}
                               </span>
-                              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-mono">
+                              <span className="text-[12px] uppercase tracking-wider text-slate-500 font-mono">
                                 T91 Cap
                               </span>
                             </div>
@@ -4170,7 +4170,7 @@ export default function App() {
                                   style={{ width: `${tile.progressCapped}%` }}
                                 />
                               </div>
-                              <div className="flex justify-between text-[11px] font-mono text-slate-400">
+                              <div className="flex justify-between text-[13px] font-mono text-slate-400">
                                 <span>Progress</span>
                                 <span className="font-bold">{tile.progressPct.toFixed(1)}%</span>
                               </div>
@@ -4212,7 +4212,7 @@ export default function App() {
               {/* Form Content */}
               <div className="p-5 space-y-4 overflow-y-auto min-h-0 text-slate-300 text-xs text-left">
                 <div>
-                  <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                  <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                     Slot
                   </label>
                   <input
@@ -4225,7 +4225,7 @@ export default function App() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                    <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                       Item Name
                     </label>
                     <input
@@ -4237,7 +4237,7 @@ export default function App() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                    <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                       Quality
                     </label>
                     <select
@@ -4254,7 +4254,7 @@ export default function App() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                    <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                       Main Stat Text
                     </label>
                     <input
@@ -4266,7 +4266,7 @@ export default function App() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                    <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                       Set Selection
                     </label>
                     <select
@@ -4283,7 +4283,7 @@ export default function App() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-500 mb-1">
+                    <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                       Mastery (optional)
                     </label>
                     <input
@@ -4298,7 +4298,7 @@ export default function App() {
 
                 {/* Substat Rows */}
                 <div className="space-y-2 border-t border-slate-900 pt-3">
-                  <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 font-bold block">
+                  <span className="text-[12px] uppercase font-mono tracking-wider text-slate-400 font-bold block">
                     Sub-stats (Max 6 rows)
                   </span>
                   
@@ -4313,7 +4313,7 @@ export default function App() {
                               updated[sidx] = { ...updated[sidx], type: e.target.value };
                               setFormSubs(updated);
                             }}
-                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[11px] text-slate-350 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[13px] text-slate-350 focus:outline-none focus:ring-1 focus:ring-amber-500"
                           >
                             <option value="Other">Choose Substat / Empty</option>
                             {Object.keys(SUB_MAP).map(t => (
@@ -4332,7 +4332,7 @@ export default function App() {
                               setFormSubs(updated);
                             }}
                             placeholder="e.g. 59.2 or 7.4%"
-                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[11px] font-mono placeholder:text-slate-700"
+                            className="w-full bg-slate-950 border border-slate-900 rounded p-1.5 text-[13px] font-mono placeholder:text-slate-700"
                           />
                         </div>
                         
@@ -4348,7 +4348,7 @@ export default function App() {
                               }}
                               className="accent-amber-500 h-3 w-3"
                             />
-                            <span className="text-[10px] font-mono text-amber-500 font-semibold">✦</span>
+                            <span className="text-[12px] font-mono text-amber-500 font-semibold">✦</span>
                           </label>
                         </div>
                       </div>
@@ -4408,7 +4408,7 @@ export default function App() {
               {/* Form Content */}
               <div className="p-5 space-y-4 text-slate-300 text-xs text-left">
                 <div className="space-y-1">
-                  <label className="text-[10px] text-slate-400 font-mono block">Select Gear Item</label>
+                  <label className="text-[12px] text-slate-400 font-mono block">Select Gear Item</label>
                   <select
                     value={cooldownSelectedGearId}
                     onChange={(e) => setCooldownSelectedGearId(e.target.value)}
@@ -4424,7 +4424,7 @@ export default function App() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] text-slate-400 font-mono block">Relay Date</label>
+                  <label className="text-[12px] text-slate-400 font-mono block">Relay Date</label>
                   <input
                     type="date"
                     value={cooldownRelayDate}
@@ -4547,7 +4547,7 @@ export default function App() {
                         <h3 className="text-sm font-bold font-serif text-slate-100 flex items-center gap-2">
                           🔄 Rotation Combat Simulator
                         </h3>
-                        <p className="text-[10px] text-slate-400 mt-0.5">
+                        <p className="text-[12px] text-slate-400 mt-0.5">
                           Set custom hits parsed in combat to calculate authentic class-specific active DPS.
                         </p>
                       </div>
@@ -4570,7 +4570,7 @@ export default function App() {
                       <div className="font-bold flex items-center gap-1">
                         <span>⚠️</span> <span>Calibration & Engine Disclaimer</span>
                       </div>
-                      <p className="text-[11px] text-slate-350">
+                      <p className="text-[13px] text-slate-350">
                         Our engine is calibrated against actual Global Tier 91 (approx. 3% total deviation).
                         Discrepancies can occur on Resonance/AoE skills (e.g. Flute Waves) due to stack scaling, multi-hits, and proximity.
                         <strong> We strongly recommend entering hits parsed from actual combat.</strong>
@@ -4579,7 +4579,7 @@ export default function App() {
 
                     {/* Presets / Helper Buttons */}
                     <div className="flex flex-wrap gap-2 items-center text-xs">
-                      <span className="text-slate-400 font-mono text-[10px] uppercase">Quick Presets:</span>
+                      <span className="text-slate-400 font-mono text-[12px] uppercase">Quick Presets:</span>
                       <button
                         onClick={() => {
                           const updated = { ...hitsState };
@@ -4656,7 +4656,7 @@ export default function App() {
 
                     {/* Interactive Skills Table */}
                     <div className="h-[450px] overflow-y-auto pr-1 border border-slate-900 bg-slate-950/20 rounded-lg p-2">
-                      <span className="text-[10px] uppercase font-mono text-slate-500 font-semibold px-2 block mb-2">
+                      <span className="text-[12px] uppercase font-mono text-slate-500 font-semibold px-2 block mb-2">
                         Active Skills ({simulatorSkills.length}) for {rotSimClass} Weapons:
                       </span>
                       <div className="space-y-2">
@@ -4666,10 +4666,10 @@ export default function App() {
                             <div key={s.name} className="flex items-center justify-between p-2.5 bg-slate-950/60 rounded border border-slate-900 hover:border-slate-850 transition-colors gap-4">
                               <div className="min-w-0 flex-1">
                                 <div className="text-xs font-semibold text-slate-200 truncate">{s.name}</div>
-                                <div className="text-[10px] text-slate-500 truncate font-mono">{s.weapon}</div>
+                                <div className="text-[12px] text-slate-500 truncate font-mono">{s.weapon}</div>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-mono text-slate-500">Hits/60s:</span>
+                                <span className="text-[12px] font-mono text-slate-500">Hits/60s:</span>
                                 <input
                                   type="number"
                                   min="0"
@@ -4690,7 +4690,7 @@ export default function App() {
                     </div>
 
                     {/* Disclaimer about non-Bamboocut-Dust path skill names */}
-                    <div className="mt-2 text-[10px] text-slate-400 italic leading-relaxed px-1 flex items-start gap-1">
+                    <div className="mt-2 text-[12px] text-slate-400 italic leading-relaxed px-1 flex items-start gap-1">
                       <span className="shrink-0 text-amber-500/80">⚠️</span>
                       <span>
                         Skill names for non-Bamboocut-Dust paths are approximate. Enter hits from your actual damage log for accurate results.
@@ -4711,13 +4711,13 @@ export default function App() {
                     {/* Big Stats Indicator */}
                     <div className="grid grid-cols-2 gap-3 bg-slate-950/80 p-4 rounded-xl border border-slate-900">
                       <div>
-                        <div className="text-[10px] uppercase font-mono tracking-wider text-slate-500">Total Combat Damage</div>
+                        <div className="text-[12px] uppercase font-mono tracking-wider text-slate-500">Total Combat Damage</div>
                         <div className="text-xl font-bold font-serif text-amber-500 mt-0.5">
                           {Math.round(totalSimCurrentDmg).toLocaleString()}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] uppercase font-mono tracking-wider text-slate-500">Effective Parse DPS</div>
+                        <div className="text-[12px] uppercase font-mono tracking-wider text-slate-500">Effective Parse DPS</div>
                         <div className="text-xl font-bold font-serif text-amber-500 mt-0.5">
                           {totalSimCurrentDps.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                         </div>
@@ -4728,7 +4728,7 @@ export default function App() {
                     <div className="overflow-x-auto rounded-lg border border-slate-900">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr className="bg-slate-950 border-b border-amber-900/10 text-[9px] uppercase tracking-wider font-mono text-slate-500">
+                          <tr className="bg-slate-950 border-b border-amber-900/10 text-[11px] uppercase tracking-wider font-mono text-slate-500">
                             <th className="py-2 px-3">Skill Spec</th>
                             <th className="py-2 px-3 text-right">Hits</th>
                             <th className="py-2 px-3 text-right">DMG/hit</th>
@@ -4736,7 +4736,7 @@ export default function App() {
                             <th className="py-2 px-3 text-right">%</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-950 bg-slate-950/25 font-mono text-[11px] text-slate-300">
+                        <tbody className="divide-y divide-slate-950 bg-slate-950/25 font-mono text-[13px] text-slate-300">
                           {currentSimDetails
                             .filter(item => item.hits > 0)
                             .sort((a, b) => b.total - a.total)
@@ -4758,7 +4758,7 @@ export default function App() {
                             })}
                           {currentSimDetails.filter(x => x.hits > 0).length === 0 && (
                             <tr>
-                              <td colSpan={5} className="py-6 text-center text-slate-500 italic text-[11px]">
+                              <td colSpan={5} className="py-6 text-center text-slate-500 italic text-[13px]">
                                 No skills have active Hits entered. Please type some Hits in the table to display the parse data here.
                               </td>
                             </tr>
@@ -4774,7 +4774,7 @@ export default function App() {
                       <h3 className="text-sm font-bold font-serif text-slate-100 flex items-center gap-1.5">
                         🛠 Weapon/Gear Swap Simulator
                       </h3>
-                      <p className="text-[10px] text-slate-400 mt-0.5">
+                      <p className="text-[12px] text-slate-400 mt-0.5">
                         Test how alternate weapons stack up by modifying the Base Physical Attack min & max attributes.
                       </p>
                     </div>
@@ -4783,7 +4783,7 @@ export default function App() {
                       
                       {/* Presets dropdown */}
                       <div className="space-y-1">
-                        <label className="text-[10px] text-slate-400 font-sans font-bold uppercase tracking-wider block">Weapon Base Presets</label>
+                        <label className="text-[12px] text-slate-400 font-sans font-bold uppercase tracking-wider block">Weapon Base Presets</label>
                         <select
                           value={swapWeaponId}
                           onChange={(e) => {
@@ -4806,7 +4806,7 @@ export default function App() {
                       {/* Inputs min & max */}
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <label className="text-[10px] text-slate-400 font-sans block">New Min Base Atk</label>
+                          <label className="text-[12px] text-slate-400 font-sans block">New Min Base Atk</label>
                           <input
                             type="number"
                             value={swapMinAtk}
@@ -4818,7 +4818,7 @@ export default function App() {
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] text-slate-400 font-sans block">New Max Base Atk</label>
+                          <label className="text-[12px] text-slate-400 font-sans block">New Max Base Atk</label>
                           <input
                             type="number"
                             value={swapMaxAtk}
@@ -4833,7 +4833,7 @@ export default function App() {
 
                       {/* Swap Comparison results banner */}
                       <div className="bg-slate-950 rounded-xl p-4 border border-slate-900">
-                        <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Recalculated Weapon Comparison</div>
+                        <div className="text-[12px] uppercase font-bold text-slate-500 tracking-wider">Recalculated Weapon Comparison</div>
                         
                         <div className="mt-2.5 flex items-baseline justify-between">
                           <div className="text-slate-400 text-xs">Simulated DPS:</div>
@@ -4857,7 +4857,7 @@ export default function App() {
                       </div>
 
                       {/* Helpful quick guide */}
-                      <div className="text-[10px] text-slate-500 leading-normal font-sans space-y-1 pl-1">
+                      <div className="text-[12px] text-slate-500 leading-normal font-sans space-y-1 pl-1">
                         <p>💡 <strong>Note</strong>: This swap calculations assume panel scaling bonuses (such as Phys Pen, Critical multipliers, and Skill Damage attributes) remain active and apply seamlessly onto the new weapon base damage floor.</p>
                       </div>
 
@@ -4886,7 +4886,7 @@ export default function App() {
                     Save Active Panel Setup
                   </h3>
                   <div className="space-y-2">
-                    <label className="text-[11px] text-slate-400 block font-medium">Profile Name</label>
+                    <label className="text-[13px] text-slate-400 block font-medium">Profile Name</label>
                     <input
                       type="text"
                       placeholder="e.g., T91 Gold Set, Pen Focused..."
@@ -4918,10 +4918,10 @@ export default function App() {
                   </button>
 
                   <div className="border-t border-slate-900 pt-3">
-                    <h4 className="text-[10px] uppercase tracking-wider font-extrabold text-slate-400 mb-2 font-mono">
+                    <h4 className="text-[12px] uppercase tracking-wider font-extrabold text-slate-400 mb-2 font-mono">
                       Backups & Cross-sync
                     </h4>
-                    <div className="space-y-2 text-[10px] text-slate-500">
+                    <div className="space-y-2 text-[12px] text-slate-500">
                       <button
                         onClick={() => {
                           const str = JSON.stringify(profiles, null, 2);
@@ -4968,7 +4968,7 @@ export default function App() {
                             saveProfilesList([]);
                           }
                         }}
-                        className="text-rose-500 hover:text-rose-400 text-[10px] underline font-bold"
+                        className="text-rose-500 hover:text-rose-400 text-[12px] underline font-bold"
                       >
                         Delete All
                       </button>
@@ -4993,14 +4993,14 @@ export default function App() {
                                 : "bg-slate-950/40 border-slate-900 hover:border-slate-800"
                             }`}
                           >
-                            <span className="text-[9px] font-mono text-slate-500 block">
+                            <span className="text-[11px] font-mono text-slate-500 block">
                               {prof.timestamp}
                             </span>
                             <h4 className="text-sm font-bold text-slate-100 font-serif mt-1 truncate">
                               {prof.name}
                             </h4>
 
-                            <div className="grid grid-cols-2 gap-2 mt-2.5 text-[10px] font-mono border-t border-slate-900 pt-2.5">
+                            <div className="grid grid-cols-2 gap-2 mt-2.5 text-[12px] font-mono border-t border-slate-900 pt-2.5">
                               <div>
                                 <span className="text-slate-500 block">Graduation:</span>
                                 <strong className="text-amber-500 text-xs">
@@ -5021,7 +5021,7 @@ export default function App() {
                                   setPanel(prof.panel);
                                   alert(`Successfully restored configuration "${prof.name}" to active panel!`);
                                 }}
-                                className="flex-1 bg-slate-905 border border-slate-800 hover:bg-slate-900 text-slate-200 text-[11px] py-1.5 px-2 rounded text-center transition-colors font-bold cursor-pointer"
+                                className="flex-1 bg-slate-905 border border-slate-800 hover:bg-slate-900 text-slate-200 text-[13px] py-1.5 px-2 rounded text-center transition-colors font-bold cursor-pointer"
                               >
                                 Equip Build
                               </button>
@@ -5033,7 +5033,7 @@ export default function App() {
                                     setCompareProfileIds([...compareProfileIds, prof.id]);
                                   }
                                 }}
-                                className={`flex-1 border text-[11px] py-1.5 px-2 rounded font-bold transition-all text-center cursor-pointer ${
+                                className={`flex-1 border text-[13px] py-1.5 px-2 rounded font-bold transition-all text-center cursor-pointer ${
                                   isComparing
                                     ? "bg-amber-500 text-slate-950 border-amber-600 hover:bg-amber-400 font-extrabold"
                                     : "bg-slate-905 border-slate-800 text-amber-500/95 hover:bg-slate-900"
@@ -5098,7 +5098,7 @@ export default function App() {
                   <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left text-xs border-collapse font-sans min-w-[700px]">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 text-[10px] uppercase font-mono">
+                        <tr className="border-b border-slate-800 text-slate-400 text-[12px] uppercase font-mono">
                           <th className="py-2.5 px-3">Attribute / Substat</th>
                           <th className="py-2.5 px-3 text-right text-amber-400 bg-amber-500/5">Active Configuration</th>
                           {selectedProfs.map((p) => (
@@ -5127,7 +5127,7 @@ export default function App() {
                                       {compVal.toFixed(item.key === "minOuter" || item.key === "maxOuter" || item.key === "maxPz" || item.key === "minPz" ? 0 : 1)}
                                       {item.unit}
                                     </div>
-                                    <div className={`text-[9px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
+                                    <div className={`text-[11px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
                                       {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                       {diff !== 0 ? Math.abs(diff).toFixed(item.key === "minOuter" || item.key === "maxOuter" || item.key === "maxPz" || item.key === "minPz" ? 0 : 1) : "equal"}
                                       {diff !== 0 ? item.unit : ""}
@@ -5151,7 +5151,7 @@ export default function App() {
                             return (
                               <td key={p.id} className="py-3 px-3 text-right">
                                 <div className="text-slate-200 font-extrabold">{dyn.gradRate.toFixed(1)}%</div>
-                                <div className={`text-[9px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
+                                <div className={`text-[11px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
                                   {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.abs(diff).toFixed(1) : "equal"}
                                   {diff !== 0 ? "%" : ""}
@@ -5173,7 +5173,7 @@ export default function App() {
                             return (
                               <td key={p.id} className="py-3 px-3 text-right">
                                 <div className="text-slate-200 font-extrabold">{Math.round(dyn.dps).toLocaleString()}/s</div>
-                                <div className={`text-[9px] font-bold ${diff > 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
+                                <div className={`text-[11px] font-bold ${diff > 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
                                   {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.round(Math.abs(diff)).toLocaleString() : ""}
                                   {diff !== 0 ? "/s" : "equal"}
