@@ -2583,55 +2583,90 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Passive Checkboxes */}
-              <div className="space-y-2 pt-2 border-t border-slate-800/80 text-sm">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="chk-food"
-                    checked={food}
-                    onChange={(e) => setFood(e.target.checked)}
-                    className="accent-amber-500 w-4 h-4 cursor-pointer"
-                  />
-                  <label htmlFor="chk-food" className="text-slate-300 cursor-pointer">
-                    Scaler Food buff (+90 / +180)
+              {/* Simulation Options */}
+              <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md mt-4">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
+                  <span className="text-base">⚙️</span> Simulation Options
+                </span>
+
+                {/* Bow / Ring Type */}
+                <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
+                  <label htmlFor="sel-bowtype" className="text-slate-400">
+                    Bow/Ring Type
                   </label>
+                  <select
+                    id="sel-bowtype"
+                    value={bowSelect}
+                    onChange={(e) => setBowSelect(e.target.value)}
+                    className="bg-slate-900 border-none text-[13px] text-amber-500 font-medium px-2 py-0.5 rounded focus:outline-none"
+                  >
+                    <option value="crit">Crit Ring (+7.0% Crit Rate)</option>
+                    <option value="prec">Precision Ring (+6.1% Precision)</option>
+                    <option value="aff">Affinity Ring (+3.5% Affinity)</option>
+                  </select>
                 </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="chk-yishui"
-                    checked={yishui}
-                    onChange={(e) => setYishui(e.target.checked)}
-                    className="accent-amber-500 w-4 h-4 cursor-pointer"
-                  />
-                  <label htmlFor="chk-yishui" className="text-slate-300 cursor-pointer">
-                    Song of Yi Buff (+10 Phys Pen)
-                  </label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="chk-datang"
-                    checked={datang}
-                    onChange={(e) => setDatang(e.target.checked)}
-                    className="accent-amber-500 w-4 h-4 cursor-pointer"
-                  />
-                  <label htmlFor="chk-datang" className="text-slate-300 cursor-pointer text-[13px]">
-                    Great Tang Song (Q Umbrella +15% Crit DMG)
-                  </label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="chk-script50"
-                    checked={script50}
-                    onChange={(e) => setScript50(e.target.checked)}
-                    className="accent-amber-500 w-4 h-4 cursor-pointer"
-                  />
-                  <label htmlFor="chk-script50" className="text-slate-300 cursor-pointer text-[13px]">
-                    Sub-50% HP Active Talent (+15% Direct Crit)
-                  </label>
+
+                <div className="space-y-2 pt-1 text-sm">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="chk-food"
+                      checked={food}
+                      onChange={(e) => setFood(e.target.checked)}
+                      className="accent-amber-500 w-4 h-4 cursor-pointer"
+                    />
+                    <label htmlFor="chk-food" className="text-slate-300 cursor-pointer">
+                      Scaler Food buff (+90 / +180)
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="chk-earlyseason"
+                      checked={earlySeason}
+                      onChange={(e) => setEarlySeason(e.target.checked)}
+                      className="accent-amber-500 w-4 h-4 cursor-pointer"
+                    />
+                    <label htmlFor="chk-earlyseason" className="text-slate-300 cursor-pointer text-[13px]">
+                      Early Season Buff (+4.4 / +27.2 Phys ATK)
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="chk-yishui"
+                      checked={yishui}
+                      onChange={(e) => setYishui(e.target.checked)}
+                      className="accent-amber-500 w-4 h-4 cursor-pointer"
+                    />
+                    <label htmlFor="chk-yishui" className="text-slate-300 cursor-pointer">
+                      Song of Yi Buff (+10 Phys Pen)
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="chk-datang"
+                      checked={datang}
+                      onChange={(e) => setDatang(e.target.checked)}
+                      className="accent-amber-500 w-4 h-4 cursor-pointer"
+                    />
+                    <label htmlFor="chk-datang" className="text-slate-300 cursor-pointer text-[13px]">
+                      Great Tang Song (Q Umbrella +15% Crit DMG)
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="chk-script50"
+                      checked={script50}
+                      onChange={(e) => setScript50(e.target.checked)}
+                      className="accent-amber-500 w-4 h-4 cursor-pointer"
+                    />
+                    <label htmlFor="chk-script50" className="text-slate-300 cursor-pointer text-[13px]">
+                      Sub-50% HP Active Talent (+15% Direct Crit)
+                    </label>
+                  </div>
                 </div>
               </div>
 
