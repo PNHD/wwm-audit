@@ -1558,114 +1558,46 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0e0d0b] text-[#ede5ce] font-sans antialiased selection:bg-amber-600/30 selection:text-amber-200">
-      {/* Cinematic Header decor */}
-      <div className="h-1 w-full bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700 shadow-md shadow-amber-500/20" />
+      {/* Accent line */}
+      <div className="h-0.5 w-full bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700" />
 
-      {/* Main Brand Header */}
-      <header className="border-b border-amber-900/30 bg-[#14120f] px-6 py-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] font-mono tracking-[0.2em] uppercase text-amber-500/80 border border-amber-500/30 rounded px-2 py-0.5 bg-amber-500/5 font-bold">
-              Where Winds Meet · Yan Yun Shi Liu Sheng
-            </span>
-            <span className="text-[12px] uppercase tracking-wider text-slate-400 font-mono">
-              Grade 95 / Gear Tier 91
-            </span>
-          </div>
-          <h1 className="text-xl md:text-2xl font-bold font-serif text-slate-100 tracking-tight mt-1 flex items-center gap-2">
-            Where Winds Meet <span className="text-amber-500"> Build Calculator</span>
+      {/* ── TOP BAR ── */}
+      <header className="bg-[#14120f] border-b border-amber-900/30 px-4 h-11 flex items-center justify-between sticky top-0 z-30 shadow-md gap-2">
+        <div className="flex items-center gap-2 shrink-0">
+          <h1 className="text-sm font-bold font-serif text-slate-100 whitespace-nowrap">
+            Where Winds Meet <span className="text-amber-500">Calc</span>
           </h1>
-          <p className="text-[12px] text-slate-400 mt-0.5">
-            {(BUILD_PROFILES as any)[selectedBuild]?.label || "All Paths"} · Global T91 · Lv95
-          </p>
+          <span className="text-[10px] font-mono font-bold text-amber-500/60 border border-amber-500/20 rounded px-1.5 bg-amber-500/5">T91</span>
         </div>
-
-        {/* Global Graduation Meter Block */}
-        <div className="flex items-center gap-4 bg-slate-950/60 p-3 rounded-xl border border-slate-900 shadow-lg shrink-0">
-          <div className="text-right">
-            <span className="text-[12px] uppercase font-mono tracking-widest text-[#8a9ea8] font-bold">Graduation Status</span>
-            <div className="text-2xl font-black font-serif text-amber-500 mt-0.5 animate-pulse">
-              {rotationStats.gradRate.toFixed(1)}%
-            </div>
-          </div>
-          <div className="h-10 w-[1px] bg-slate-800" />
-          <div className="text-left">
-            <span className="text-[12px] uppercase font-mono tracking-widest text-slate-500 select-none">
-              Single-Target DPS
-              <span className="text-slate-600 ml-1 cursor-help" title="Single-target sustained DPS over 78.5s rotation vs 1 boss. In-game DPS meter includes AoE &times; mob count, dots, and mystic arts &mdash; typically 5-10x higher.">ⓘ</span>
-            </span>
-            <div className="text-base font-bold font-serif text-slate-200 mt-1">
-              {Math.round(rotationStats.dps).toLocaleString()}/s
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Path Selector Row */}
-      <div className="bg-[#0a0908] border-b border-amber-900/10 px-3 py-2 overflow-x-auto">
-        <div className="flex gap-2 min-w-max">
-          {Object.entries(BUILD_PROFILES).map(([key, profile]) => {
-            const isActive = selectedBuild === key;
-            const [w1, w2] = BUILD_WEAPONS[key] || [];
-            return (
-              <button
-                key={key}
-                onClick={() => setSelectedBuild(key)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all flex-shrink-0 ${
-                  isActive
-                    ? "bg-amber-500/10 border-amber-500 text-amber-400"
-                    : "bg-slate-950/40 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"
-                }`}
-              >
-                {PATH_ICONS[key] && (
-                  <img
-                    src={PATH_ICONS[key]}
-                    alt={(profile as any).label}
-                    className="w-6 h-6 object-contain rounded"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                  />
-                )}
-                <div className="text-left">
-                  <div className="text-[12px] font-bold tracking-wide">{(profile as any).label}</div>
-                  <div className={`text-[10px] ${isActive ? "text-amber-600" : "text-slate-600"}`}>{(profile as any).tier}</div>
-                </div>
-                {w1 && w2 && (
-                  <div className="flex gap-1 ml-1">
-                    <img src={WEAPON_ICONS[w1]} alt="" className="w-4 h-4 object-contain opacity-70"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                    <img src={WEAPON_ICONS[w2]} alt="" className="w-4 h-4 object-contain opacity-70"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Multi-Character & Multi-Scheme Sticky Bar */}
-      <div className="bg-[#14120f] border-b border-amber-900/10 px-6 py-2.5 flex flex-wrap gap-4 items-center justify-between text-sm sticky top-0 z-20 shadow-md">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Character selection & operations */}
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400 font-mono text-[12px] uppercase tracking-wider font-semibold">Hero Profile:</span>
-            <select
-              value={charsData.activeCharId ?? ""}
-              onChange={(e) => {
-                const headId = e.target.value;
-                const char = charsData.chars.find(c => c.id === headId);
-                const firstSchemeId = char?.schemes[0]?.id ?? null;
-                const newData = { ...charsData, activeCharId: headId, activeSchemeId: firstSchemeId };
-                setCharsData(newData);
-                localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
+          <select
+            value={charsData.activeCharId ?? ""}
+            onChange={(e) => {
+              const headId = e.target.value;
+              const char = charsData.chars.find(c => c.id === headId);
+              const firstSchemeId = char?.schemes[0]?.id ?? null;
+              const newData = { ...charsData, activeCharId: headId, activeSchemeId: firstSchemeId };
+              setCharsData(newData);
+              localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+            }}
+            className="bg-slate-950 border border-slate-800 text-amber-500 rounded px-2 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+          >
+            {charsData.chars.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+          {charsData.chars.length > 1 && (
+            <button
+              onClick={() => {
+                if (confirm("Are you sure you want to delete this hero?")) {
+                  const remaining = charsData.chars.filter(c => c.id !== charsData.activeCharId);
+                  const newData: CharsData = { chars: remaining, activeCharId: remaining[0]?.id ?? null, activeSchemeId: remaining[0]?.schemes[0]?.id ?? null };
+                  setCharsData(newData); localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
+                }
               }}
-              className="bg-slate-950 border border-slate-800 text-amber-500 rounded px-2.5 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50"
-            >
-              {charsData.chars.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
+              className="px-1.5 py-0.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded border border-rose-500/20 text-[11px] transition-colors shrink-0"
+            >Del</button>
+          )}
           <button
             onClick={() => {
               const name = prompt("Enter new character name:");
@@ -1693,287 +1625,167 @@ export default function App() {
               setCharsData(newData);
               localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
             }}
-            className="px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded border border-amber-500/20 flex items-center gap-1 transition-colors font-semibold shadow-sm"
-          >
-            <Plus className="w-3.5 h-3.5" /> <span>Add Hero</span>
-          </button>
-          {charsData.chars.length > 1 && (
-            <button
-              onClick={() => {
-                if (confirm("Are you sure you want to delete this hero? This operation cannot be undone.")) {
-                  const remaining = charsData.chars.filter(c => c.id !== charsData.activeCharId);
-                  const newActiveCharId = remaining[0]?.id ?? null;
-                  const newActiveSchemeId = remaining[0]?.schemes[0]?.id ?? null;
-                  const newData: CharsData = {
-                    chars: remaining,
-                    activeCharId: newActiveCharId,
-                    activeSchemeId: newActiveSchemeId
-                  };
-                  setCharsData(newData);
-                  localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
-                }
-              }}
-              className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded border border-rose-500/20 flex items-center gap-1 transition-colors"
-              title="Delete current character"
-            >
-              <Trash2 className="w-3.5 h-3.5" /> <span>Del</span>
-            </button>
-          )}
-
-          {/* Vertical Divider */}
-          <div className="w-[1px] h-5 bg-slate-800 mx-1 hidden sm:block" />
-
-          {/* Scheme Tabs inside Character */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-slate-400 font-mono text-[12px] uppercase tracking-wider font-semibold">Schemes:</span>
-            {activeChar?.schemes.map(s => (
-              <div
-                key={s.id}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded cursor-pointer transition-all border ${
-                  charsData.activeSchemeId === s.id
-                    ? "bg-amber-500 text-slate-950 font-bold border-amber-500 shadow-md shadow-amber-500/5"
-                    : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900 hover:border-slate-800"
-                }`}
-                onClick={() => {
-                  const newData = { ...charsData, activeSchemeId: s.id };
-                  setCharsData(newData);
-                  localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
-                }}
-              >
-                <span>{s.name}</span>
-                <span
-                  title="Rename Scheme"
-                  className="hover:scale-110 active:scale-95 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const newName = prompt("Enter new scheme name:", s.name);
-                    if (!newName) return;
-                    const updatedChars = charsData.chars.map(c => {
-                      if (c.id === charsData.activeCharId) {
-                        return {
-                          ...c,
-                          schemes: c.schemes.map(sch => {
-                            if (sch.id === s.id) {
-                              return { ...sch, name: newName };
-                            }
-                            return sch;
-                          })
-                        };
-                      }
-                      return c;
-                    });
-                    const newData = { ...charsData, chars: updatedChars };
-                    setCharsData(newData);
-                    localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
-                  }}
-                >
-                  ✎
-                </span>
-              </div>
-            ))}
-            <button
-              onClick={() => {
-                const name = prompt("Enter new scheme name:");
-                if (!name) return;
-                const schemeId = "scheme-" + Date.now();
-                const newScheme: Scheme = {
-                  id: schemeId,
-                  name,
-                  panel: panel,
-                  gear: DEFAULT_GEAR
-                };
-                const updatedChars = charsData.chars.map(c => {
-                  if (c.id === charsData.activeCharId) {
-                    return {
-                      ...c,
-                      schemes: [...c.schemes, newScheme]
-                    };
-                  }
-                  return c;
-                });
-                const newData = {
-                  ...charsData,
-                  chars: updatedChars,
-                  activeSchemeId: schemeId
-                };
-                setCharsData(newData);
-                localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
-              }}
-              className="px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded border border-amber-500/20 flex items-center gap-1 transition-colors font-semibold"
-            >
-              <Plus className="w-3.5 h-3.5" /> <span>Add Scheme</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Data Backup buttons (Export & Import) */}
-        <div className="flex items-center gap-2">
+            className="px-2 py-0.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded border border-amber-500/20 text-[11px] transition-colors font-semibold whitespace-nowrap"
+          >+ New</button>
+          <div className="w-px h-4 bg-slate-800 mx-0.5 shrink-0" />
           <button
             onClick={() => {
               const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(charsData, null, 2));
-              const downloadAnchor = document.createElement('a');
-              downloadAnchor.setAttribute("href", dataStr);
-              downloadAnchor.setAttribute("download", `WWM_Builds_Backup_${new Date().toISOString().slice(0,10)}.json`);
-              document.body.appendChild(downloadAnchor);
-              downloadAnchor.click();
-              downloadAnchor.remove();
+              const a = document.createElement('a');
+              a.setAttribute("href", dataStr);
+              a.setAttribute("download", `WWM_Builds_${new Date().toISOString().slice(0,10)}.json`);
+              document.body.appendChild(a); a.click(); a.remove();
             }}
-            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 transition-colors font-mono text-[12px]"
-            title="Download database backup"
-          >
-            <Download className="w-3 h-3 text-amber-500" /> <span>Export</span>
-          </button>
-          <label
-            className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded flex items-center gap-1.5 cursor-pointer transition-colors font-mono text-[12px]"
-            title="Upload/Restore database from file"
-          >
-            <Upload className="w-3 h-3 text-amber-500" /> <span>Import</span>
-            <input
-              type="file"
-              accept=".json"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                  try {
-                    const parsed = JSON.parse(event.target?.result as string);
-                    if (parsed.chars && Array.isArray(parsed.chars)) {
-                      setCharsData(parsed);
-                      localStorage.setItem("wwm_chars_v3", JSON.stringify(parsed));
-                      alert("Successfully restored database backup!");
-                    } else {
-                      alert("Invalid file structure. Make sure you load a valid backup JSON file.");
-                    }
-                  } catch (err) {
-                    alert("Failed to parse JSON file.");
-                  }
-                };
-                reader.readAsText(file);
-              }}
-            />
+            className="px-2 py-0.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 rounded text-[11px] flex items-center gap-1 transition-colors shrink-0"
+          ><Download className="w-3 h-3 text-amber-500" /> Export</button>
+          <label className="px-2 py-0.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 rounded text-[11px] flex items-center gap-1 cursor-pointer transition-colors shrink-0">
+            <Upload className="w-3 h-3 text-amber-500" /> Import
+            <input type="file" accept=".json" className="hidden" onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (ev) => {
+                try {
+                  const parsed = JSON.parse(ev.target?.result as string);
+                  if (parsed.chars && Array.isArray(parsed.chars)) {
+                    setCharsData(parsed);
+                    localStorage.setItem("wwm_chars_v3", JSON.stringify(parsed));
+                    alert("Restored successfully!");
+                  } else { alert("Invalid file structure."); }
+                } catch { alert("Failed to parse JSON."); }
+              };
+              reader.readAsText(file);
+            }} />
           </label>
-        </div>
-      </div>
-
-      {/* Sub-Navigation Tabs */}
-      <div className="bg-[#14120f]/60 px-6 border-b border-amber-900/10 flex items-center justify-between overflow-x-auto scrollbar-none">
-        <div className="flex gap-4 min-w-max">
-          <button
-            onClick={() => setActiveTab("calculator")}
-            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "calculator" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            ⚔ Calc
-            {activeTab === "calculator" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <div className="relative">
-            <button
-              onClick={() => setAnalysisMenuOpen(v => !v)}
-              className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors flex items-center gap-1 ${
-                ["priority", "compare", "cultivate", "simulators", "rot-sim"].includes(activeTab)
-                  ? "text-amber-500 font-extrabold"
-                  : "text-slate-400 hover:text-slate-200"
-              }`}
-            >
-              📊 Analysis ▾
-              {["priority", "compare", "cultivate", "simulators", "rot-sim"].includes(activeTab) && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-              )}
-            </button>
-            {analysisMenuOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setAnalysisMenuOpen(false)} />
-                <div className="absolute left-0 top-full mt-1 bg-[#1c1a17] border border-amber-900/30 rounded-lg shadow-xl z-50 py-1 min-w-[170px]">
-                  {[
-                    { key: "priority", label: "📊 Stat Priority" },
-                    { key: "compare", label: "⚖ Item Compare" },
-                    { key: "cultivate", label: "🎯 Cultivate" },
-                    { key: "simulators", label: "🛠 Gear Sim" },
-                    { key: "rot-sim", label: "🔄 Rotation Sim" },
-                  ].map(opt => (
-                    <button
-                      key={opt.key}
-                      onClick={() => { setActiveTab(opt.key as any); setAnalysisMenuOpen(false); }}
-                      className={`block w-full text-left px-3 py-2 text-sm whitespace-nowrap transition-colors ${
-                        activeTab === opt.key ? "text-amber-500 font-bold bg-amber-500/5" : "text-slate-300 hover:bg-slate-800/60"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-          <button
-            onClick={() => setActiveTab("gear")}
-            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "gear" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            🛡 Gear
-            {activeTab === "gear" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("ocr")}
-            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "ocr" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            📸 OCR
-            {activeTab === "ocr" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("profiles")}
-            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
-              activeTab === "profiles" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            📁 Gear Sets
-            {activeTab === "profiles" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500" />
-            )}
-          </button>
-        </div>
-
-        <div className="hidden lg:flex items-center gap-3">
+          <div className="w-px h-4 bg-slate-800 mx-0.5 shrink-0" />
           {hasCustomConfig && (
-            <button
-              onClick={handleClearCustomDefault}
-              className="px-2 py-1 text-[12px] font-mono tracking-wider text-rose-400 hover:text-rose-300 border border-rose-900/40 bg-rose-950/10 hover:bg-rose-950/20 rounded transition-colors flex items-center gap-1 shrink-0"
-              title="Clear custom default configuration and return to factory settings"
-            >
-              Clear Default
-            </button>
+            <button onClick={handleClearCustomDefault} className="px-2 py-0.5 text-[11px] text-rose-400 border border-rose-900/40 bg-rose-950/10 rounded transition-colors shrink-0">Clear</button>
           )}
-          <button
-            onClick={handleSaveAsDefault}
-            className="px-2.5 py-1 text-[12px] font-mono tracking-wider font-bold text-amber-500 hover:text-amber-400 border border-amber-500/20 hover:border-amber-500/40 bg-amber-500/5 hover:bg-amber-500/10 rounded transition-colors flex items-center gap-1 shrink-0"
-            title="Save all current parameters and buffs as your custom default"
-          >
-            <Database className="w-3 h-3 text-amber-500" /> Save Default
+          <button onClick={handleSaveAsDefault} className="px-2 py-0.5 text-[11px] font-bold text-amber-500 border border-amber-500/20 bg-amber-500/5 rounded transition-colors flex items-center gap-1 shrink-0">
+            <Database className="w-3 h-3" /> Save
           </button>
-          <button
-            onClick={handleResetAll}
-            className="px-2.5 py-1 text-[12px] font-mono tracking-wider font-bold text-slate-300 hover:text-slate-100 border border-slate-700/60 hover:border-slate-500/80 bg-slate-850/55 hover:bg-slate-800/85 rounded transition-colors flex items-center gap-1 shrink-0"
-            title="Reset all settings, buffs and stats to default configuration"
-          >
-            <RotateCw className="w-3 h-3 text-amber-500 animate-spin-hover" /> Reset All
+          <button onClick={handleResetAll} className="px-2 py-0.5 text-[11px] text-slate-300 border border-slate-700/60 rounded transition-colors flex items-center gap-1 shrink-0">
+            <RotateCw className="w-3 h-3 text-amber-500" /> Reset
           </button>
+        </div>
+      </header>
+
+      {/* ── SCHEME + SUBNAV BAR ── */}
+      <div className="bg-[#0a0908] border-b border-amber-900/15 px-4 h-10 flex items-center justify-between sticky top-11 z-20 gap-3 shadow-sm">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none min-w-0">
+          <span className="text-[10px] text-slate-500 font-mono shrink-0 uppercase tracking-wider">Scheme:</span>
+          {activeChar?.schemes.map(s => (
+            <div
+              key={s.id}
+              className={`flex items-center gap-1 px-2 py-0.5 rounded cursor-pointer transition-all border text-[11px] shrink-0 ${
+                charsData.activeSchemeId === s.id
+                  ? "bg-amber-500 text-slate-950 font-bold border-amber-500"
+                  : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900"
+              }`}
+              onClick={() => { const nd = { ...charsData, activeSchemeId: s.id }; setCharsData(nd); localStorage.setItem("wwm_chars_v3", JSON.stringify(nd)); }}
+            >
+              <span>{s.name}</span>
+              <span onClick={(e) => {
+                e.stopPropagation();
+                const nm = prompt("Rename scheme:", s.name);
+                if (!nm) return;
+                const uc = charsData.chars.map(c => c.id === charsData.activeCharId ? { ...c, schemes: c.schemes.map(sch => sch.id === s.id ? { ...sch, name: nm } : sch) } : c);
+                const nd = { ...charsData, chars: uc };
+                setCharsData(nd); localStorage.setItem("wwm_chars_v3", JSON.stringify(nd));
+              }} className="opacity-40 hover:opacity-100 text-[10px] cursor-pointer ml-0.5">✎</span>
+            </div>
+          ))}
+          <button
+            onClick={() => {
+              const name = prompt("New scheme name:");
+              if (!name) return;
+              const sid = "scheme-" + Date.now();
+              const ns: Scheme = { id: sid, name, panel: panel, gear: DEFAULT_GEAR };
+              const uc = charsData.chars.map(c => c.id === charsData.activeCharId ? { ...c, schemes: [...c.schemes, ns] } : c);
+              const nd = { ...charsData, chars: uc, activeSchemeId: sid };
+              setCharsData(nd); localStorage.setItem("wwm_chars_v3", JSON.stringify(nd));
+            }}
+            className="px-1.5 py-0.5 text-amber-500 border border-amber-500/20 rounded text-[11px] shrink-0 hover:bg-amber-500/10 transition-colors"
+          >+</button>
+        </div>
+        <div className="flex items-center gap-0.5 shrink-0">
+          {[
+            { key: "calculator", label: "⚔ Calc" },
+            { key: "priority", label: "📊 Priority" },
+            { key: "compare", label: "⚖ Compare" },
+            { key: "cultivate", label: "🎯 Cultivate" },
+            { key: "simulators", label: "🛠 Sim" },
+            { key: "rot-sim", label: "🔄 RotSim" },
+            { key: "gear", label: "🛡 Gear" },
+            { key: "ocr", label: "📸 OCR" },
+            { key: "profiles", label: "📁 Sets" },
+          ].map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as any)}
+              className={`px-2 py-1 text-[11px] rounded font-semibold transition-colors whitespace-nowrap ${
+                activeTab === tab.key
+                  ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
+            >{tab.label}</button>
+          ))}
         </div>
       </div>
 
-      <div className="px-6 py-6 max-w-[1900px] mx-auto w-full">
+      {/* ── MAIN TWO-COLUMN LAYOUT ── */}
+      <div className="flex" style={{ minHeight: 'calc(100vh - 88px)' }}>
         {activeTab === "calculator" && (
+          <div className="flex gap-4 items-start">
+            {/* Gear Library Sidebar — quick reference list of all owned gear with %grad */}
+            <aside className="hidden xl:flex xl:flex-col gap-2 w-60 shrink-0 sticky top-2 max-h-[calc(100vh-1rem)] overflow-y-auto pr-1">
+              <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-3">
+                <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5 mb-2">
+                  <Shield className="w-3.5 h-3.5 text-amber-500" /> Gear Library
+                </span>
+                <div className="space-y-1.5">
+                  {getActiveGear().map(item => {
+                    const { totalGradDelta } = getGearItemCompareStats(item);
+                    const setKey = item.set as keyof typeof ARMOR_SETS | undefined;
+                    const badgeGradient = SET_BADGE_COLORS[setKey || "none"] || SET_BADGE_COLORS.none;
+                    const slotDef = SLOTS.find(s => s.name === item.slot);
+                    const [bw1, bw2] = BUILD_WEAPONS[selectedBuild] || [];
+                    const weaponIconKey = item.slot === "Umbrella" ? bw1 : item.slot === "Rope Dart" ? bw2 : undefined;
+                    const iconUrl = weaponIconKey ? WEAPON_ICONS[weaponIconKey] : undefined;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => { setActiveTab("gear"); setSelectedSlot(item.slot); }}
+                        className="flex items-center gap-2 bg-slate-950/60 border border-slate-900 hover:border-amber-500/40 rounded-lg p-1.5 cursor-pointer transition-colors"
+                        title={item.name}
+                      >
+                        {iconUrl ? (
+                          <img
+                            src={iconUrl}
+                            alt={item.slot}
+                            className="w-7 h-7 object-contain shrink-0"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className={`w-7 h-7 shrink-0 rounded-md bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
+                            <span className="text-[13px] leading-none">{slotDef?.icon || "🔹"}</span>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[11px] text-slate-300 font-medium truncate">{item.name}</div>
+                          <div className="text-[10px] text-slate-500 truncate">{item.slot} · {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
+                        </div>
+                        <div className={`text-[11px] font-mono font-bold shrink-0 ${totalGradDelta >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                          {totalGradDelta >= 0 ? "+" : ""}{totalGradDelta.toFixed(1)}%
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </aside>
+
+          <div className="flex-1 min-w-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Sidebar Controls (Inputs & Modifiers) - 4 Cols */}
             <div className="lg:col-span-12 flex items-center gap-3 mb-3 p-2 bg-slate-950/40 rounded-lg border border-slate-900">
@@ -3128,6 +2940,8 @@ export default function App() {
               </div>
             </div>
           </div>
+          </div>
+        </div>
         )}
 
         {/* Tab Stat Priority */}
