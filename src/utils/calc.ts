@@ -1,7 +1,7 @@
 ﻿import { PanelStats, TierConstants, SkillDefinition, RotationItem } from "../types";
 import { WWM_DATA } from "../data/wwmData";
 
-const t95 = WWM_DATA.tiers["95ä¸‹"];
+const t95 = WWM_DATA.tiers["95下"];
 
 export const TIERS: { [key: string]: TierConstants } = {
   "350|0.45": {
@@ -21,7 +21,7 @@ export const TIERS: { [key: string]: TierConstants } = {
     pzDmgBase: t95.base.elemDmgUp * 100, // 5.4%
     physRes: 20,
     attrRes: 24,
-    name: "Tier 91 / Lv95 â˜… Global (Season 3)",
+    name: "Tier 91 / Lv95 ★ Global (Season 3)",
   }
 };
 
@@ -307,11 +307,11 @@ WWM_DATA.skills.forEach(s => {
   };
 });
 
-SKILL_DB["ä¹æžªé‡2è“„"] = { outerRatio: 2.5683, fixed: 711, eleRatio: 3.85245, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 1, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
-SKILL_DB["ä¹å‰‘Q"] = { outerRatio: 2.7205, fixed: 749, eleRatio: 4.08075, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
-SKILL_DB["ä¹å‰‘~"] = { outerRatio: 1.5, fixed: 300, eleRatio: 2.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
-SKILL_DB["ä¹æžªQæ»¡"] = { outerRatio: 3.5, fixed: 800, eleRatio: 5.0, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
-SKILL_DB["ä¹å‰‘~æµè¡€"] = { outerRatio: 0.8, fixed: 150, eleRatio: 1.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["九枪重2蓄"] = { outerRatio: 2.5683, fixed: 711, eleRatio: 3.85245, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 1, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["九剑Q"] = { outerRatio: 2.7205, fixed: 749, eleRatio: 4.08075, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
+SKILL_DB["九剑~"] = { outerRatio: 1.5, fixed: 300, eleRatio: 2.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["九枪Q满"] = { outerRatio: 3.5, fixed: 800, eleRatio: 5.0, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
+SKILL_DB["九剑~流血"] = { outerRatio: 0.8, fixed: 150, eleRatio: 1.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
 
 export const ROTATION: RotationItem[] = [
   { name: "Rope Dart Special (Dart Song Max + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.465, yishui: 10, tiaozhan: 1 },
@@ -339,11 +339,11 @@ export const ROTATION_TIME = 78.5;
 export function getRotationForBuild(buildKey?: string): RotationItem[] {
   if (buildKey === "nine-nine" || buildKey === "Nine-Nine" || buildKey === "nine-nine-aoe") {
     return [
-      { name: "ä¹æžªé‡2è“„", count: 3, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "ä¹å‰‘Q", count: 4, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "ä¹å‰‘~", count: 12, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "ä¹æžªQæ»¡", count: 2, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "ä¹å‰‘~æµè¡€", count: 8, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九枪重2蓄", count: 3, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九剑Q", count: 4, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九剑~", count: 12, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九枪Q满", count: 2, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "九剑~流血", count: 8, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
     ];
   }
   return ROTATION;
@@ -483,7 +483,7 @@ export function calcSkill(
 }
 
 export function calcBaseline(tier: TierConstants) {
-  // Reference "graduation" build for Global T91 â€” sourced from wherewindsmeetcalculator.com
+  // Reference "graduation" build for Global T91 — sourced from wherewindsmeetcalculator.com
   // These are PANEL stats (what you see on character screen), NOT including food
   // Food is added separately below matching how the game works
   const ref: PanelStats = {

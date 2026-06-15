@@ -99,37 +99,37 @@ const PREDEFINED_WEAPONS = [
 
 const BUILD_TIPS: Record<string, string[]> = {
   "bamboocut-dust": [
-    "ðŸŽ¯ Max Phys ATK â†’ 4046 is the graduation target",
-    "ðŸ”© Phys Pen â†’ 51.2% net (panel value - 20 boss resist)",
-    "âš¡ Crit Rate â†’ need 116%+ panel to cap at 80% eff (Ã·1.45)",
-    "âš ï¸ Bamboocut ATK contributes ~15-20% of rotation damage",
-    "âœ¦ Attuned Bonus: Drunken Spring Skill DMG (Weapon Attuned DMG) â€” crucial!",
-    "ðŸ– Food buff adds +90/+180 Phys ATK â€” always use before raids",
+    "🎯 Max Phys ATK → 4046 is the graduation target",
+    "🔩 Phys Pen → 51.2% net (panel value - 20 boss resist)",
+    "⚡ Crit Rate → need 116%+ panel to cap at 80% eff (÷1.45)",
+    "⚠️ Bamboocut ATK contributes ~15-20% of rotation damage",
+    "✦ Attuned Bonus: Drunken Spring Skill DMG (Weapon Attuned DMG) — crucial!",
+    "🍖 Food buff adds +90/+180 Phys ATK — always use before raids",
   ],
   "bellstrike-umbra": [
-    "ðŸŽ¯ Affinity Rate â†’ aim for 58%+ panel to cap 40% eff at T91",
-    "âš¡ Crit Rate and Affinity Rate both matter for Umbra",
-    "âœ¦ Attuned Bonus: Strategic Sword Skill DMG â€” stack on all gear",
-    "âš ï¸ DO NOT use Eaglerise set if Affinity procs are rare",
+    "🎯 Affinity Rate → aim for 58%+ panel to cap 40% eff at T91",
+    "⚡ Crit Rate and Affinity Rate both matter for Umbra",
+    "✦ Attuned Bonus: Strategic Sword Skill DMG — stack on all gear",
+    "⚠️ DO NOT use Eaglerise set if Affinity procs are rare",
   ],
   "stonesplit-might": [
-    "ðŸŽ¯ Max Phys ATK â†’ 3500+ target",
-    "âš ï¸ Avoid Attr ATK (Bamboocut/Bellstrike/Silkbind) â€” useless",
-    "âš ï¸ Max 2 Agility substats â€” diminishing returns after",
-    "ðŸ›¡ Prioritize survivability over pure DPS for this path",
+    "🎯 Max Phys ATK → 3500+ target",
+    "⚠️ Avoid Attr ATK (Bamboocut/Bellstrike/Silkbind) — useless",
+    "⚠️ Max 2 Agility substats — diminishing returns after",
+    "🛡 Prioritize survivability over pure DPS for this path",
   ],
 };
 
 const STAT_TOOLTIPS: Record<string, string> = {
-  minOuter: "Min Physical Attack â€” affects graze hits and Min ATK floor. When Min > Max, all hits use Min ATK value.",
-  maxOuter: "Max Physical Attack â€” primary DPS stat. Target: 4046 for graduation (Bamboocut-Dust).",
+  minOuter: "Min Physical Attack — affects graze hits and Min ATK floor. When Min > Max, all hits use Min ATK value.",
+  maxOuter: "Max Physical Attack — primary DPS stat. Target: 4046 for graduation (Bamboocut-Dust).",
   outerPen: "Physical Penetration. Net pen = panel - boss phys resist (20 at T91). Target net: 31.2%+",
-  crit: "Critical Rate. Effective crit = panel Ã· (1 + Judge Resist). At T91: need 116%+ panel for 80% eff cap.",
+  crit: "Critical Rate. Effective crit = panel ÷ (1 + Judge Resist). At T91: need 116%+ panel for 80% eff cap.",
   aff: "Affinity Rate. Cap: 40% effective. At T91 need ~58% panel.",
-  prec: "Precision Rate. Base 65% not reduced by resist. Panel 116% â†’ ~100% effective. Cap = 100%.",
+  prec: "Precision Rate. Base 65% not reduced by resist. Panel 116% → ~100% effective. Cap = 100%.",
   critDmg: "Critical DMG Bonus. Default base is 50%. Stack after crit rate is capped.",
   affDmg: "Affinity DMG Bonus. Default base is 35%.",
-  dcrit: "Direct Critical Rate â€” bypasses Judgment Resistance entirely. Very efficient stat.",
+  dcrit: "Direct Critical Rate — bypasses Judgment Resistance entirely. Very efficient stat.",
 };
 
 const GRAD_MARKERS = [
@@ -137,7 +137,7 @@ const GRAD_MARKERS = [
   { pct: 85, label: "B", color: "bg-lime-600" },
   { pct: 88, label: "A", color: "bg-yellow-500" },
   { pct: 90, label: "S", color: "bg-amber-500" },
-  { pct: 100, label: "ðŸŽ“", color: "bg-emerald-500" },
+  { pct: 100, label: "🎓", color: "bg-emerald-500" },
 ];
 
 
@@ -233,18 +233,18 @@ export interface TuneCooldown {
 }
 
 const SLOTS = [
-  { name: "Umbrella", icon: "â˜‚" },
-  { name: "Rope Dart", icon: "ðŸªƒ" },
-  { name: "Pendant", icon: "ðŸ“¿" },
-  { name: "Helmet", icon: "â›‘" },
-  { name: "Chest", icon: "ðŸ¥‹" },
-  { name: "Greaves", icon: "ðŸ¦¿" },
-  { name: "Bracers", icon: "ðŸ¤º" },
-  { name: "Bow/Ring", icon: "ðŸ¹" }
+  { name: "Umbrella", icon: "☂" },
+  { name: "Rope Dart", icon: "🪃" },
+  { name: "Pendant", icon: "📿" },
+  { name: "Helmet", icon: "⛑" },
+  { name: "Chest", icon: "🥋" },
+  { name: "Greaves", icon: "🦿" },
+  { name: "Bracers", icon: "🤺" },
+  { name: "Bow/Ring", icon: "🏹" }
 ];
 
 // Gradient colors per armor set (used for Equipped Slots icon badges since no
-// verified per-piece CDN images exist for armor â€” keeps each set visually
+// verified per-piece CDN images exist for armor — keeps each set visually
 // distinct without fabricating image URLs)
 const SET_BADGE_COLORS: Record<string, string> = {
   "stars":         "from-amber-500 to-yellow-700",      // Moonflare
@@ -350,42 +350,42 @@ const BUILD_PROFILES = {
     label: "Bamboocut-Dust", weapons: "Everspring Umbrella + Unfettered Rope Dart",
     tier: "T0 AoE", color: "text-amber-500",
     gradTargets: { maxOuter: 4046, minOuter: 1657, outerPen: 51.2, crit: 116.9, aff: 14.7, critDmg: 54 },
-    notes: "Priority: Max Phys ATK â†’ Phys Pen â†’ Bamboocut ATK. Prec ~116% (effectively capped). Crit ~116%+ panel to cap at 80% eff.",
+    notes: "Priority: Max Phys ATK → Phys Pen → Bamboocut ATK. Prec ~116% (effectively capped). Crit ~116%+ panel to cap at 80% eff.",
     priorityStats: ["maxOuter","outerPen","crit","critDmg","maxPz","umbBonus"],
   },
   "bellstrike-umbra": {
     label: "Bellstrike-Umbra", weapons: "Strategic Sword + Heavenquaker Spear",
     tier: "T0 Single", color: "text-indigo-400",
     gradTargets: { maxOuter: 4231, minOuter: 1800, outerPen: 45.0, crit: 95.4, aff: 71.6, critDmg: 60 },
-    notes: "Priority: Affinity Rate â†’ Max Phys ATK â†’ Crit DMG. Aff cap = 40% eff (need ~58% panel at T91).",
+    notes: "Priority: Affinity Rate → Max Phys ATK → Crit DMG. Aff cap = 40% eff (need ~58% panel at T91).",
     priorityStats: ["aff","affDmg","maxOuter","crit","outerPen"],
   },
   "bellstrike-splendor": {
     label: "Bellstrike-Splendor", weapons: "Nameless Sword + Nameless Spear",
     tier: "T1 Easy", color: "text-blue-400",
     gradTargets: { maxOuter: 3800, minOuter: 1500, outerPen: 40.0, crit: 54.4, aff: 43.5, critDmg: 45 },
-    notes: "Priority: Max Phys ATK â†’ Crit Rate â†’ Affinity Rate. Forgiving build for beginners.",
+    notes: "Priority: Max Phys ATK → Crit Rate → Affinity Rate. Forgiving build for beginners.",
     priorityStats: ["maxOuter","crit","aff","outerPen","critDmg"],
   },
   "bamboocut-wind": {
     label: "Bamboocut-Wind", weapons: "Infernal Twinblades + Mortal Rope Dart",
     tier: "T0 AoE", color: "text-orange-400",
     gradTargets: { maxOuter: 1800, minOuter: 800, outerPen: 40.0, crit: 108.8, aff: 14.5, critDmg: 50 },
-    notes: "Priority: Bamboocut ATK â†’ Phys Pen â†’ Crit Rate. Different scaling from Bamboocut-Dust.",
+    notes: "Priority: Bamboocut ATK → Phys Pen → Crit Rate. Different scaling from Bamboocut-Dust.",
     priorityStats: ["maxPz","pzPen","maxOuter","crit","outerPen"],
   },
   "stonesplit-might": {
     label: "Stonesplit-Might", weapons: "Thundercry Blade + Stormbreaker Spear",
     tier: "T1 Tank", color: "text-stone-400",
     gradTargets: { maxOuter: 3500, minOuter: 1400, outerPen: 38.0, crit: 81.2, aff: 21.75, critDmg: 45 },
-    notes: "Priority: Max Phys ATK â†’ Crit Rate â†’ Phys Pen. Avoid Attr ATK stats (useless for this path).",
+    notes: "Priority: Max Phys ATK → Crit Rate → Phys Pen. Avoid Attr ATK stats (useless for this path).",
     priorityStats: ["maxOuter","crit","outerPen","critDmg","allArts"],
   },
   "silkbind-jade": {
     label: "Silkbind-Jade", weapons: "Vernal Umbrella + Inkwell Fan",
     tier: "T1 Ranged", color: "text-teal-400",
     gradTargets: { maxOuter: 4007, minOuter: 1700, outerPen: 44.0, crit: 107.6, aff: 43.5, critDmg: 50 },
-    notes: "Priority: Max Phys ATK â†’ Bamboocut ATK â†’ Crit Rate â†’ Affinity Rate.",
+    notes: "Priority: Max Phys ATK → Bamboocut ATK → Crit Rate → Affinity Rate.",
     priorityStats: ["maxOuter","crit","aff","affDmg","outerPen","umbBonus"],
   },
   "silkbind-deluge": {
@@ -398,17 +398,17 @@ const BUILD_PROFILES = {
 };
 
 const SET_EMOJI: Record<string, string> = {
-  "stars": "ðŸŒ™",          // Moonflare
-  "eaglerise": "ðŸ¦…",       // Hawking
-  "stormrain": "ðŸŒ§ï¸",       // Eaglerise
-  "jadeware": "ðŸ’š",        // Jadeware
-  "ivorybloom": "ðŸŒ¸",      // Ivorybloom
-  "rainwhisper": "ðŸ’§",     // Rainwhisper
-  "pursuing": "ðŸ‘¥",        // Pursuing Shadow
-  "shakenhill": "â›°ï¸",
-  "swallowreturn": "ðŸ•Šï¸",
-  "ironweave": "ðŸ›¡ï¸",
-  "none": "ðŸ”¹",
+  "stars": "🌙",          // Moonflare
+  "eaglerise": "🦅",       // Hawking
+  "stormrain": "🌧️",       // Eaglerise
+  "jadeware": "💚",        // Jadeware
+  "ivorybloom": "🌸",      // Ivorybloom
+  "rainwhisper": "💧",     // Rainwhisper
+  "pursuing": "👥",        // Pursuing Shadow
+  "shakenhill": "⛰️",
+  "swallowreturn": "🕊️",
+  "ironweave": "🛡️",
+  "none": "🔹",
 };
 
 const ARMOR_SETS = {
@@ -476,7 +476,7 @@ const ARMOR_SETS = {
     desc4pc: "At Max HP: +5% Critical chance and +15% Critical heal/DMG",
     recommended: ["silkbind-deluge"],
   },
-  "none": { name: "No Set / Mixed", stat2pc: {}, desc2pc: "â€”", desc4pc: "â€”", recommended: [] },
+  "none": { name: "No Set / Mixed", stat2pc: {}, desc2pc: "—", desc4pc: "—", recommended: [] },
 };
 
 const getCustomConfig = () => {
@@ -605,7 +605,7 @@ export default function App() {
           className="w-full flex items-center justify-between text-[11px] font-mono tracking-wider text-amber-500/80 uppercase mb-1"
         >
           <span>{title}</span>
-          <span className="text-slate-600">{isOpen ? "â–¼" : "â–¶"}</span>
+          <span className="text-slate-600">{isOpen ? "▼" : "▶"}</span>
         </button>
         {isOpen && children}
       </div>
@@ -618,7 +618,7 @@ export default function App() {
       const stored = localStorage.getItem("wwm_custom_rotation");
       if (stored) return stored;
     }
-    return "Rope Dart RÃ—3 â†’ Perfect QÃ—6 â†’ ResonanceÃ—8 â†’ Dragon Rider â†’ repeat";
+    return "Rope Dart R×3 → Perfect Q×6 → Resonance×8 → Dragon Rider → repeat";
   });
 
   useEffect(() => {
@@ -1562,7 +1562,7 @@ export default function App() {
       {/* Accent line */}
       <div className="h-0.5 w-full bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700" />
 
-      {/* â”€â”€ TOP BAR â”€â”€ */}
+      {/* ── TOP BAR ── */}
       <header className="bg-[#14120f] border-b border-amber-900/30 px-4 h-11 flex items-center justify-between sticky top-0 z-30 shadow-md gap-2">
         <div className="flex items-center gap-2 shrink-0">
           <h1 className="text-sm font-bold font-serif text-slate-100 whitespace-nowrap">
@@ -1671,7 +1671,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* â”€â”€ SCHEME + SUBNAV BAR â”€â”€ */}
+      {/* ── SCHEME + SUBNAV BAR ── */}
       <div className="bg-[#0a0908] border-b border-amber-900/15 px-4 h-10 flex items-center justify-between sticky top-11 z-20 gap-3 shadow-sm">
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none min-w-0">
           <span className="text-[10px] text-slate-500 font-mono shrink-0 uppercase tracking-wider">Scheme:</span>
@@ -1693,7 +1693,7 @@ export default function App() {
                 const uc = charsData.chars.map(c => c.id === charsData.activeCharId ? { ...c, schemes: c.schemes.map(sch => sch.id === s.id ? { ...sch, name: nm } : sch) } : c);
                 const nd = { ...charsData, chars: uc };
                 setCharsData(nd); localStorage.setItem("wwm_chars_v3", JSON.stringify(nd));
-              }} className="opacity-40 hover:opacity-100 text-[10px] cursor-pointer ml-0.5">âœŽ</span>
+              }} className="opacity-40 hover:opacity-100 text-[10px] cursor-pointer ml-0.5">✎</span>
             </div>
           ))}
           <button
@@ -1711,15 +1711,15 @@ export default function App() {
         </div>
         <div className="flex items-center gap-0.5 shrink-0">
           {[
-            { key: "calculator", label: "âš” Calc" },
-            { key: "priority", label: "ðŸ“Š Priority" },
-            { key: "compare", label: "âš– Compare" },
-            { key: "cultivate", label: "ðŸŽ¯ Cultivate" },
-            { key: "simulators", label: "ðŸ›  Sim" },
-            { key: "rot-sim", label: "ðŸ”„ RotSim" },
-            { key: "gear", label: "ðŸ›¡ Gear" },
-            { key: "ocr", label: "ðŸ“¸ OCR" },
-            { key: "profiles", label: "ðŸ“ Sets" },
+            { key: "calculator", label: "⚔ Calc" },
+            { key: "priority", label: "📊 Priority" },
+            { key: "compare", label: "⚖ Compare" },
+            { key: "cultivate", label: "🎯 Cultivate" },
+            { key: "simulators", label: "🛠 Sim" },
+            { key: "rot-sim", label: "🔄 RotSim" },
+            { key: "gear", label: "🛡 Gear" },
+            { key: "ocr", label: "📸 OCR" },
+            { key: "profiles", label: "📁 Sets" },
           ].map(tab => (
             <button
               key={tab.key}
@@ -1734,11 +1734,11 @@ export default function App() {
         </div>
       </div>
 
-      {/* â”€â”€ MAIN TWO-COLUMN LAYOUT â”€â”€ */}
+      {/* ── MAIN TWO-COLUMN LAYOUT ── */}
       <div className="flex" style={{ minHeight: 'calc(100vh - 88px)' }}>
         {activeTab === "calculator" && (
           <div className="flex gap-4 items-start">
-            {/* Gear Library Sidebar â€” quick reference list of all owned gear with %grad */}
+            {/* Gear Library Sidebar — quick reference list of all owned gear with %grad */}
             <aside className="hidden xl:flex xl:flex-col gap-2 w-60 shrink-0 sticky top-2 max-h-[calc(100vh-1rem)] overflow-y-auto pr-1">
               <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-3">
                 <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5 mb-2">
@@ -1769,12 +1769,12 @@ export default function App() {
                           />
                         ) : (
                           <div className={`w-7 h-7 shrink-0 rounded-md bg-gradient-to-br ${badgeGradient} flex items-center justify-center shadow-inner shadow-black/30 border border-white/10`}>
-                            <span className="text-[13px] leading-none">{slotDef?.icon || "ðŸ”¹"}</span>
+                            <span className="text-[13px] leading-none">{slotDef?.icon || "🔹"}</span>
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="text-[11px] text-slate-300 font-medium truncate">{item.name}</div>
-                          <div className="text-[10px] text-slate-500 truncate">{item.slot} Â· {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
+                          <div className="text-[10px] text-slate-500 truncate">{item.slot} · {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}</div>
                         </div>
                         <div className={`text-[11px] font-mono font-bold shrink-0 ${totalGradDelta >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
                           {totalGradDelta >= 0 ? "+" : ""}{totalGradDelta.toFixed(1)}%
@@ -1806,14 +1806,14 @@ export default function App() {
               </div>
             </div>
 
-            {/* Equipped Slots Grid â€” gear overview + %grad contribution + mis-tune flags */}
+            {/* Equipped Slots Grid — gear overview + %grad contribution + mis-tune flags */}
             <div className="lg:col-span-12 bg-[#141210] border border-amber-900/10 rounded-xl p-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-amber-500" /> Equipped Slots
                 </span>
                 <span className="text-[11px] text-slate-500">
-                  %grad = Æ°á»›c tÃ­nh graduation máº¥t náº¿u bá» toÃ n bá»™ sub-stat cá»§a mÃ³n nÃ y
+                  %grad = ước tính graduation mất nếu bỏ toàn bộ sub-stat của món này
                 </span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
@@ -1850,7 +1850,7 @@ export default function App() {
                       <div key={slot.name} className="bg-slate-950/40 border border-slate-900 rounded-lg p-2 text-center opacity-50">
                         <SlotIcon />
                         <div className="text-[11px] text-slate-500 mt-1">{slot.name}</div>
-                        <div className="text-[11px] text-slate-600 mt-1">â€” empty â€”</div>
+                        <div className="text-[11px] text-slate-600 mt-1">— empty —</div>
                       </div>
                     );
                   }
@@ -1870,7 +1870,7 @@ export default function App() {
                       <div className="flex items-center justify-between">
                         <SlotIcon />
                         {misTuned.length > 0 && (
-                          <span className="text-[11px]" title={`${misTuned.length} sub-stat Ã­t/khÃ´ng cÃ³ giÃ¡ trá»‹ cho ${(BUILD_PROFILES as any)[selectedBuild]?.label}: ${misTuned.map(s => s.type).join(", ")}`}>âš ï¸</span>
+                          <span className="text-[11px]" title={`${misTuned.length} sub-stat ít/không có giá trị cho ${(BUILD_PROFILES as any)[selectedBuild]?.label}: ${misTuned.map(s => s.type).join(", ")}`}>⚠️</span>
                         )}
                       </div>
                       <div className="text-[11px] text-slate-300 font-medium truncate mt-1">{item.name}</div>
@@ -1888,7 +1888,7 @@ export default function App() {
               {/* Build Path Dropdown */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
                 <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
-                  <span className="text-base">âš”ï¸</span> Build Path Selection
+                  <span className="text-base">⚔️</span> Build Path Selection
                 </span>
                 <div>
                   <select
@@ -1957,12 +1957,12 @@ export default function App() {
                       <div className="flex flex-wrap gap-1">
                         {isRecommended && (
                           <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-900/40">
-                            âœ“ Recommended Set
+                            ✓ Recommended Set
                           </span>
                         )}
                         {isMismatched && (
                           <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-505 text-amber-400 font-bold border border-amber-900/40">
-                            âš  Mismatched Set
+                            ⚠ Mismatched Set
                           </span>
                         )}
                         {panel.set === "none" && (
@@ -1975,10 +1975,10 @@ export default function App() {
                       {panel.set !== "none" && (
                         <div className="font-sans text-[13px] space-y-1.5 text-slate-400 border-t border-slate-900/60 pt-1.5 leading-normal">
                           <div>
-                            <span className="text-amber-500 font-bold">2pc:</span> {s.desc2pc || "â€”"}
+                            <span className="text-amber-500 font-bold">2pc:</span> {s.desc2pc || "—"}
                           </div>
                           <div>
-                            <span className="text-amber-500 font-bold">4pc:</span> {s.desc4pc || "â€”"}
+                            <span className="text-amber-500 font-bold">4pc:</span> {s.desc4pc || "—"}
                           </div>
                         </div>
                       )}
@@ -2002,8 +2002,8 @@ export default function App() {
                 </label>
                 <p className="text-[11.5px] text-slate-500 leading-snug">
                   {autoGearPanel
-                    ? "ON â€” Min/Max Phys Atk, Pen, Crit, Affinity, Bamboocut Atk, etc. are computed from your 8 equipped items in the Gear tab. Edit gear there to change these stats."
-                    : "OFF â€” all stats below are entered manually and will not update when you change gear."}
+                    ? "ON — Min/Max Phys Atk, Pen, Crit, Affinity, Bamboocut Atk, etc. are computed from your 8 equipped items in the Gear tab. Edit gear there to change these stats."
+                    : "OFF — all stats below are entered manually and will not update when you change gear."}
                 </p>
               </div>
 
@@ -2017,7 +2017,7 @@ export default function App() {
                   <span className="flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" /> Custom Rotation & DPS
                   </span>
-                  <span className="text-amber-500">{isCustomRotationOpen ? "â–² Hide" : "â–¼ Show"}</span>
+                  <span className="text-amber-500">{isCustomRotationOpen ? "▲ Hide" : "▼ Show"}</span>
                 </button>
                 
                 {isCustomRotationOpen && (
@@ -2031,7 +2031,7 @@ export default function App() {
                         onChange={(e) => setCustomRotationText(e.target.value)}
                         className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-sm text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500 font-sans"
                         rows={2}
-                        placeholder="Rope Dart RÃ—3 â†’..."
+                        placeholder="Rope Dart R×3 →..."
                       />
                     </div>
                     
@@ -2043,7 +2043,7 @@ export default function App() {
                         </span>
                       </div>
                       <p className="text-[11.5px] text-slate-500 leading-snug">
-                        ðŸ’¡ <strong>Calculates a rough DPS expectation; actual raid DPS will vary based on boss movement, mechanics, and lag.</strong>
+                        💡 <strong>Calculates a rough DPS expectation; actual raid DPS will vary based on boss movement, mechanics, and lag.</strong>
                       </p>
                     </div>
                   </div>
@@ -2086,7 +2086,7 @@ export default function App() {
                       onClick={handleClearCustomDefault}
                       className="text-[12px] font-mono text-slate-500 hover:text-rose-400 transition-colors w-full"
                     >
-                      âš  Delete Custom Default (Restore Factory Baseline)
+                      ⚠ Delete Custom Default (Restore Factory Baseline)
                     </button>
                   </div>
                 )}
@@ -2145,7 +2145,7 @@ export default function App() {
                     </div>
                     <div className="flex justify-between">
                       <span>Judgment Res factor:</span>
-                      <span className="text-slate-300">Ã—{(1 + activeTier.judgeRes).toFixed(2)}</span>
+                      <span className="text-slate-300">×{(1 + activeTier.judgeRes).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -2379,7 +2379,7 @@ export default function App() {
                     </select>
                   </div>
                   <div className="bg-[#141210] p-3 rounded-lg border border-slate-900/50 mt-4">
-                    <button onClick={() => setFormlessOpen(!formlessOpen)} className="text-amber-500 font-bold text-sm w-full text-left">Advanced / Formless ATK {formlessOpen ? "â–¼" : "â–¶"}</button>
+                    <button onClick={() => setFormlessOpen(!formlessOpen)} className="text-amber-500 font-bold text-sm w-full text-left">Advanced / Formless ATK {formlessOpen ? "▼" : "▶"}</button>
                     {formlessOpen && (
                       <div className="mt-3 space-y-2">
                         <div className="fr flex justify-between text-sm">
@@ -2399,7 +2399,7 @@ export default function App() {
               {/* Simulation Options */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md mt-4">
                 <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
-                  <span className="text-base">âš™ï¸</span> Simulation Options
+                  <span className="text-base">⚙️</span> Simulation Options
                 </span>
 
                 {/* Bow / Ring Type */}
@@ -2715,7 +2715,7 @@ export default function App() {
                   }}
                   className="w-full py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-bold rounded-lg text-sm hover:from-amber-500 hover:to-amber-400 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/10"
                 >
-                  <Database className="w-3.5 h-3.5" /> ðŸ’¾ Save to Scheme
+                  <Database className="w-3.5 h-3.5" /> 💾 Save to Scheme
                 </button>
               </div>
             </div>
@@ -2752,7 +2752,7 @@ export default function App() {
                   <div className="bg-slate-950/40 border border-slate-900 p-3.5 rounded-lg text-center relative flex flex-col justify-center">
                     <div className="text-[11px] font-mono tracking-wider text-slate-500 uppercase">Gap to 100%</div>
                     <div className={`text-xl font-bold font-serif mt-1 ${rotationStats.gradRate >= 100 ? "text-emerald-400" : "text-rose-400"}`}>
-                      {rotationStats.gradRate >= 100 ? "âœ“ Graduated" : `-${(100 - rotationStats.gradRate).toFixed(1)}%`}
+                      {rotationStats.gradRate >= 100 ? "✓ Graduated" : `-${(100 - rotationStats.gradRate).toFixed(1)}%`}
                     </div>
                   </div>
                 </div>
@@ -2777,7 +2777,7 @@ export default function App() {
                     />
                   </div>
                   <p className="text-[12px] text-slate-500 mt-2">
-                    ðŸ’¡ DPS shown is single-target sustained (1 boss). Your in-game meter reading (&gt;36k/s) includes AoE hits on multiple mobs, mystic arts, and dots &mdash; this is normal and expected.
+                    💡 DPS shown is single-target sustained (1 boss). Your in-game meter reading (&gt;36k/s) includes AoE hits on multiple mobs, mystic arts, and dots &mdash; this is normal and expected.
                   </p>
                 </div>
 
@@ -2790,14 +2790,14 @@ export default function App() {
                     const precCapPanel = Math.round(65 + (100-65) * (1 + activeTier.judgeRes)); 
                     const precAdvice = adjustedPanel.prec < precCapPanel 
                       ? `Precision: push to ~${precCapPanel}% panel (need 100% eff)` 
-                      : "Precision: capped âœ“";
+                      : "Precision: capped ✓";
 
                     return (
                       <>
                         {rotationStats.gradRate >= 100 ? (
                           <div className="space-y-1.5">
                             <strong className="text-emerald-400 flex items-center gap-1 mb-1">
-                              <CheckCircle className="w-4 h-4 inline" /> ðŸ† Fully Graduated for Tier 91!
+                              <CheckCircle className="w-4 h-4 inline" /> 🏆 Fully Graduated for Tier 91!
                             </strong>
                             <div>
                               Your build exceeds the T91 baseline ({rotationStats.gradRate.toFixed(1)}%). Ready to clear all Season 3 raids.
@@ -2805,16 +2805,16 @@ export default function App() {
                           </div>
                         ) : (
                           <div className="space-y-1.5">
-                            <strong className="text-amber-500 flex items-center gap-1 mb-1">ðŸ“ˆ {rotationStats.gradRate < 70 ? "Building Phase" : "Road to Graduation"}</strong>
+                            <strong className="text-amber-500 flex items-center gap-1 mb-1">📈 {rotationStats.gradRate < 70 ? "Building Phase" : "Road to Graduation"}</strong>
                             <div>{precAdvice}</div>
                             <div>
-                              â‘  Max Phys Atk â†’ {tgt.maxOuter} (now: {Math.round(adjustedPanel.maxOuter)}) â‘¡ Phys Pen â†’ {tgt.outerPen.toFixed(1)}% (now: {adjustedPanel.outerPen.toFixed(1)}%) â‘¢ Crit Rate Panel â†’ {tgt.crit.toFixed(1)}% (need 80% eff)
+                              ① Max Phys Atk → {tgt.maxOuter} (now: {Math.round(adjustedPanel.maxOuter)}) ② Phys Pen → {tgt.outerPen.toFixed(1)}% (now: {adjustedPanel.outerPen.toFixed(1)}%) ③ Crit Rate Panel → {tgt.crit.toFixed(1)}% (need 80% eff)
                             </div>
                           </div>
                         )}
                         <div className="mt-2.5 pt-2 border-t border-slate-900 text-[12.5px] text-slate-400 font-mono">
                           <strong className="text-amber-500">Path Strategy:</strong> {b.notes}
-                          <div className="text-rose-400 mt-1">âš ï¸ Precision: The base 65% is not reduced by Judge Resistance. Effective cap = 100%. Panel ~116% achieves this at T91. DO NOT stack above ~116% panel â€” diminishing returns become zero at cap.</div>
+                          <div className="text-rose-400 mt-1">⚠️ Precision: The base 65% is not reduced by Judge Resistance. Effective cap = 100%. Panel ~116% achieves this at T91. DO NOT stack above ~116% panel — diminishing returns become zero at cap.</div>
                         </div>
                       </>
                     );
@@ -2845,7 +2845,7 @@ export default function App() {
                       {effCritRate.toFixed(1)}%
                     </strong>
                     <div className="text-[11px] text-slate-500 mt-0.5">
-                      Cap: 80% effective. Need ~116%+ panel at T91 (Ã·1.45). Direct Crit Rate bypasses resistance.
+                      Cap: 80% effective. Need ~116%+ panel at T91 (÷1.45). Direct Crit Rate bypasses resistance.
                     </div>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
@@ -2863,7 +2863,7 @@ export default function App() {
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[12px]">Expected Multiplier</span>
                     <strong className="text-slate-100 text-base font-mono mt-1 block text-amber-500">
-                      Ã—{expectedMultiplier.toFixed(3)}
+                      ×{expectedMultiplier.toFixed(3)}
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
@@ -2955,7 +2955,7 @@ export default function App() {
             <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
               <div className="border-b border-amber-900/15 pb-4 mb-5">
                 <h2 className="text-lg font-bold font-serif text-slate-100 flex items-center gap-2">
-                  <TrendingUp className="text-amber-500 w-5 h-5" /> Stat Priority â€” Graduation Impact
+                  <TrendingUp className="text-amber-500 w-5 h-5" /> Stat Priority — Graduation Impact
                 </h2>
                 <p className="text-slate-400 text-sm mt-1">
                   Live ranking for <strong className="text-amber-400">{(BUILD_PROFILES as any)[selectedBuild]?.label || "your build"}</strong>, computed from your current panel ({rotationStats.gradRate.toFixed(1)}% graduation). Each row simulates adding/removing <strong>one typical substat roll</strong> on a single sub-stat and shows the resulting change in graduation %.
@@ -2964,9 +2964,9 @@ export default function App() {
 
               {/* Two-column gain/loss ranking */}
               <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-900 text-sm text-amber-500/95 flex items-center gap-2 mb-4">
-                <span className="text-lg">ðŸ’¡</span>
+                <span className="text-lg">💡</span>
                 <span>
-                  Calculated against the <strong>Global Tier 91 (Lv95)</strong> boss constants (Defense 350, Judgment Resist Ã—1.45), using your live panel and active build's rotation.
+                  Calculated against the <strong>Global Tier 91 (Lv95)</strong> boss constants (Defense 350, Judgment Resist ×1.45), using your live panel and active build's rotation.
                 </span>
               </div>
 
@@ -3031,14 +3031,14 @@ export default function App() {
               </div>
 
               <p className="text-[12px] text-slate-500 mt-4 italic">
-                Note: if a stat is already past its cap (e.g. Precision/Crit/Affinity at 100%/80%/40% effective), adding more shows ~0% gain â€” that's expected, not a bug. A near-zero loss means you have "slack" on that stat to relay elsewhere.
+                Note: if a stat is already past its cap (e.g. Precision/Crit/Affinity at 100%/80%/40% effective), adding more shows ~0% gain — that's expected, not a bug. A near-zero loss means you have "slack" on that stat to relay elsewhere.
               </p>
             </div>
 
             {/* General T91 Priority Rules Guide */}
             <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
               <h3 className="text-sm uppercase tracking-widest font-extrabold text-amber-500 font-serif border-b border-amber-900/10 pb-2 mb-4">
-                General Theorycrafting Guide Â· T91 Global (http://spongem.com/yysls/)
+                General Theorycrafting Guide · T91 Global (http://spongem.com/yysls/)
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm text-slate-300 leading-relaxed">
                 <div className="space-y-3">
@@ -3090,15 +3090,15 @@ export default function App() {
                   {/* Slot filter tabs (horizontal scrollable) */}
                   <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                     {[
-                      { key: "ALL", label: "ALL", icon: "ðŸ“" },
-                      { key: "Umbrella", label: "UMBRELLA", icon: "â˜‚" },
-                      { key: "Rope Dart", label: "ROPE DART", icon: "ðŸªƒ" },
-                      { key: "Pendant", label: "PENDANT", icon: "ðŸ“¿" },
-                      { key: "Helmet", label: "HELMET", icon: "â›‘" },
-                      { key: "Chest", label: "CHEST", icon: "ðŸ¥‹" },
-                      { key: "Greaves", label: "GREAVES", icon: "ðŸ¦¿" },
-                      { key: "Bracers", label: "BRACERS", icon: "ðŸ¤º" },
-                      { key: "Bow/Ring", label: "BOW/RING", icon: "ðŸ¹" }
+                      { key: "ALL", label: "ALL", icon: "📁" },
+                      { key: "Umbrella", label: "UMBRELLA", icon: "☂" },
+                      { key: "Rope Dart", label: "ROPE DART", icon: "🪃" },
+                      { key: "Pendant", label: "PENDANT", icon: "📿" },
+                      { key: "Helmet", label: "HELMET", icon: "⛑" },
+                      { key: "Chest", label: "CHEST", icon: "🥋" },
+                      { key: "Greaves", label: "GREAVES", icon: "🦿" },
+                      { key: "Bracers", label: "BRACERS", icon: "🤺" },
+                      { key: "Bow/Ring", label: "BOW/RING", icon: "🏹" }
                     ].map((tab) => {
                       const isSelected = gearFilterSlot === tab.key;
                       const count = tab.key === "ALL" 
@@ -3152,7 +3152,7 @@ export default function App() {
                       className="bg-slate-950 border border-slate-900 rounded px-2.5 py-1 text-[12px] font-mono text-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                     >
                       <option value="name">Alphabetical</option>
-                      <option value="mastery">Mastery (âš” High to Low)</option>
+                      <option value="mastery">Mastery (⚔ High to Low)</option>
                     </select>
                   </div>
                 </div>
@@ -3167,7 +3167,7 @@ export default function App() {
                   className="bg-slate-950 border border-slate-900 rounded px-2 py-1 text-[12px] font-mono text-[#ede5ce] focus:outline-none"
                 >
                   <option value="name">Alphabetical</option>
-                  <option value="mastery">Mastery (âš” High to Low)</option>
+                  <option value="mastery">Mastery (⚔ High to Low)</option>
                 </select>
               </div>
 
@@ -3181,7 +3181,7 @@ export default function App() {
                     if (allGear.length === 0) {
                       return (
                         <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
-                          <p className="text-slate-400 text-sm">No gear in this slot. Add your first item â†’</p>
+                          <p className="text-slate-400 text-sm">No gear in this slot. Add your first item →</p>
                           <button
                             onClick={openAddModal}
                             className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-sm transition-all"
@@ -3215,7 +3215,7 @@ export default function App() {
                       }
 
                       const slotObj = SLOTS.find(s => s.name === item.slot);
-                      const slotIcon = slotObj?.icon || "ðŸ¥‹";
+                      const slotIcon = slotObj?.icon || "🥋";
                       const gradContribution = getGearItemCompareStats(item).totalGradDelta;
 
                       return (
@@ -3226,7 +3226,7 @@ export default function App() {
                         >
                           <div className="absolute top-3.5 right-3.5 flex items-center gap-1.5">
                             {hasTuned && (
-                              <span className="text-amber-500 font-bold text-sm animate-pulse" title="Tuned substat inside">âœ¦</span>
+                              <span className="text-amber-500 font-bold text-sm animate-pulse" title="Tuned substat inside">✦</span>
                             )}
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-1">
                               <Edit className="w-3.5 h-3.5 text-amber-500 hover:text-amber-400" />
@@ -3245,7 +3245,7 @@ export default function App() {
                                   </h4>
                                   {item.mastery !== undefined && (
                                     <div className="text-[11px] font-mono font-bold text-amber-500/90 mt-0.5">
-                                      âš” {item.mastery}
+                                      ⚔ {item.mastery}
                                     </div>
                                   )}
                                 </div>
@@ -3272,7 +3272,7 @@ export default function App() {
                                 <div className="flex items-center justify-between border-t border-slate-900/50 pt-1 mt-1">
                                   <span className="text-slate-500">Set Bonus:</span>
                                   <span className="text-[#2ebd85] font-bold flex items-center gap-1">
-                                    {SET_EMOJI[item.set] || "ðŸ”¹"} {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}
+                                    {SET_EMOJI[item.set] || "🔹"} {ARMOR_SETS[item.set as keyof typeof ARMOR_SETS]?.name || item.set}
                                   </span>
                                 </div>
                               )}
@@ -3287,7 +3287,7 @@ export default function App() {
                                       {sub.val}
                                     </span>
                                     {sub.isTuned && (
-                                      <span className="text-amber-500 text-[12px] font-extrabold" title="Tuned substat">âœ¦</span>
+                                      <span className="text-amber-500 text-[12px] font-extrabold" title="Tuned substat">✦</span>
                                     )}
                                   </div>
                                 </div>
@@ -3311,7 +3311,7 @@ export default function App() {
                       if (slotItems.length === 0) {
                         return (
                           <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
-                            <p className="text-slate-400 text-sm">No gear in this slot. Add your first item â†’</p>
+                            <p className="text-slate-400 text-sm">No gear in this slot. Add your first item →</p>
                             <button
                               onClick={openAddModal}
                               className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-sm transition-all"
@@ -3365,13 +3365,13 @@ export default function App() {
                   <div className="bg-[#141210] border border-amber-900/20 rounded-xl p-4 space-y-4">
                     <div className="border-b border-amber-955/40 pb-3">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-base">ðŸ“Š</span>
+                        <span className="text-base">📊</span>
                         <h3 className="text-sm font-extrabold text-amber-500 tracking-wider font-serif uppercase">
                           Current Panel
                         </h3>
                       </div>
                       <p className="text-[12px] text-slate-400 font-mono bg-slate-950/80 px-2 py-0.5 rounded border border-slate-900 inline-block">
-                        {selectedBuild} Â· {activeTier.name}
+                        {selectedBuild} · {activeTier.name}
                       </p>
                     </div>
 
@@ -3508,8 +3508,8 @@ export default function App() {
                         const totalBlocks = 10;
                         const filledBlocks = Math.round(Math.min(100, Math.max(0, gradRate)) / 10);
                         const emptyBlocks = 10 - filledBlocks;
-                        const filledStr = "â–ˆ".repeat(filledBlocks);
-                        const emptyStr = "â–‘".repeat(emptyBlocks);
+                        const filledStr = "█".repeat(filledBlocks);
+                        const emptyStr = "░".repeat(emptyBlocks);
 
                         return (
                           <div className={`bg-[#0c0a09] border border-amber-900/10 p-3.5 rounded-lg space-y-3.5 text-center ${gc.glow}`}>
@@ -3540,7 +3540,7 @@ export default function App() {
                 <div className="border-b border-amber-900/15 pb-4 mb-5 flex justify-between items-center flex-wrap gap-3">
                   <div>
                     <h3 className="text-base font-bold font-serif text-slate-150 flex items-center gap-2">
-                      â± Relaying Cooldown Tracker
+                      ⏱ Relaying Cooldown Tracker
                     </h3>
                     <p className="text-slate-400 text-sm mt-1">
                       Track the remaining 7-day cooldown of your relayed gear.
@@ -3570,7 +3570,7 @@ export default function App() {
                       // Format ASCII blocks
                       const totalBlocks = 10;
                       const filledBlocks = Math.round((progressPct / 100) * totalBlocks);
-                      const progressStr = "â–ˆ".repeat(filledBlocks) + "â–‘".repeat(totalBlocks - filledBlocks);
+                      const progressStr = "█".repeat(filledBlocks) + "░".repeat(totalBlocks - filledBlocks);
 
                       let remainingText = "READY TO RELAY AGAIN";
                       if (!isReady) {
@@ -3627,7 +3627,7 @@ export default function App() {
                               onClick={() => handleRemoveCooldown(item.id)}
                               className="text-sm text-rose-450 hover:text-rose-400 px-2 py-1 font-semibold hover:bg-rose-950/20 rounded border border-rose-950/30 transition-colors cursor-pointer"
                             >
-                              âœ• Remove
+                              ✕ Remove
                             </button>
                           </div>
                         </div>
@@ -3702,7 +3702,7 @@ export default function App() {
                     return (
                       <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center font-mono">
                         <p className="text-slate-400 text-sm">No items in this slot to compare.</p>
-                        <p className="text-[12px] text-slate-500 mt-1">Go to the "ðŸ›¡ Gear" tab to add items for comparison.</p>
+                        <p className="text-[12px] text-slate-500 mt-1">Go to the "🛡 Gear" tab to add items for comparison.</p>
                       </div>
                     );
                   }
@@ -3772,7 +3772,7 @@ export default function App() {
                                     <div key={sidx} className="bg-slate-950/60 p-2 rounded border border-slate-900/60 flex items-center justify-between font-mono text-[12px]">
                                       <div className="truncate text-slate-500 flex items-center gap-1 shrink md:shrink-0 pr-1">
                                         <span>{sub.type}</span>
-                                        {sub.isTuned && <span className="text-amber-500 text-[11px]">âœ¦</span>}
+                                        {sub.isTuned && <span className="text-amber-500 text-[11px]">✦</span>}
                                       </div>
                                       <div className="text-right shrink-0">
                                         <div className="text-slate-300 font-semibold">{sub.val}</div>
@@ -3803,7 +3803,7 @@ export default function App() {
               <div className="border-b border-amber-900/15 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                   <h2 className="text-lg font-bold font-serif text-slate-105 flex items-center gap-2">
-                    ðŸŽ¯ Cultivation Summary
+                    🎯 Cultivation Summary
                   </h2>
                   <p className="text-slate-400 text-sm mt-1">
                     Compare your current accumulated gear substats with the graduation panel targets.
@@ -4116,7 +4116,7 @@ export default function App() {
                   onClick={() => setIsItemModalOpen(false)}
                   className="text-slate-400 hover:text-slate-200 text-base font-mono"
                 >
-                  âœ•
+                  ✕
                 </button>
               </div>
 
@@ -4259,7 +4259,7 @@ export default function App() {
                               }}
                               className="accent-amber-500 h-3 w-3"
                             />
-                            <span className="text-[12px] font-mono text-amber-500 font-semibold">âœ¦</span>
+                            <span className="text-[12px] font-mono text-amber-500 font-semibold">✦</span>
                           </label>
                         </div>
                       </div>
@@ -4306,13 +4306,13 @@ export default function App() {
               {/* Header */}
               <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">
                 <span className="text-sm font-bold uppercase tracking-wider text-amber-500 font-serif flex items-center gap-1.5">
-                  â± Track Relay Cooldown
+                  ⏱ Track Relay Cooldown
                 </span>
                 <button
                   onClick={() => setShowAddCooldownModal(false)}
                   className="text-slate-400 hover:text-slate-200 text-base font-mono cursor-pointer"
                 >
-                  âœ•
+                  ✕
                 </button>
               </div>
 
@@ -4456,7 +4456,7 @@ export default function App() {
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-amber-900/10 pb-3">
                       <div>
                         <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-2">
-                          ðŸ”„ Rotation Combat Simulator
+                          🔄 Rotation Combat Simulator
                         </h3>
                         <p className="text-[12px] text-slate-400 mt-0.5">
                           Set custom hits parsed in combat to calculate authentic class-specific active DPS.
@@ -4479,7 +4479,7 @@ export default function App() {
                     {/* Calibration Note/Banner */}
                     <div className="bg-amber-950/20 border border-amber-500/20 rounded-lg p-3.5 text-sm text-amber-500/90 leading-relaxed space-y-1">
                       <div className="font-bold flex items-center gap-1">
-                        <span>âš ï¸</span> <span>Calibration & Engine Disclaimer</span>
+                        <span>⚠️</span> <span>Calibration & Engine Disclaimer</span>
                       </div>
                       <p className="text-[13px] text-slate-350">
                         Our engine is calibrated against actual Global Tier 91 (approx. 3% total deviation).
@@ -4519,7 +4519,7 @@ export default function App() {
                         }}
                         className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-sm text-slate-350 hover:text-slate-200 transition-colors"
                       >
-                        ðŸ”¥ Heavy Attack Rotation
+                        🔥 Heavy Attack Rotation
                       </button>
                       <button
                         onClick={() => {
@@ -4549,7 +4549,7 @@ export default function App() {
                         }}
                         className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-sm text-slate-350 hover:text-slate-200 transition-colors"
                       >
-                        âš¡ Balanced Rotation
+                        ⚡ Balanced Rotation
                       </button>
                       <button
                         onClick={() => {
@@ -4561,7 +4561,7 @@ export default function App() {
                         }}
                         className="px-2 py-1 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/30 rounded text-sm text-rose-400 transition-colors font-mono"
                       >
-                        ðŸ§¹ Reset to 0 Hits
+                        🧹 Reset to 0 Hits
                       </button>
                     </div>
 
@@ -4602,7 +4602,7 @@ export default function App() {
 
                     {/* Disclaimer about non-Bamboocut-Dust path skill names */}
                     <div className="mt-2 text-[12px] text-slate-400 italic leading-relaxed px-1 flex items-start gap-1">
-                      <span className="shrink-0 text-amber-500/80">âš ï¸</span>
+                      <span className="shrink-0 text-amber-500/80">⚠️</span>
                       <span>
                         Skill names for non-Bamboocut-Dust paths are approximate. Enter hits from your actual damage log for accurate results.
                       </span>
@@ -4616,7 +4616,7 @@ export default function App() {
                   {/* Core Combat Output Parse Card */}
                   <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
                     <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-2 border-b border-amber-900/10 pb-2">
-                      âš” Simulated Combat Parse
+                      ⚔ Simulated Combat Parse
                     </h3>
                     
                     {/* Big Stats Indicator */}
@@ -4683,7 +4683,7 @@ export default function App() {
                   <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
                     <div className="border-b border-amber-900/10 pb-2">
                       <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-1.5">
-                        ðŸ›  Weapon/Gear Swap Simulator
+                        🛠 Weapon/Gear Swap Simulator
                       </h3>
                       <p className="text-[12px] text-slate-400 mt-0.5">
                         Test how alternate weapons stack up by modifying the Base Physical Attack min & max attributes.
@@ -4769,7 +4769,7 @@ export default function App() {
 
                       {/* Helpful quick guide */}
                       <div className="text-[12px] text-slate-500 leading-normal font-sans space-y-1 pl-1">
-                        <p>ðŸ’¡ <strong>Note</strong>: This swap calculations assume panel scaling bonuses (such as Phys Pen, Critical multipliers, and Skill Damage attributes) remain active and apply seamlessly onto the new weapon base damage floor.</p>
+                        <p>💡 <strong>Note</strong>: This swap calculations assume panel scaling bonuses (such as Phys Pen, Critical multipliers, and Skill Damage attributes) remain active and apply seamlessly onto the new weapon base damage floor.</p>
                       </div>
 
                     </div>
@@ -4950,7 +4950,7 @@ export default function App() {
                                     : "bg-slate-905 border-slate-800 text-amber-500/95 hover:bg-slate-900"
                                 }`}
                               >
-                                {isComparing ? "âœ“ Selected" : "Compare"}
+                                {isComparing ? "✓ Selected" : "Compare"}
                               </button>
                               <button
                                 onClick={() => {
@@ -5039,7 +5039,7 @@ export default function App() {
                                       {item.unit}
                                     </div>
                                     <div className={`text-[11px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
-                                      {diff > 0 ? "â–¼ -" : diff < 0 ? "â–² +" : ""}
+                                      {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                       {diff !== 0 ? Math.abs(diff).toFixed(item.key === "minOuter" || item.key === "maxOuter" || item.key === "maxPz" || item.key === "minPz" ? 0 : 1) : "equal"}
                                       {diff !== 0 ? item.unit : ""}
                                     </div>
@@ -5063,7 +5063,7 @@ export default function App() {
                               <td key={p.id} className="py-3 px-3 text-right">
                                 <div className="text-slate-200 font-extrabold">{dyn.gradRate.toFixed(1)}%</div>
                                 <div className={`text-[11px] font-bold ${diff > 0 ? "text-rose-400" : diff < 0 ? "text-emerald-400" : "text-slate-500"}`}>
-                                  {diff > 0 ? "â–¼ -" : diff < 0 ? "â–² +" : ""}
+                                  {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.abs(diff).toFixed(1) : "equal"}
                                   {diff !== 0 ? "%" : ""}
                                 </div>
@@ -5085,7 +5085,7 @@ export default function App() {
                               <td key={p.id} className="py-3 px-3 text-right">
                                 <div className="text-slate-200 font-extrabold">{Math.round(dyn.dps).toLocaleString()}/s</div>
                                 <div className={`text-[11px] font-bold ${diff > 0 ? "text-[#e94b29]" : diff < 0 ? "text-[#3fc05c]" : "text-slate-500"}`}>
-                                  {diff > 0 ? "â–¼ -" : diff < 0 ? "â–² +" : ""}
+                                  {diff > 0 ? "▼ -" : diff < 0 ? "▲ +" : ""}
                                   {diff !== 0 ? Math.round(Math.abs(diff)).toLocaleString() : ""}
                                   {diff !== 0 ? "/s" : "equal"}
                                 </div>
