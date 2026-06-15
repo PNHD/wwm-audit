@@ -1410,6 +1410,28 @@ export default function App() {
     };
   }, [adjustedPanel, activeTier, datang, yishui, selectedBuild, baselineScore, rotationStats.gradRate]);
 
+  // 6. Custom Rotation DPS: computed from user-entered Hits/60s (hitsState)
+  const customRotDps = useMemo(() => {
+    // selectedBuild is lowercase kebab, CLASS_WEAPONS uses title-case — find matching key
+    const buildKey = Object.keys(CLASS_WEAPONS).find(k => k.toLowerCase() === selectedBuild.toLowerCase()) || selectedBuild;
+    const allowedWeapons = CLASS_WEAPONS[buildKey] || [];
+    const skills = WWM_DATA.skills.filter(s => allowedWeapons.includes(s.weapon));
+    let total = 0;
+    let hasAny = false;
+    skills.forEach(s => {
+      const hits = hitsState[s.name] || 0;
+      if (hits > 0) {
+        hasAny = true;
+        const rotItem = { name: s.name, count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 };
+        const { perHit } = calcSkill(rotItem as any, adjustedPanel, activeTier, {
+          set: adjustedPanel.set || "gold", datang, yishui, buildKey: selectedBuild,
+        });
+        total += perHit * hits;
+      }
+    });
+    return hasAny ? total / 60 : null;
+  }, [hitsState, adjustedPanel, activeTier, datang, yishui, selectedBuild]);
+
   // Helper to dynamically calculate stats for any stored profile
   const getDynamicProfileStats = (prof: typeof profiles[0]) => {
     const profPanel = { ...prof.panel };
@@ -2015,39 +2037,50 @@ export default function App() {
                   className="w-full flex justify-between items-center text-[12.5px] font-mono font-bold tracking-widest text-[#a19683] uppercase border-b border-amber-950/40 pb-1.5 focus:outline-none"
                 >
                   <span className="flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" /> Custom Rotation & DPS
+                    <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" /> Custom Rotation DPS
                   </span>
                   <span className="text-amber-500">{isCustomRotationOpen ? "▲ Hide" : "▼ Show"}</span>
                 </button>
-                
-                {isCustomRotationOpen && (
-                  <div className="space-y-3 pt-1">
-                    <div>
-                      <label className="block text-[11px] uppercase font-mono text-slate-500 mb-1">
-                        Active Skill Rotation String:
-                      </label>
-                      <textarea
-                        value={customRotationText}
-                        onChange={(e) => setCustomRotationText(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-sm text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500 font-sans"
-                        rows={2}
-                        placeholder="Rope Dart R×3 →..."
-                      />
-                    </div>
-                    
-                    <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[12.5px] text-slate-400 space-y-1.5 antialiased">
-                      <div className="flex justify-between items-center text-slate-300">
-                        <span>Est. Speedrun DPS:</span>
-                        <span className="font-mono text-sm text-amber-400 font-extrabold">
-                          {(rotationStats.dps * 0.96).toFixed(0)} ~ {(rotationStats.dps * 1.04).toFixed(0)}
-                        </span>
+
+                {isCustomRotationOpen && (() => {
+                  const buildKey = Object.keys(CLASS_WEAPONS).find(k => k.toLowerCase() === selectedBuild.toLowerCase()) || selectedBuild;
+                  const allowedWeapons = CLASS_WEAPONS[buildKey] || [];
+                  const rotSkills = WWM_DATA.skills.filter(s => allowedWeapons.includes(s.weapon));
+                  return (
+                    <div className="space-y-2 pt-1">
+                      <p className="text-[11px] text-slate-500 leading-snug">Nhập số lần dùng skill trong 60 giây để tính DPS thực tế:</p>
+                      <div className="space-y-1.5">
+                        {rotSkills.map(s => (
+                          <div key={s.name} className="flex items-center justify-between gap-2">
+                            <span className="text-[11.5px] text-slate-300 truncate flex-1">{s.name}</span>
+                            <div className="flex items-center gap-1 shrink-0">
+                              <span className="text-[10px] text-slate-600 font-mono">hits/60s</span>
+                              <input
+                                type="number" min="0" max="999"
+                                value={(hitsState[s.name] || 0) === 0 ? "" : (hitsState[s.name] || 0)}
+                                placeholder="0"
+                                onChange={e => setHitsState(prev => ({ ...prev, [s.name]: parseInt(e.target.value) || 0 }))}
+                                className="w-14 bg-slate-950 border border-slate-800 rounded p-1 text-xs text-center text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500/50"
+                              />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <p className="text-[11.5px] text-slate-500 leading-snug">
-                        💡 <strong>Calculates a rough DPS expectation; actual raid DPS will vary based on boss movement, mechanics, and lag.</strong>
-                      </p>
+                      <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 space-y-1 mt-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[11.5px] text-slate-400">Custom DPS:</span>
+                          <span className="font-mono text-sm font-extrabold text-amber-400">
+                            {customRotDps !== null ? Math.round(customRotDps).toLocaleString() : <span className="text-slate-600 text-xs">— nhập hits để tính</span>}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[11.5px] text-slate-400">Preset DPS:</span>
+                          <span className="font-mono text-xs text-slate-500">{Math.round(rotationStats.dps).toLocaleString()}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               {/* Reset/Save Default Quick Group */}
