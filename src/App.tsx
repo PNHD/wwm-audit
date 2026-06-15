@@ -1563,7 +1563,7 @@ export default function App() {
               Single-Target DPS
               <span className="text-slate-600 ml-1 cursor-help" title="Single-target sustained DPS over 78.5s rotation vs 1 boss. In-game DPS meter includes AoE &times; mob count, dots, and mystic arts &mdash; typically 5-10x higher.">ⓘ</span>
             </span>
-            <div className="text-sm font-bold font-serif text-slate-200 mt-1">
+            <div className="text-base font-bold font-serif text-slate-200 mt-1">
               {Math.round(rotationStats.dps).toLocaleString()}/s
             </div>
           </div>
@@ -1613,7 +1613,7 @@ export default function App() {
       </div>
 
       {/* Multi-Character & Multi-Scheme Sticky Bar */}
-      <div className="bg-[#14120f] border-b border-amber-900/10 px-6 py-2.5 flex flex-wrap gap-4 items-center justify-between text-xs sticky top-0 z-20 shadow-md">
+      <div className="bg-[#14120f] border-b border-amber-900/10 px-6 py-2.5 flex flex-wrap gap-4 items-center justify-between text-sm sticky top-0 z-20 shadow-md">
         <div className="flex flex-wrap items-center gap-3">
           {/* Character selection & operations */}
           <div className="flex items-center gap-2">
@@ -1628,7 +1628,7 @@ export default function App() {
                 setCharsData(newData);
                 localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
               }}
-              className="bg-slate-950 border border-slate-800 text-amber-500 rounded px-2.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+              className="bg-slate-950 border border-slate-800 text-amber-500 rounded px-2.5 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50"
             >
               {charsData.chars.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -1831,7 +1831,7 @@ export default function App() {
         <div className="flex gap-4 min-w-max">
           <button
             onClick={() => setActiveTab("calculator")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
               activeTab === "calculator" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -1843,7 +1843,7 @@ export default function App() {
           <div className="relative">
             <button
               onClick={() => setAnalysisMenuOpen(v => !v)}
-              className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors flex items-center gap-1 ${
+              className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors flex items-center gap-1 ${
                 ["priority", "compare", "cultivate", "simulators", "rot-sim"].includes(activeTab)
                   ? "text-amber-500 font-extrabold"
                   : "text-slate-400 hover:text-slate-200"
@@ -1868,7 +1868,7 @@ export default function App() {
                     <button
                       key={opt.key}
                       onClick={() => { setActiveTab(opt.key as any); setAnalysisMenuOpen(false); }}
-                      className={`block w-full text-left px-3 py-2 text-xs whitespace-nowrap transition-colors ${
+                      className={`block w-full text-left px-3 py-2 text-sm whitespace-nowrap transition-colors ${
                         activeTab === opt.key ? "text-amber-500 font-bold bg-amber-500/5" : "text-slate-300 hover:bg-slate-800/60"
                       }`}
                     >
@@ -1881,7 +1881,7 @@ export default function App() {
           </div>
           <button
             onClick={() => setActiveTab("gear")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
               activeTab === "gear" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -1892,7 +1892,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setActiveTab("ocr")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
               activeTab === "ocr" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -1903,7 +1903,7 @@ export default function App() {
           </button>
           <button
             onClick={() => setActiveTab("profiles")}
-            className={`py-3 text-xs uppercase font-bold tracking-wider relative transition-colors ${
+            className={`py-3 text-sm uppercase font-bold tracking-wider relative transition-colors ${
               activeTab === "profiles" ? "text-amber-500 font-extrabold" : "text-slate-400 hover:text-slate-200"
             }`}
           >
@@ -1975,10 +1975,23 @@ export default function App() {
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
                 {SLOTS.map(slot => {
                   const item = getActiveGear().find(it => it.slot === slot.name);
+                  const [bw1, bw2] = BUILD_WEAPONS[selectedBuild] || [];
+                  const weaponIconKey = slot.name === "Umbrella" ? bw1 : slot.name === "Rope Dart" ? bw2 : undefined;
+                  const slotIconUrl = weaponIconKey ? WEAPON_ICONS[weaponIconKey] : undefined;
+                  const SlotIcon = () => slotIconUrl ? (
+                    <img
+                      src={slotIconUrl}
+                      alt={slot.name}
+                      className="w-9 h-9 object-contain mx-auto"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  ) : (
+                    <span className="text-2xl">{slot.icon}</span>
+                  );
                   if (!item) {
                     return (
                       <div key={slot.name} className="bg-slate-950/40 border border-slate-900 rounded-lg p-2 text-center opacity-50">
-                        <div className="text-lg">{slot.icon}</div>
+                        <SlotIcon />
                         <div className="text-[11px] text-slate-500 mt-1">{slot.name}</div>
                         <div className="text-[11px] text-slate-600 mt-1">— empty —</div>
                       </div>
@@ -1998,7 +2011,7 @@ export default function App() {
                       title={item.name}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-base">{slot.icon}</span>
+                        <SlotIcon />
                         {misTuned.length > 0 && (
                           <span className="text-[11px]" title={`${misTuned.length} sub-stat ít/không có giá trị cho ${(BUILD_PROFILES as any)[selectedBuild]?.label}: ${misTuned.map(s => s.type).join(", ")}`}>⚠️</span>
                         )}
@@ -2018,13 +2031,13 @@ export default function App() {
               {/* Build Path Dropdown */}
               <div className="bg-[#1c1a17] border border-amber-900/20 rounded-xl p-4 space-y-3 shadow-md">
                 <span className="text-[12px] font-mono font-bold tracking-widest text-amber-500 uppercase flex items-center gap-1.5 border-b border-amber-950/40 pb-1.5">
-                  <span className="text-sm">⚔️</span> Build Path Selection
+                  <span className="text-base">⚔️</span> Build Path Selection
                 </span>
                 <div>
                   <select
                     value={selectedBuild}
                     onChange={e => setSelectedBuild(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 text-amber-400 rounded px-2.5 py-2 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                    className="w-full bg-slate-950 border border-slate-800 text-amber-400 rounded px-2.5 py-2 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                   >
                     {Object.entries(BUILD_PROFILES).map(([key, b]) => (
                       <option key={key} value={key}>{b.label} [{b.tier}]</option>
@@ -2067,7 +2080,7 @@ export default function App() {
                   <select
                     value={panel.set}
                     onChange={e => handleStatChange("set", e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 text-amber-100 rounded px-2.5 py-2 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                    className="w-full bg-slate-950 border border-slate-800 text-amber-100 rounded px-2.5 py-2 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500/50"
                   >
                     {Object.entries(ARMOR_SETS).map(([key, s]) => (
                       <option key={key} value={key}>{s.name}</option>
@@ -2159,7 +2172,7 @@ export default function App() {
                       <textarea
                         value={customRotationText}
                         onChange={(e) => setCustomRotationText(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-xs text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500 font-sans"
+                        className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-sm text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500 font-sans"
                         rows={2}
                         placeholder="Rope Dart R×3 →..."
                       />
@@ -2168,7 +2181,7 @@ export default function App() {
                     <div className="bg-slate-950/60 rounded p-2.5 border border-slate-900 text-[12.5px] text-slate-400 space-y-1.5 antialiased">
                       <div className="flex justify-between items-center text-slate-300">
                         <span>Est. Speedrun DPS:</span>
-                        <span className="font-mono text-xs text-amber-400 font-extrabold">
+                        <span className="font-mono text-sm text-amber-400 font-extrabold">
                           {(rotationStats.dps * 0.96).toFixed(0)} ~ {(rotationStats.dps * 1.04).toFixed(0)}
                         </span>
                       </div>
@@ -2196,14 +2209,14 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-2 text-center">
                   <button
                     onClick={handleSaveAsDefault}
-                    className="py-1.5 px-2 text-xs font-mono font-bold text-[#ede5ce] bg-amber-900/30 hover:bg-amber-900/50 border border-amber-500/20 rounded transition-all flex items-center justify-center gap-1 hover:text-amber-300 shadow-sm"
+                    className="py-1.5 px-2 text-sm font-mono font-bold text-[#ede5ce] bg-amber-900/30 hover:bg-amber-900/50 border border-amber-500/20 rounded transition-all flex items-center justify-center gap-1 hover:text-amber-300 shadow-sm"
                     title="Save present parameters & buffs as default when loading pages"
                   >
                     <Database className="w-3.5 h-3.5 text-amber-500" /> Save default
                   </button>
                   <button
                     onClick={handleResetAll}
-                    className="py-1.5 px-2 text-xs font-mono font-bold text-rose-300 bg-rose-950/20 hover:bg-rose-950/45 border border-rose-950/40 rounded transition-all flex items-center justify-center gap-1 hover:text-rose-200"
+                    className="py-1.5 px-2 text-sm font-mono font-bold text-rose-300 bg-rose-950/20 hover:bg-rose-950/45 border border-rose-950/40 rounded transition-all flex items-center justify-center gap-1 hover:text-rose-200"
                     title="Restore all parameters to baseline database definitions"
                   >
                     <RotateCw className="w-3.5 h-3.5 text-rose-500" /> Reset All
@@ -2224,16 +2237,16 @@ export default function App() {
 
               {/* Dungeon selection */}
               <div>
-                <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest mb-3 flex items-center gap-1">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 flex items-center gap-1">
                   <Sliders className="w-3.5 h-3.5" /> Dungeon Parameters
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3 bg-slate-950/60 p-2 rounded-lg border border-slate-900/60">
-                    <label className="text-xs text-slate-300 font-medium">Dungeon Level</label>
+                    <label className="text-sm text-slate-300 font-medium">Dungeon Level</label>
                     <select
                       value={tierKey}
                       onChange={(e) => setTierKey(e.target.value)}
-                      className="bg-slate-900 font-mono border-none text-xs text-amber-500 rounded px-2.5 py-1 text-right focus:outline-none"
+                      className="bg-slate-900 font-mono border-none text-sm text-amber-500 rounded px-2.5 py-1 text-right focus:outline-none"
                     >
                       <option value="350|0.45">Tier 91 / Lv95 (Global)</option>
                       <option value="307|0.3">Tier 86 / Lv90</option>
@@ -2252,7 +2265,7 @@ export default function App() {
                           type="number"
                           value={customDef}
                           onChange={(e) => setCustomDef(parseInt(e.target.value) || 0)}
-                          className="w-full bg-slate-950 text-slate-200 border border-slate-800 text-xs text-right px-2 py-1 rounded"
+                          className="w-full bg-slate-950 text-slate-200 border border-slate-800 text-sm text-right px-2 py-1 rounded"
                         />
                       </div>
                       <div>
@@ -2262,7 +2275,7 @@ export default function App() {
                           step="0.05"
                           value={customRes}
                           onChange={(e) => setCustomRes(parseFloat(e.target.value) || 0)}
-                          className="w-full bg-slate-950 text-slate-200 border border-slate-800 text-xs text-right px-2 py-1 rounded"
+                          className="w-full bg-slate-950 text-slate-200 border border-slate-800 text-sm text-right px-2 py-1 rounded"
                         />
                       </div>
                     </div>
@@ -2283,11 +2296,11 @@ export default function App() {
 
               {/* Attributes block */}
               <div>
-                <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
                   Physical attributes
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Min Physical Atk</span>
                     <input
                       type="number"
@@ -2296,7 +2309,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Max Physical Atk</span>
                     <input
                       type="number"
@@ -2305,7 +2318,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Physical Penetration %</span>
                     <input
                       type="number"
@@ -2319,11 +2332,11 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
                   Bamboocut Dust attributes
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Min Bamboocut Atk</span>
                     <input
                       type="number"
@@ -2332,7 +2345,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Max Bamboocut Atk</span>
                     <input
                       type="number"
@@ -2341,7 +2354,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-20 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Bamboocut Pen %</span>
                     <input
                       type="number"
@@ -2351,7 +2364,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Bamboocut DMG Bonus %</span>
                     <input
                       type="number"
@@ -2365,12 +2378,12 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
                   Hit and Critical Rates
                 </h3>
                 <div className="space-y-2.5">
                   <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-900/60">
-                    <div className="flex justify-between items-center text-xs">
+                    <div className="flex justify-between items-center text-sm">
                       <span className="text-slate-400">Precision Rate %</span>
                       <input
                         type="number"
@@ -2384,7 +2397,7 @@ export default function App() {
                       Enter your actual panel value (e.g. 103.7%). Base 65% is not reduced by boss resistance.
                     </div>
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Critical Rate %</span>
                     <input
                       type="number"
@@ -2394,7 +2407,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400 font-medium">Direct Critical Rate %</span>
                     <input
                       type="number"
@@ -2404,7 +2417,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-emerald-400 focus:outline-none w-16 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Affinity Rate %</span>
                     <input
                       type="number"
@@ -2418,11 +2431,11 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
+                <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest mb-3 pb-1 border-b border-amber-900/10">
                   Damage Multipliers
                 </h3>
                 <div className="space-y-2.5">
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Crit DMG Bonus %</span>
                     <input
                       type="number"
@@ -2432,7 +2445,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Affinity DMG %</span>
                     <input
                       type="number"
@@ -2442,7 +2455,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Rope Dart DMG %</span>
                     <input
                       type="number"
@@ -2452,7 +2465,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Umbrella Action DMG %</span>
                     <input
                       type="number"
@@ -2462,7 +2475,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">All Weapons DMG %</span>
                     <input
                       type="number"
@@ -2472,7 +2485,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Boss DMG Boost %</span>
                     <input
                       type="number"
@@ -2482,7 +2495,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-slate-100 focus:outline-none w-16 font-mono"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-[#201512]/60 p-2 rounded-lg border border-rose-950/40 text-xs">
+                  <div className="flex justify-between items-center bg-[#201512]/60 p-2 rounded-lg border border-rose-950/40 text-sm">
                     <label>
                       <span className="text-amber-500 font-bold">Attuned Bonus</span>
                       <br/>
@@ -2496,7 +2509,7 @@ export default function App() {
                       className="bg-transparent border-none text-right text-rose-300 focus:outline-none w-16 font-mono font-bold"
                     />
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-xs">
+                  <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded-lg border border-slate-900/60 text-sm">
                     <span className="text-slate-400">Armor Set Selection</span>
                     <select
                       value={panel.set}
@@ -2509,14 +2522,14 @@ export default function App() {
                     </select>
                   </div>
                   <div className="bg-[#141210] p-3 rounded-lg border border-slate-900/50 mt-4">
-                    <button onClick={() => setFormlessOpen(!formlessOpen)} className="text-amber-500 font-bold text-xs w-full text-left">Advanced / Formless ATK {formlessOpen ? "▼" : "▶"}</button>
+                    <button onClick={() => setFormlessOpen(!formlessOpen)} className="text-amber-500 font-bold text-sm w-full text-left">Advanced / Formless ATK {formlessOpen ? "▼" : "▶"}</button>
                     {formlessOpen && (
                       <div className="mt-3 space-y-2">
-                        <div className="fr flex justify-between text-xs">
+                        <div className="fr flex justify-between text-sm">
                           <label className="text-slate-400">Formless Min ATK</label>
                           <input type="number" value={panel.wuxiangMin ?? 0} onChange={(e) => handleStatChange("wuxiangMin", parseFloat(e.target.value) || 0)} className="bg-slate-900 p-1 w-16 text-right rounded" />
                         </div>
-                        <div className="fr flex justify-between text-xs">
+                        <div className="fr flex justify-between text-sm">
                           <label className="text-slate-400">Formless Max ATK</label>
                           <input type="number" value={panel.wuxiangMax ?? 0} onChange={(e) => handleStatChange("wuxiangMax", parseFloat(e.target.value) || 0)} className="bg-slate-900 p-1 w-16 text-right rounded" />
                         </div>
@@ -2527,7 +2540,7 @@ export default function App() {
               </div>
 
               {/* Passive Checkboxes */}
-              <div className="space-y-2 pt-2 border-t border-slate-800/80 text-xs">
+              <div className="space-y-2 pt-2 border-t border-slate-800/80 text-sm">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -2581,7 +2594,7 @@ export default function App() {
               {/* Inner Ways Database Section */}
               <div className="pt-4 border-t border-slate-800/80">
                 <div className="flex justify-between items-center mb-1">
-                  <h3 className="text-xs font-semibold text-amber-500 uppercase tracking-widest flex items-center gap-1 font-serif">
+                  <h3 className="text-sm font-semibold text-amber-500 uppercase tracking-widest flex items-center gap-1 font-serif">
                     <Database className="w-3.5 h-3.5 text-amber-500" /> Active Inner Ways
                   </h3>
                   <span className="text-[12px] font-mono px-1.5 py-0.5 rounded bg-slate-950 border border-slate-900 text-amber-400 font-bold">
@@ -2598,7 +2611,7 @@ export default function App() {
                   value={innerWaySearch}
                   onChange={e => setInnerWaySearch(e.target.value)}
                   placeholder="Search inner ways..."
-                  className="w-full mb-2 px-2.5 py-1.5 bg-slate-950/60 border border-slate-800 rounded text-xs text-slate-300 placeholder-slate-600 focus:outline-none focus:border-amber-600"
+                  className="w-full mb-2 px-2.5 py-1.5 bg-slate-950/60 border border-slate-800 rounded text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:border-amber-600"
                 />
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-900 mb-3 text-[12px]">
                   <button
@@ -2704,7 +2717,7 @@ export default function App() {
                       >
                         <div className="flex justify-between items-center font-semibold mb-1">
                           <span className="flex items-center gap-2">
-                            <div className={`w-7 h-7 rounded flex items-center justify-center text-white font-bold text-xs flex-shrink-0 ${CAT_COLORS[iw.cat] || "bg-slate-700"}`}>
+                            <div className={`w-7 h-7 rounded flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${CAT_COLORS[iw.cat] || "bg-slate-700"}`}>
                               {iw.name.charAt(0)}
                             </div>
                             <span>
@@ -2804,7 +2817,7 @@ export default function App() {
                     localStorage.setItem("wwm_chars_v3", JSON.stringify(newData));
                     alert(`Successfully saved stats & buffs to scheme "${activeScheme.name}"!`);
                   }}
-                  className="w-full py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-bold rounded-lg text-xs hover:from-amber-500 hover:to-amber-400 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/10"
+                  className="w-full py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-bold rounded-lg text-sm hover:from-amber-500 hover:to-amber-400 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/10"
                 >
                   <Database className="w-3.5 h-3.5" /> 💾 Save to Scheme
                 </button>
@@ -2817,7 +2830,7 @@ export default function App() {
                 <div className="absolute top-0 right-0 p-3">
                   <span className="text-[11px] font-mono tracking-widest text-[#8a9ea8] uppercase">Season 3 Global</span>
                 </div>
-                <h2 className="text-xs uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-900/10 pb-2">
+                <h2 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-900/10 pb-2">
                   <Award className="w-4 h-4 text-amber-400" /> Graduation Damage Analysis
                 </h2>
 
@@ -2873,7 +2886,7 @@ export default function App() {
                 </div>
 
                 {/* Dynamic Advice & Gearing Roadmap */}
-                <div className="mt-4 p-4 rounded-lg text-xs leading-relaxed border bg-slate-950/50 border-slate-900 text-slate-300">
+                <div className="mt-4 p-4 rounded-lg text-sm leading-relaxed border bg-slate-950/50 border-slate-900 text-slate-300">
                   {(() => {
                     const b = BUILD_PROFILES[selectedBuild as keyof typeof BUILD_PROFILES];
                     if (!b) return null;
@@ -2915,14 +2928,14 @@ export default function App() {
 
               {/* Hit Zone breakdown block */}
               <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5">
-                <h3 className="text-xs uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-900/10 pb-2">
+                <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 mb-4 flex items-center gap-1.5 font-serif border-b border-amber-900/10 pb-2">
                   <TrendingUp className="w-4 h-4" /> Calculated Hit Probabilities
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-sm">
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900 flex flex-col justify-between">
                     <div>
                       <span className="text-[11px] text-slate-500 uppercase font-mono mt-1 block">Precision (Eff)</span>
-                      <strong className="text-slate-100 text-sm font-mono mt-1 block">
+                      <strong className="text-slate-100 text-base font-mono mt-1 block">
                         {effPrecision.toFixed(1)}%
                       </strong>
                     </div>
@@ -2932,7 +2945,7 @@ export default function App() {
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[12px]">Critical</span>
-                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
+                    <strong className="text-slate-100 text-base font-mono mt-1 block">
                       {effCritRate.toFixed(1)}%
                     </strong>
                     <div className="text-[11px] text-slate-500 mt-0.5">
@@ -2941,25 +2954,25 @@ export default function App() {
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[12px]">Affinity</span>
-                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
+                    <strong className="text-slate-100 text-base font-mono mt-1 block">
                       {effAffRate.toFixed(1)}%
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[12px]">Graze</span>
-                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
+                    <strong className="text-slate-100 text-base font-mono mt-1 block">
                       {effGrazeRate.toFixed(1)}%
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[12px]">Expected Multiplier</span>
-                    <strong className="text-slate-100 text-sm font-mono mt-1 block text-amber-500">
+                    <strong className="text-slate-100 text-base font-mono mt-1 block text-amber-500">
                       ×{expectedMultiplier.toFixed(3)}
                     </strong>
                   </div>
                   <div className="bg-slate-950/40 p-3 rounded-lg border border-slate-900">
                     <span className="text-slate-500 block font-mono text-[12px]">Pen Zone</span>
-                    <strong className="text-slate-100 text-sm font-mono mt-1 block">
+                    <strong className="text-slate-100 text-base font-mono mt-1 block">
                       {netPhysPen >= 0 ? "+" : ""}
                       {(netPhysPen / 200 * 100).toFixed(1)}%
                     </strong>
@@ -2973,7 +2986,7 @@ export default function App() {
               {/* Rotation breakdown tables */}
               <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5">
                 <div className="flex justify-between items-center border-b border-amber-900/10 pb-3 mb-4">
-                  <h3 className="text-xs uppercase tracking-wider font-extrabold text-amber-500 flex items-center gap-1.5 font-serif">
+                  <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500 flex items-center gap-1.5 font-serif">
                     <Layers className="w-4 h-4" /> Rotation Skill Damage Breakdown
                   </h3>
                   <div className="flex gap-1.5 bg-slate-950 p-1 rounded border border-slate-900 text-[12px]">
@@ -2997,7 +3010,7 @@ export default function App() {
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse">
+                  <table className="w-full text-left text-sm border-collapse">
                     <thead>
                       <tr className="border-b border-amber-900/20 text-[#8a9ea8] font-mono text-[12px] uppercase">
                         <th className="py-2.5 px-3">#</th>
@@ -3046,13 +3059,13 @@ export default function App() {
                 <h2 className="text-lg font-bold font-serif text-slate-100 flex items-center gap-2">
                   <TrendingUp className="text-amber-500 w-5 h-5" /> Stat Priority — Graduation Impact
                 </h2>
-                <p className="text-slate-400 text-xs mt-1">
+                <p className="text-slate-400 text-sm mt-1">
                   Live ranking for <strong className="text-amber-400">{(BUILD_PROFILES as any)[selectedBuild]?.label || "your build"}</strong>, computed from your current panel ({rotationStats.gradRate.toFixed(1)}% graduation). Each row simulates adding/removing <strong>one typical substat roll</strong> on a single sub-stat and shows the resulting change in graduation %.
                 </p>
               </div>
 
               {/* Two-column gain/loss ranking */}
-              <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-900 text-xs text-amber-500/95 flex items-center gap-2 mb-4">
+              <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-900 text-sm text-amber-500/95 flex items-center gap-2 mb-4">
                 <span className="text-lg">💡</span>
                 <span>
                   Calculated against the <strong>Global Tier 91 (Lv95)</strong> boss constants (Defense 350, Judgment Resist ×1.45), using your live panel and active build's rotation.
@@ -3070,7 +3083,7 @@ export default function App() {
                       const maxGain = statPriorityList.gains[0].gain || 1;
                       const width = maxGain > 0 ? Math.max(0, (g.gain / maxGain) * 100) : 0;
                       return (
-                        <div key={g.key} className="flex items-center gap-2 text-xs">
+                        <div key={g.key} className="flex items-center gap-2 text-sm">
                           <span className="w-4 text-slate-600 font-mono text-right text-[12px]">{idx + 1}</span>
                           <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
                           <span className="w-12 text-slate-500 font-mono text-right text-[12px]">+{g.roll}{g.unit}</span>
@@ -3099,7 +3112,7 @@ export default function App() {
                       const maxLoss = Math.abs(statPriorityList.losses[0].loss) || 1;
                       const width = maxLoss > 0 ? Math.max(0, (Math.abs(g.loss) / maxLoss) * 100) : 0;
                       return (
-                        <div key={g.key} className="flex items-center gap-2 text-xs">
+                        <div key={g.key} className="flex items-center gap-2 text-sm">
                           <span className="w-4 text-slate-600 font-mono text-right text-[12px]">{idx + 1}</span>
                           <span className="w-32 text-slate-300 font-medium truncate">{g.label}</span>
                           <span className="w-12 text-slate-500 font-mono text-right text-[12px]">-{g.roll}{g.unit}</span>
@@ -3126,10 +3139,10 @@ export default function App() {
 
             {/* General T91 Priority Rules Guide */}
             <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6 shadow-lg">
-              <h3 className="text-xs uppercase tracking-widest font-extrabold text-amber-500 font-serif border-b border-amber-900/10 pb-2 mb-4">
+              <h3 className="text-sm uppercase tracking-widest font-extrabold text-amber-500 font-serif border-b border-amber-900/10 pb-2 mb-4">
                 General Theorycrafting Guide · T91 Global (http://spongem.com/yysls/)
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs text-slate-300 leading-relaxed">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm text-slate-300 leading-relaxed">
                 <div className="space-y-3">
                   <p>
                     <strong className="text-amber-400">1. Physical Penetration (Phys Pen)</strong>: The most crucial core attribute until reaching the optimal cap in dungeon content (e.g., 51.2% for T91). Every point of Phys Pen below this threshold provides massive exponential damage amplification.
@@ -3162,12 +3175,12 @@ export default function App() {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-amber-900/10 pb-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
+                    <h2 className="text-base font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
                       <Shield className="w-4 h-4 ml-0.5 inline-block text-amber-500" /> Gear Stock Inventory
                     </h2>
                     <button
                       onClick={openAddModal}
-                      className="md:hidden px-3 py-1.5 bg-amber-500 text-slate-950 rounded font-bold text-xs hover:bg-amber-400 flex items-center gap-1 transition-all"
+                      className="md:hidden px-3 py-1.5 bg-amber-500 text-slate-950 rounded font-bold text-sm hover:bg-amber-400 flex items-center gap-1 transition-all"
                     >
                       <Plus className="w-3.5 h-3.5" /> Add Gear
                     </button>
@@ -3202,7 +3215,7 @@ export default function App() {
                               setSelectedSlot(tab.key);
                             }
                           }}
-                          className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold border transition-all ${
+                          className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-mono font-bold border transition-all ${
                             isSelected
                               ? "bg-amber-500 text-slate-950 border-amber-500 shadow-md shadow-amber-500/10"
                               : "bg-slate-950/40 text-slate-400 hover:text-slate-200 border-slate-900/60"
@@ -3228,7 +3241,7 @@ export default function App() {
                 <div className="hidden md:flex flex-col items-end gap-2.5 shrink-0">
                   <button
                     onClick={openAddModal}
-                    className="px-4 py-2 bg-amber-500 text-slate-950 rounded font-bold text-xs hover:bg-amber-400 flex items-center gap-1 transition-all shadow-md shadow-amber-500/5 hover:scale-[1.02]"
+                    className="px-4 py-2 bg-amber-500 text-slate-950 rounded font-bold text-sm hover:bg-amber-400 flex items-center gap-1 transition-all shadow-md shadow-amber-500/5 hover:scale-[1.02]"
                   >
                     <Plus className="w-4 h-4" /> Add Gear Item
                   </button>
@@ -3270,10 +3283,10 @@ export default function App() {
                     if (allGear.length === 0) {
                       return (
                         <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
-                          <p className="text-slate-400 text-xs">No gear in this slot. Add your first item →</p>
+                          <p className="text-slate-400 text-sm">No gear in this slot. Add your first item →</p>
                           <button
                             onClick={openAddModal}
-                            className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-xs transition-all"
+                            className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-sm transition-all"
                           >
                             Create first item
                           </button>
@@ -3315,7 +3328,7 @@ export default function App() {
                         >
                           <div className="absolute top-3.5 right-3.5 flex items-center gap-1.5">
                             {hasTuned && (
-                              <span className="text-amber-500 font-bold text-xs animate-pulse" title="Tuned substat inside">✦</span>
+                              <span className="text-amber-500 font-bold text-sm animate-pulse" title="Tuned substat inside">✦</span>
                             )}
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-1">
                               <Edit className="w-3.5 h-3.5 text-amber-500 hover:text-amber-400" />
@@ -3329,7 +3342,7 @@ export default function App() {
                                   {slotIcon}
                                 </span>
                                 <div className="min-w-0">
-                                  <h4 className="text-xs font-bold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
+                                  <h4 className="text-sm font-bold text-slate-100 group-hover:text-amber-400 transition-colors truncate">
                                     {item.name}
                                   </h4>
                                   {item.mastery !== undefined && (
@@ -3400,10 +3413,10 @@ export default function App() {
                       if (slotItems.length === 0) {
                         return (
                           <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-12 rounded-xl text-center">
-                            <p className="text-slate-400 text-xs">No gear in this slot. Add your first item →</p>
+                            <p className="text-slate-400 text-sm">No gear in this slot. Add your first item →</p>
                             <button
                               onClick={openAddModal}
-                              className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-xs transition-all"
+                              className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-850 hover:border-slate-700 text-amber-500 border border-slate-800 rounded font-bold text-sm transition-all"
                             >
                               Create first "{gearFilterSlot}" item
                             </button>
@@ -3434,8 +3447,8 @@ export default function App() {
                       <div className="space-y-6">
                         {slotsWithItems.map(({ slot, items }) => (
                           <div key={slot.name} className="space-y-3">
-                            <h3 className="text-xs uppercase tracking-wider font-extrabold text-amber-500/80 font-mono border-b border-amber-950/40 pb-1.5 flex items-center gap-2">
-                              <span className="text-sm">{slot.icon}</span>
+                            <h3 className="text-sm uppercase tracking-wider font-extrabold text-amber-500/80 font-mono border-b border-amber-950/40 pb-1.5 flex items-center gap-2">
+                              <span className="text-base">{slot.icon}</span>
                               <span>{slot.name} Section</span>
                               <span className="text-[12px] text-slate-500 font-normal">({items.length} item{items.length > 1 ? "s" : ""})</span>
                             </h3>
@@ -3454,8 +3467,8 @@ export default function App() {
                   <div className="bg-[#141210] border border-amber-900/20 rounded-xl p-4 space-y-4">
                     <div className="border-b border-amber-955/40 pb-3">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-sm">📊</span>
-                        <h3 className="text-xs font-extrabold text-amber-500 tracking-wider font-serif uppercase">
+                        <span className="text-base">📊</span>
+                        <h3 className="text-sm font-extrabold text-amber-500 tracking-wider font-serif uppercase">
                           Current Panel
                         </h3>
                       </div>
@@ -3466,19 +3479,19 @@ export default function App() {
 
                     {/* Section 1: Attack Stats */}
                     <div className="space-y-2 border-b border-slate-900 pb-3">
-                      <div className="flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center justify-between text-sm font-mono">
                         <span className="text-slate-400">Physical Attack</span>
                         <span className="text-white font-bold text-right leading-none">
                           {Math.round(adjustedPanel.minOuter)}~{Math.round(adjustedPanel.maxOuter)}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center justify-between text-sm font-mono">
                         <span className="text-slate-400">Bamboocut Atk</span>
                         <span className="text-slate-350 font-medium text-right leading-none">
                           {Math.round(adjustedPanel.minPz)}~{Math.round(adjustedPanel.maxPz)}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center justify-between text-sm font-mono">
                         <span className="text-slate-400">Phys Penetration</span>
                         <span className="text-slate-350 font-medium text-right leading-none">
                           {adjustedPanel.outerPen.toFixed(1)}%
@@ -3499,25 +3512,25 @@ export default function App() {
 
                         return (
                           <>
-                            <div className="flex items-center justify-between text-xs font-mono">
+                            <div className="flex items-center justify-between text-sm font-mono">
                               <span className="text-slate-400">Precision</span>
                               <span className={`font-bold text-right leading-none ${hasPrecCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
                                 {adjustedPanel.prec.toFixed(1)}% {hasPrecCap && "(Cap)"}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between text-xs font-mono">
+                            <div className="flex items-center justify-between text-sm font-mono">
                               <span className="text-slate-400">Critical Rate</span>
                               <span className={`font-bold text-right leading-none ${hasCritCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
                                 {adjustedPanel.crit.toFixed(1)}% {hasCritCap && "(Cap)"}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between text-xs font-mono">
+                            <div className="flex items-center justify-between text-sm font-mono">
                               <span className="text-slate-400">Affinity Rate</span>
                               <span className={`font-bold text-right leading-none ${hasAffCap ? "text-amber-500 font-extrabold" : "text-slate-355"}`}>
                                 {adjustedPanel.aff.toFixed(1)}% {hasAffCap && "(Cap)"}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between text-xs font-mono">
+                            <div className="flex items-center justify-between text-sm font-mono">
                               <span className="text-slate-400">Direct Crit</span>
                               <span className="text-slate-355 font-medium text-right leading-none">
                                 {adjustedPanel.dcrit.toFixed(1)}%
@@ -3530,19 +3543,19 @@ export default function App() {
 
                     {/* Section 3: Damage Modifiers */}
                     <div className="space-y-2 border-b border-slate-900 pb-3">
-                      <div className="flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center justify-between text-sm font-mono">
                         <span className="text-slate-400">Crit DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.critDmg.toFixed(1)}%</span>
                       </div>
-                      <div className="flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center justify-between text-sm font-mono">
                         <span className="text-slate-400">Affinity DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.affDmg.toFixed(1)}%</span>
                       </div>
-                      <div className="flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center justify-between text-sm font-mono">
                         <span className="text-slate-400">Phys DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.outerDmg.toFixed(1)}%</span>
                       </div>
-                      <div className="flex items-center justify-between text-xs font-mono">
+                      <div className="flex items-center justify-between text-sm font-mono">
                         <span className="text-slate-400">Boss DMG Bonus</span>
                         <span className="text-slate-350 font-medium text-right leading-none">{adjustedPanel.bossDmg.toFixed(1)}%</span>
                       </div>
@@ -3550,7 +3563,7 @@ export default function App() {
 
                     {/* Section 4: Weapon Bonuses */}
                     <div className="space-y-2 border-b border-slate-900 pb-3">
-                      <div className={`flex items-center justify-between text-xs font-mono py-1 rounded px-1.5 transition-all ${
+                      <div className={`flex items-center justify-between text-sm font-mono py-1 rounded px-1.5 transition-all ${
                         adjustedPanel.umbBonus > 0 ? "bg-amber-955/25 border border-amber-900/20 text-amber-400 font-bold" : "text-slate-400"
                       }`}>
                         <span>Umbrella Bonus</span>
@@ -3559,14 +3572,14 @@ export default function App() {
                         </span>
                       </div>
                       {adjustedPanel.ropeBonus !== undefined && adjustedPanel.ropeBonus > 0 && (
-                        <div className="flex items-center justify-between text-xs font-mono py-1 rounded px-1.5 bg-amber-955/25 border border-amber-900/20 text-amber-400 font-bold">
+                        <div className="flex items-center justify-between text-sm font-mono py-1 rounded px-1.5 bg-amber-955/25 border border-amber-900/20 text-amber-400 font-bold">
                           <span>Rope Dart Bonus</span>
                           <span className="text-amber-400">
                             {adjustedPanel.ropeBonus.toFixed(1)}%
                           </span>
                         </div>
                       )}
-                      <div className="flex items-center justify-between text-xs font-mono px-1.5">
+                      <div className="flex items-center justify-between text-sm font-mono px-1.5">
                         <span className="text-slate-400">All Weapon Bonus</span>
                         <span className="text-slate-350 leading-none">{adjustedPanel.allArts.toFixed(1)}%</span>
                       </div>
@@ -3607,7 +3620,7 @@ export default function App() {
                             </div>
                             
                             <div className="space-y-2">
-                              <div className="text-xs font-mono text-slate-300 flex items-center justify-center gap-1.5 leading-none">
+                              <div className="text-sm font-mono text-slate-300 flex items-center justify-center gap-1.5 leading-none">
                                 <span className={gc.text}>[{filledStr}{emptyStr}]</span>
                                 <span className="text-slate-400 font-bold">{gradRate.toFixed(1)}/100</span>
                               </div>
@@ -3631,20 +3644,20 @@ export default function App() {
                     <h3 className="text-base font-bold font-serif text-slate-150 flex items-center gap-2">
                       ⏱ Relaying Cooldown Tracker
                     </h3>
-                    <p className="text-slate-400 text-xs mt-1">
+                    <p className="text-slate-400 text-sm mt-1">
                       Track the remaining 7-day cooldown of your relayed gear.
                     </p>
                   </div>
                   <button
                     onClick={openCooldownModal}
-                    className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded text-sm font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <span>+</span> Add Item on Cooldown
                   </button>
                 </div>
 
                 {tuneCooldowns.length === 0 ? (
-                  <div className="text-center py-6 text-slate-500 text-xs font-mono">
+                  <div className="text-center py-6 text-slate-500 text-sm font-mono">
                     No items currently tracking a relay cooldown.
                   </div>
                 ) : (
@@ -3690,10 +3703,10 @@ export default function App() {
                         <div key={item.id} className="bg-[#181512] border border-amber-900/10 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                           <div className="space-y-1 w-full md:w-auto">
                             <div className="flex items-baseline gap-2 flex-wrap">
-                              <span className="font-bold text-sm text-slate-200">{item.itemName}</span>
+                              <span className="font-bold text-base text-slate-200">{item.itemName}</span>
                               <span className="text-[12px] text-slate-500 font-mono font-medium">&#183; {item.slot}</span>
                             </div>
-                            <div className="text-xs text-slate-400 font-mono">
+                            <div className="text-sm text-slate-400 font-mono">
                               Relayed: {dateFormatted}
                             </div>
                           </div>
@@ -3714,7 +3727,7 @@ export default function App() {
 
                             <button
                               onClick={() => handleRemoveCooldown(item.id)}
-                              className="text-xs text-rose-450 hover:text-rose-400 px-2 py-1 font-semibold hover:bg-rose-950/20 rounded border border-rose-950/30 transition-colors cursor-pointer"
+                              className="text-sm text-rose-450 hover:text-rose-400 px-2 py-1 font-semibold hover:bg-rose-950/20 rounded border border-rose-950/30 transition-colors cursor-pointer"
                             >
                               ✕ Remove
                             </button>
@@ -3735,7 +3748,7 @@ export default function App() {
           <div className="space-y-6">
             <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-6">
               <div className="mb-4 border-b border-amber-900/10 pb-3">
-                <h2 className="text-sm font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
+                <h2 className="text-base font-extrabold text-amber-500 uppercase tracking-wider font-serif flex items-center gap-2">
                   <TrendingUp className="w-4 h-4" /> Item Comparison & Graduation Deltas
                 </h2>
                 <p className="text-[12px] text-slate-500 mt-0.5">
@@ -3781,7 +3794,7 @@ export default function App() {
 
               {/* Comparison list section */}
               <div>
-                <h3 className="text-xs uppercase font-bold tracking-widest text-slate-400 font-mono mb-4">
+                <h3 className="text-sm uppercase font-bold tracking-widest text-slate-400 font-mono mb-4">
                   Graduation ranking for slot: <span className="text-amber-500 font-serif">{selectedSlot}</span>
                 </h3>
 
@@ -3790,7 +3803,7 @@ export default function App() {
                   if (slotItems.length === 0) {
                     return (
                       <div className="bg-slate-950/20 border border-dashed border-slate-900/60 p-8 rounded-lg text-center font-mono">
-                        <p className="text-slate-400 text-xs">No items in this slot to compare.</p>
+                        <p className="text-slate-400 text-sm">No items in this slot to compare.</p>
                         <p className="text-[12px] text-slate-500 mt-1">Go to the "🛡 Gear" tab to add items for comparison.</p>
                       </div>
                     );
@@ -3822,14 +3835,14 @@ export default function App() {
                             key={item.id}
                             className={`p-4 rounded-xl border relative transition-all ${qualityClass}`}
                           >
-                            <div className="absolute top-4 left-4 w-7 h-7 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center font-bold text-xs text-amber-500 font-serif shadow-inner">
+                            <div className="absolute top-4 left-4 w-7 h-7 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center font-bold text-sm text-amber-500 font-serif shadow-inner">
                               #{rank}
                             </div>
 
                             <div className="pl-10">
                               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-900/40 pb-2 mb-3">
                                 <div>
-                                  <h4 className="text-xs font-bold text-slate-100 flex items-center gap-2">
+                                  <h4 className="text-sm font-bold text-slate-100 flex items-center gap-2">
                                     <span>{item.name}</span>
                                     {isBest && (
                                       <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold uppercase tracking-wider scale-90">
@@ -3842,7 +3855,7 @@ export default function App() {
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <div className="text-xs font-mono font-extrabold text-amber-400">
+                                  <div className="text-sm font-mono font-extrabold text-amber-400">
                                     +{entry.total.toFixed(2)}% graduation
                                   </div>
                                   {!isBest && (
@@ -3894,16 +3907,16 @@ export default function App() {
                   <h2 className="text-lg font-bold font-serif text-slate-105 flex items-center gap-2">
                     🎯 Cultivation Summary
                   </h2>
-                  <p className="text-slate-400 text-xs mt-1">
+                  <p className="text-slate-400 text-sm mt-1">
                     Compare your current accumulated gear substats with the graduation panel targets.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs font-mono text-slate-400">Select Class:</span>
+                  <span className="text-sm font-mono text-slate-400">Select Class:</span>
                   <select
                     value={cultivateClass}
                     onChange={(e) => setCultivateClass(e.target.value)}
-                    className="bg-slate-950 border border-amber-900/30 hover:border-amber-500/50 text-amber-500 text-xs rounded-lg px-3 py-1.5 focus:outline-none font-bold transition-all cursor-pointer"
+                    className="bg-slate-950 border border-amber-900/30 hover:border-amber-500/50 text-amber-500 text-sm rounded-lg px-3 py-1.5 focus:outline-none font-bold transition-all cursor-pointer"
                   >
                     {Object.keys(WWM_DATA.classes).map((cls) => (
                       <option key={cls} value={cls}>
@@ -4119,16 +4132,16 @@ export default function App() {
                     {/* Header Summary Statistics */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="bg-[#181512] border border-amber-900/10 rounded-xl p-5 flex flex-col justify-center">
-                        <span className="text-xs font-mono uppercase tracking-wider text-slate-500">
+                        <span className="text-sm font-mono uppercase tracking-wider text-slate-500">
                           Total sub-stat progress
                         </span>
                         <div className="text-3xl font-extrabold text-amber-500 font-serif mt-1 flex items-baseline gap-1.5">
                           <span>{totalProgressVal.toFixed(1)}</span>
-                          <span className="text-sm font-sans font-normal text-slate-500">/ 40</span>
+                          <span className="text-base font-sans font-normal text-slate-500">/ 40</span>
                         </div>
                       </div>
                       <div className="bg-[#181512] border border-amber-900/10 rounded-xl p-5 flex flex-col justify-center">
-                        <span className="text-xs font-mono uppercase tracking-wider text-slate-500">
+                        <span className="text-sm font-mono uppercase tracking-wider text-slate-500">
                           Dingyin (Tuned) stats
                         </span>
                         <div className="text-3xl font-extrabold text-amber-500 font-serif mt-1">
@@ -4146,7 +4159,7 @@ export default function App() {
                             className={`border rounded-xl p-5 space-y-3 transition-colors ${tile.bgCardClass}`}
                           >
                             <div className="flex justify-between items-start">
-                              <span className="text-sm font-bold font-mono tracking-tight text-slate-100">
+                              <span className="text-base font-bold font-mono tracking-tight text-slate-100">
                                 {tile.label}
                               </span>
                               <span className="text-[12px] uppercase tracking-wider text-slate-500 font-mono">
@@ -4154,7 +4167,7 @@ export default function App() {
                               </span>
                             </div>
 
-                            <div className="flex justify-between items-baseline font-mono text-sm">
+                            <div className="flex justify-between items-baseline font-mono text-base">
                               <span className="text-slate-250 font-bold">
                                 {tile.currentVal.toFixed(tile.isPercentage ? 1 : 0)}{tile.isPercentage ? "%" : ""}
                               </span>
@@ -4181,7 +4194,7 @@ export default function App() {
                     </div>
 
                     {/* Note at bottom */}
-                    <div className="bg-[#141210]/30 border border-slate-900/40 rounded-xl p-4 text-xs text-slate-400 leading-relaxed font-mono">
+                    <div className="bg-[#141210]/30 border border-slate-900/40 rounded-xl p-4 text-sm text-slate-400 leading-relaxed font-mono">
                       Progress estimates based on Graduation Panel targets (CN Lv105).
                       Tier 91 caps are ~60% of shown values.
                     </div>
@@ -4198,19 +4211,19 @@ export default function App() {
             <div className="bg-[#141210] border border-amber-900/20 max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-500 font-serif">
+                <span className="text-sm font-bold uppercase tracking-wider text-amber-500 font-serif">
                   {editingItem ? "Edit Gear Item" : `Add New Class ${selectedSlot}`}
                 </span>
                 <button
                   onClick={() => setIsItemModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-200 text-sm font-mono"
+                  className="text-slate-400 hover:text-slate-200 text-base font-mono"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="p-5 space-y-4 overflow-y-auto min-h-0 text-slate-300 text-xs text-left">
+              <div className="p-5 space-y-4 overflow-y-auto min-h-0 text-slate-300 text-sm text-left">
                 <div>
                   <label className="block text-[12px] uppercase font-mono tracking-wider text-slate-500 mb-1">
                     Slot
@@ -4219,7 +4232,7 @@ export default function App() {
                     type="text"
                     value={selectedSlot}
                     disabled
-                    className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 font-mono text-slate-400 cursor-not-allowed text-xs"
+                    className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 font-mono text-slate-400 cursor-not-allowed text-sm"
                   />
                 </div>
 
@@ -4363,7 +4376,7 @@ export default function App() {
                   {editingItem && (
                     <button
                       onClick={() => handleDeleteItem(editingItem.id)}
-                      className="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 rounded text-xs border border-rose-500/10 font-bold transition-all"
+                      className="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 rounded text-sm border border-rose-500/10 font-bold transition-all"
                     >
                       Delete Item
                     </button>
@@ -4372,13 +4385,13 @@ export default function App() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsItemModalOpen(false)}
-                    className="px-3 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-300 rounded text-xs border border-slate-800 transition-all font-semibold"
+                    className="px-3 py-1.5 bg-slate-900 hover:bg-slate-850 text-slate-300 rounded text-sm border border-slate-800 transition-all font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSaveItem}
-                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded text-xs font-bold transition-all"
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded text-sm font-bold transition-all"
                   >
                     Save Changes
                   </button>
@@ -4394,25 +4407,25 @@ export default function App() {
             <div className="bg-[#141210] border border-amber-900/20 max-w-md w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col">
               {/* Header */}
               <div className="p-4 bg-slate-950/60 border-b border-amber-900/10 flex justify-between items-center shrink-0">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-500 font-serif flex items-center gap-1.5">
+                <span className="text-sm font-bold uppercase tracking-wider text-amber-500 font-serif flex items-center gap-1.5">
                   ⏱ Track Relay Cooldown
                 </span>
                 <button
                   onClick={() => setShowAddCooldownModal(false)}
-                  className="text-slate-400 hover:text-slate-200 text-sm font-mono cursor-pointer"
+                  className="text-slate-400 hover:text-slate-200 text-base font-mono cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="p-5 space-y-4 text-slate-300 text-xs text-left">
+              <div className="p-5 space-y-4 text-slate-300 text-sm text-left">
                 <div className="space-y-1">
                   <label className="text-[12px] text-slate-400 font-mono block">Select Gear Item</label>
                   <select
                     value={cooldownSelectedGearId}
                     onChange={(e) => setCooldownSelectedGearId(e.target.value)}
-                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 cursor-pointer font-medium"
+                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 cursor-pointer font-medium"
                   >
                     <option value="">-- Choose Gear --</option>
                     {getActiveGear().map((item) => (
@@ -4429,7 +4442,7 @@ export default function App() {
                     type="date"
                     value={cooldownRelayDate}
                     onChange={(e) => setCooldownRelayDate(e.target.value)}
-                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 font-mono cursor-pointer"
+                    className="w-full bg-slate-950 border border-amber-900/20 text-slate-250 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500/50 font-mono cursor-pointer"
                   />
                 </div>
               </div>
@@ -4438,13 +4451,13 @@ export default function App() {
               <div className="p-4 bg-slate-950/40 border-t border-amber-900/10 flex justify-end gap-3 shrink-0">
                 <button
                   onClick={() => setShowAddCooldownModal(false)}
-                  className="px-4 py-1.5 border border-amber-900/20 hover:bg-slate-900 text-slate-300 rounded text-xs transition-colors cursor-pointer"
+                  className="px-4 py-1.5 border border-amber-900/20 hover:bg-slate-900 text-slate-300 rounded text-sm transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddCooldown}
-                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded text-xs transition-colors cursor-pointer"
+                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded text-sm transition-colors cursor-pointer"
                   disabled={!cooldownSelectedGearId}
                 >
                   Confirm
@@ -4544,7 +4557,7 @@ export default function App() {
                   <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-amber-900/10 pb-3">
                       <div>
-                        <h3 className="text-sm font-bold font-serif text-slate-100 flex items-center gap-2">
+                        <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-2">
                           🔄 Rotation Combat Simulator
                         </h3>
                         <p className="text-[12px] text-slate-400 mt-0.5">
@@ -4552,11 +4565,11 @@ export default function App() {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-450 font-mono">Select Class:</span>
+                        <span className="text-sm text-slate-450 font-mono">Select Class:</span>
                         <select
                           value={rotSimClass}
                           onChange={(e) => setRotSimClass(e.target.value)}
-                          className="bg-slate-950 border border-amber-900/45 text-amber-500 text-xs rounded-md px-3 py-1.5 focus:outline-none font-bold"
+                          className="bg-slate-950 border border-amber-900/45 text-amber-500 text-sm rounded-md px-3 py-1.5 focus:outline-none font-bold"
                         >
                           {Object.keys(WWM_DATA.classes).map(c => (
                             <option key={c} value={c}>{c}</option>
@@ -4566,7 +4579,7 @@ export default function App() {
                     </div>
 
                     {/* Calibration Note/Banner */}
-                    <div className="bg-amber-950/20 border border-amber-500/20 rounded-lg p-3.5 text-xs text-amber-500/90 leading-relaxed space-y-1">
+                    <div className="bg-amber-950/20 border border-amber-500/20 rounded-lg p-3.5 text-sm text-amber-500/90 leading-relaxed space-y-1">
                       <div className="font-bold flex items-center gap-1">
                         <span>⚠️</span> <span>Calibration & Engine Disclaimer</span>
                       </div>
@@ -4578,7 +4591,7 @@ export default function App() {
                     </div>
 
                     {/* Presets / Helper Buttons */}
-                    <div className="flex flex-wrap gap-2 items-center text-xs">
+                    <div className="flex flex-wrap gap-2 items-center text-sm">
                       <span className="text-slate-400 font-mono text-[12px] uppercase">Quick Presets:</span>
                       <button
                         onClick={() => {
@@ -4606,7 +4619,7 @@ export default function App() {
                           simulatorSkills.forEach(s => { updated[s.name] = classPreset[s.name] ?? 0; });
                           setHitsState(updated);
                         }}
-                        className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-xs text-slate-350 hover:text-slate-200 transition-colors"
+                        className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-sm text-slate-350 hover:text-slate-200 transition-colors"
                       >
                         🔥 Heavy Attack Rotation
                       </button>
@@ -4636,7 +4649,7 @@ export default function App() {
                           simulatorSkills.forEach(s => { updated[s.name] = classPreset[s.name] ?? 0; });
                           setHitsState(updated);
                         }}
-                        className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-xs text-slate-350 hover:text-slate-200 transition-colors"
+                        className="px-2.5 py-1 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded text-sm text-slate-350 hover:text-slate-200 transition-colors"
                       >
                         ⚡ Balanced Rotation
                       </button>
@@ -4648,7 +4661,7 @@ export default function App() {
                           });
                           setHitsState(updated);
                         }}
-                        className="px-2 py-1 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/30 rounded text-xs text-rose-400 transition-colors font-mono"
+                        className="px-2 py-1 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/30 rounded text-sm text-rose-400 transition-colors font-mono"
                       >
                         🧹 Reset to 0 Hits
                       </button>
@@ -4665,7 +4678,7 @@ export default function App() {
                           return (
                             <div key={s.name} className="flex items-center justify-between p-2.5 bg-slate-950/60 rounded border border-slate-900 hover:border-slate-850 transition-colors gap-4">
                               <div className="min-w-0 flex-1">
-                                <div className="text-xs font-semibold text-slate-200 truncate">{s.name}</div>
+                                <div className="text-sm font-semibold text-slate-200 truncate">{s.name}</div>
                                 <div className="text-[12px] text-slate-500 truncate font-mono">{s.weapon}</div>
                               </div>
                               <div className="flex items-center gap-2">
@@ -4680,7 +4693,7 @@ export default function App() {
                                     const val = parseInt(e.target.value) || 0;
                                     setHitsState(prev => ({ ...prev, [s.name]: val }));
                                   }}
-                                  className="w-16 bg-slate-950 border border-slate-900 rounded p-1 text-xs text-center text-amber-500 font-mono font-bold focus:outline-none focus:border-amber-500/50"
+                                  className="w-16 bg-slate-950 border border-slate-900 rounded p-1 text-sm text-center text-amber-500 font-mono font-bold focus:outline-none focus:border-amber-500/50"
                                 />
                               </div>
                             </div>
@@ -4704,7 +4717,7 @@ export default function App() {
                   
                   {/* Core Combat Output Parse Card */}
                   <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
-                    <h3 className="text-sm font-bold font-serif text-slate-100 flex items-center gap-2 border-b border-amber-900/10 pb-2">
+                    <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-2 border-b border-amber-900/10 pb-2">
                       ⚔ Simulated Combat Parse
                     </h3>
                     
@@ -4771,7 +4784,7 @@ export default function App() {
                   {/* Weapon Swap Simulator Card */}
                   <div className="bg-[#141210] border border-amber-900/10 rounded-xl p-5 shadow-lg space-y-4">
                     <div className="border-b border-amber-900/10 pb-2">
-                      <h3 className="text-sm font-bold font-serif text-slate-100 flex items-center gap-1.5">
+                      <h3 className="text-base font-bold font-serif text-slate-100 flex items-center gap-1.5">
                         🛠 Weapon/Gear Swap Simulator
                       </h3>
                       <p className="text-[12px] text-slate-400 mt-0.5">
@@ -4779,7 +4792,7 @@ export default function App() {
                       </p>
                     </div>
 
-                    <div className="space-y-3 font-mono text-xs">
+                    <div className="space-y-3 font-mono text-sm">
                       
                       {/* Presets dropdown */}
                       <div className="space-y-1">
@@ -4836,20 +4849,20 @@ export default function App() {
                         <div className="text-[12px] uppercase font-bold text-slate-500 tracking-wider">Recalculated Weapon Comparison</div>
                         
                         <div className="mt-2.5 flex items-baseline justify-between">
-                          <div className="text-slate-400 text-xs">Simulated DPS:</div>
+                          <div className="text-slate-400 text-sm">Simulated DPS:</div>
                           <div className="text-lg font-bold text-amber-500">
                             {totalSimSwappedDps.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                           </div>
                         </div>
 
-                        <div className="mt-2 flex items-center justify-between border-t border-slate-900 pt-2 text-xs">
+                        <div className="mt-2 flex items-center justify-between border-t border-slate-900 pt-2 text-sm">
                           <span className="text-slate-400">Total Parse Gain/Loss:</span>
                           {swapDpsDiffPct >= 0 ? (
-                            <span className="font-extrabold text-emerald-500 text-sm">
+                            <span className="font-extrabold text-emerald-500 text-base">
                               +{swapDpsDiffPct.toFixed(2)}% DPS Increase
                             </span>
                           ) : (
-                            <span className="font-extrabold text-rose-500 text-sm">
+                            <span className="font-extrabold text-rose-500 text-base">
                               {swapDpsDiffPct.toFixed(2)}% DPS Decrease
                             </span>
                           )}
@@ -4882,7 +4895,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Save active panel box */}
                 <div className="bg-slate-950/40 border border-slate-900 rounded-xl p-4 space-y-4 md:col-span-1">
-                  <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest font-mono">
+                  <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest font-mono">
                     Save Active Panel Setup
                   </h3>
                   <div className="space-y-2">
@@ -4892,7 +4905,7 @@ export default function App() {
                       placeholder="e.g., T91 Gold Set, Pen Focused..."
                       value={newProfileName}
                       onChange={(e) => setNewProfileName(e.target.value)}
-                      className="w-full bg-slate-900 text-slate-100 border border-slate-800 text-xs px-3 py-2 rounded focus:outline-none focus:border-amber-500 font-medium"
+                      className="w-full bg-slate-900 text-slate-100 border border-slate-800 text-sm px-3 py-2 rounded focus:outline-none focus:border-amber-500 font-medium"
                     />
                   </div>
                   <button
@@ -4912,7 +4925,7 @@ export default function App() {
                       saveProfilesList(updated);
                       setNewProfileName("");
                     }}
-                    className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold rounded text-xs py-2 px-3 flex items-center justify-center gap-1.5 transition-colors"
+                    className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold rounded text-sm py-2 px-3 flex items-center justify-center gap-1.5 transition-colors"
                   >
                     Save Profile
                   </button>
@@ -4959,7 +4972,7 @@ export default function App() {
 
                 {/* Profiles catalogs */}
                 <div className="md:col-span-2 space-y-4">
-                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-widest font-mono flex justify-between items-center">
+                  <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest font-mono flex justify-between items-center">
                     <span>Saved Configurations ({profiles.length})</span>
                     {profiles.length > 0 && (
                       <button
@@ -4976,7 +4989,7 @@ export default function App() {
                   </h3>
 
                   {profiles.length === 0 ? (
-                    <div className="bg-[#0e0d0b] border border-slate-900 rounded-xl p-8 text-center text-slate-500 text-xs">
+                    <div className="bg-[#0e0d0b] border border-slate-900 rounded-xl p-8 text-center text-slate-500 text-sm">
                       No stored configurations found. Current indicators will be lost on page reload if not saved. Record your setup using the panel on the left!
                     </div>
                   ) : (
@@ -4996,14 +5009,14 @@ export default function App() {
                             <span className="text-[11px] font-mono text-slate-500 block">
                               {prof.timestamp}
                             </span>
-                            <h4 className="text-sm font-bold text-slate-100 font-serif mt-1 truncate">
+                            <h4 className="text-base font-bold text-slate-100 font-serif mt-1 truncate">
                               {prof.name}
                             </h4>
 
                             <div className="grid grid-cols-2 gap-2 mt-2.5 text-[12px] font-mono border-t border-slate-900 pt-2.5">
                               <div>
                                 <span className="text-slate-500 block">Graduation:</span>
-                                <strong className="text-amber-500 text-xs">
+                                <strong className="text-amber-500 text-sm">
                                   {dyn.gradRate.toFixed(1)}%
                                 </strong>
                               </div>
@@ -5049,7 +5062,7 @@ export default function App() {
                                     setCompareProfileIds(compareProfileIds.filter((id) => id !== prof.id));
                                   }
                                 }}
-                                className="border border-slate-900 hover:bg-rose-950/10 hover:border-rose-900 text-rose-500 text-xs px-2.5 rounded transition-colors cursor-pointer"
+                                className="border border-slate-900 hover:bg-rose-950/10 hover:border-rose-900 text-rose-500 text-sm px-2.5 rounded transition-colors cursor-pointer"
                                 title="Delete profile"
                               >
                                 &times;
@@ -5084,19 +5097,19 @@ export default function App() {
               return (
                 <div className="bg-[#141210]/95 border-2 border-amber-500 rounded-xl p-5 shadow-2xl relative">
                   <div className="flex justify-between items-center border-b border-amber-900/10 pb-3 mb-4">
-                    <h3 className="text-sm font-serif font-bold text-amber-500 uppercase tracking-wider">
+                    <h3 className="text-base font-serif font-bold text-amber-500 uppercase tracking-wider">
                       Multi Gear Sets Comparison Matrix ({selectedProfs.length} builds selected)
                     </h3>
                     <button
                       onClick={() => setCompareProfileIds([])}
-                      className="text-xs text-rose-400 hover:text-rose-300 font-bold border border-rose-900/45 px-2.5 py-1 rounded bg-rose-950/20 cursor-pointer"
+                      className="text-sm text-rose-400 hover:text-rose-300 font-bold border border-rose-900/45 px-2.5 py-1 rounded bg-rose-950/20 cursor-pointer"
                     >
                       Clear all comparisons &times;
                     </button>
                   </div>
 
                   <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full text-left text-xs border-collapse font-sans min-w-[700px]">
+                    <table className="w-full text-left text-sm border-collapse font-sans min-w-[700px]">
                       <thead>
                         <tr className="border-b border-slate-800 text-slate-400 text-[12px] uppercase font-mono">
                           <th className="py-2.5 px-3">Attribute / Substat</th>
@@ -5112,7 +5125,7 @@ export default function App() {
                         {keysToCompare.map((item) => {
                           const activeVal = adjustedPanel[item.key] as number;
                           return (
-                            <tr key={item.key} className="border-b border-slate-900 text-xs font-mono hover:bg-slate-900/20">
+                            <tr key={item.key} className="border-b border-slate-900 text-sm font-mono hover:bg-slate-900/20">
                               <td className="py-2.5 px-3 font-sans font-medium text-slate-300">{item.label}</td>
                               <td className="py-2.5 px-3 text-right text-amber-400 font-bold bg-amber-500/5">
                                 {activeVal.toFixed(item.key === "minOuter" || item.key === "maxOuter" || item.key === "maxPz" || item.key === "minPz" ? 0 : 1)}
@@ -5140,7 +5153,7 @@ export default function App() {
                         })}
 
                         {/* Graduation Rate */}
-                        <tr className="border-b border-slate-900 text-xs font-mono bg-amber-500/5 font-bold">
+                        <tr className="border-b border-slate-900 text-sm font-mono bg-amber-500/5 font-bold">
                           <td className="py-3 px-3 font-sans text-amber-400">Graduation Rate</td>
                           <td className="py-3 px-3 text-right text-amber-500 font-extrabold bg-amber-500/10">
                             {rotationStats.gradRate.toFixed(1)}%
@@ -5162,7 +5175,7 @@ export default function App() {
                         </tr>
 
                         {/* Skill DPS */}
-                        <tr className="border-b border-slate-900 text-xs font-mono bg-amber-400/5 font-bold">
+                        <tr className="border-b border-slate-900 text-sm font-mono bg-amber-400/5 font-bold">
                           <td className="py-3 px-3 font-sans text-amber-400 font-serif">Rotation Skill DPS</td>
                           <td className="py-3 px-3 text-right text-slate-100 font-extrabold bg-amber-500/10">
                             {Math.round(rotationStats.dps).toLocaleString()}/s
