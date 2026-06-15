@@ -1,7 +1,7 @@
-import { PanelStats, TierConstants, SkillDefinition, RotationItem } from "../types";
+﻿import { PanelStats, TierConstants, SkillDefinition, RotationItem } from "../types";
 import { WWM_DATA } from "../data/wwmData";
 
-const t95 = WWM_DATA.tiers["95下"];
+const t95 = WWM_DATA.tiers["95ä¸‹"];
 
 export const TIERS: { [key: string]: TierConstants } = {
   "350|0.45": {
@@ -21,14 +21,14 @@ export const TIERS: { [key: string]: TierConstants } = {
     pzDmgBase: t95.base.elemDmgUp * 100, // 5.4%
     physRes: 20,
     attrRes: 24,
-    name: "Tier 91 / Lv95 ★ Global (Season 3)",
+    name: "Tier 91 / Lv95 â˜… Global (Season 3)",
   }
 };
 
 export const SKILL_DB: { [key: string]: SkillDefinition } = {};
 
 const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
-  "Rope Dart Special (Rope Boat 6 + Soul Loss)": {
+  "Rope Dart Special (Dart Song Max + Soul Loss)": {
     outerRatio: 2.29866,
     fixed: 637,
     eleRatio: 3.44799,
@@ -42,7 +42,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "",
     csBonus: 0,
   },
-  "Perfect Umbrella Q (0 Echo)": {
+  "Scarlet Spin (0 Echo)": {
     outerRatio: 1.8084,
     fixed: 500,
     eleRatio: 2.7126,
@@ -56,7 +56,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "spin",
     csBonus: 0.2,
   },
-  "Perfect Umbrella Q (2 Echo)": {
+  "Scarlet Spin (2 Echo)": {
     outerRatio: 1.8084,
     fixed: 500,
     eleRatio: 2.7126,
@@ -70,7 +70,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "spin",
     csBonus: 0.2,
   },
-  "Perfect Umbrella Q (4 Echo)": {
+  "Scarlet Spin (4 Echo)": {
     outerRatio: 1.8084,
     fixed: 500,
     eleRatio: 2.7126,
@@ -84,7 +84,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "spin",
     csBonus: 0.2,
   },
-  "Perfect Umbrella Q (5 Echo + Blossom Song)": {
+  "Scarlet Spin (5 Echo + Blossom Song)": {
     outerRatio: 1.8084,
     fixed: 500,
     eleRatio: 2.7126,
@@ -98,7 +98,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "spin",
     csBonus: 0.2,
   },
-  "Perfect Umbrella Q (5 Echo)": {
+  "Scarlet Spin (5 Echo)": {
     outerRatio: 1.8084,
     fixed: 500,
     eleRatio: 2.7126,
@@ -182,7 +182,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "spin",
     csBonus: 0.2,
   },
-  "Dragon Rider Full Strike (5 Echo)": {
+  "Dragon's Breath Full Strike (5 Echo)": {
     outerRatio: 7.1054,
     fixed: 1220,
     eleRatio: 10.6581,
@@ -196,7 +196,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "",
     csBonus: 0,
   },
-  "Rope Dart Q (5 Echo)": {
+  "Soul Sweep (5 Echo)": {
     outerRatio: 3.1428,
     fixed: 869,
     eleRatio: 4.7143,
@@ -210,7 +210,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "",
     csBonus: 0.15,
   },
-  "Rope Dart R1-3 (Boat 3 + Soul Loss)": {
+  "Rope Dart R1-3 (Dart Song 3tk + Soul Loss)": {
     outerRatio: 1.1137,
     fixed: 309,
     eleRatio: 1.6706,
@@ -224,7 +224,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "",
     csBonus: 0,
   },
-  "Rope Dart R4-5 (Boat 3 + Soul Loss)": {
+  "Rope Dart R4-5 (Dart Song 3tk + Soul Loss)": {
     outerRatio: 0.7839,
     fixed: 218,
     eleRatio: 1.1759,
@@ -238,7 +238,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "",
     csBonus: 0,
   },
-  "Rope Dart R6-7 (Boat 3 + Soul Loss)": {
+  "Rope Dart R6-7 (Dart Song 3tk + Soul Loss)": {
     outerRatio: 1.7242,
     fixed: 478,
     eleRatio: 2.5862,
@@ -252,7 +252,7 @@ const STATIC_SKILLS: { [key: string]: SkillDefinition } = {
     special: "",
     csBonus: 0,
   },
-  "Flute Thousand Waves (AoE + Soul Loss)": {
+  "Flute of the Tides (AoE + Soul Loss)": {
     outerRatio: 3.974,
     fixed: 930,
     eleRatio: 5.961,
@@ -307,30 +307,30 @@ WWM_DATA.skills.forEach(s => {
   };
 });
 
-SKILL_DB["九枪重2蓄"] = { outerRatio: 2.5683, fixed: 711, eleRatio: 3.85245, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 1, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
-SKILL_DB["九剑Q"] = { outerRatio: 2.7205, fixed: 749, eleRatio: 4.08075, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
-SKILL_DB["九剑~"] = { outerRatio: 1.5, fixed: 300, eleRatio: 2.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
-SKILL_DB["九枪Q满"] = { outerRatio: 3.5, fixed: 800, eleRatio: 5.0, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
-SKILL_DB["九剑~流血"] = { outerRatio: 0.8, fixed: 150, eleRatio: 1.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["ä¹æžªé‡2è“„"] = { outerRatio: 2.5683, fixed: 711, eleRatio: 3.85245, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 1, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["ä¹å‰‘Q"] = { outerRatio: 2.7205, fixed: 749, eleRatio: 4.08075, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
+SKILL_DB["ä¹å‰‘~"] = { outerRatio: 1.5, fixed: 300, eleRatio: 2.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
+SKILL_DB["ä¹æžªQæ»¡"] = { outerRatio: 3.5, fixed: 800, eleRatio: 5.0, exCritDmg: 0.27, exDmg: 0.05, exPen: 10, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0.15 };
+SKILL_DB["ä¹å‰‘~æµè¡€"] = { outerRatio: 0.8, fixed: 150, eleRatio: 1.2, exCritDmg: 0.27, exDmg: 0.05, exPen: 0, isCharge: 0, type: "weapon", wType: "single", force: "", special: "", csBonus: 0 };
 
 export const ROTATION: RotationItem[] = [
-  { name: "Rope Dart Special (Rope Boat 6 + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.465, yishui: 10, tiaozhan: 1 },
-  { name: "Perfect Umbrella Q (0 Echo)", count: 1, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-  { name: "Perfect Umbrella Q (2 Echo)", count: 1, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-  { name: "Perfect Umbrella Q (4 Echo)", count: 1, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-  { name: "Perfect Umbrella Q (5 Echo + Blossom Song)", count: 4, isDingyin: true, generalBonus: 0.515, yishui: 10, tiaozhan: 1 },
-  { name: "Perfect Umbrella Q (5 Echo)", count: 6, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Rope Dart Special (Dart Song Max + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.465, yishui: 10, tiaozhan: 1 },
+  { name: "Scarlet Spin (0 Echo)", count: 1, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Scarlet Spin (2 Echo)", count: 1, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Scarlet Spin (4 Echo)", count: 1, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Scarlet Spin (5 Echo + Blossom Song)", count: 4, isDingyin: true, generalBonus: 0.515, yishui: 10, tiaozhan: 1 },
+  { name: "Scarlet Spin (5 Echo)", count: 6, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
   { name: "Umbrella Resonance (0 Echo)", count: 2, isDingyin: true, generalBonus: 0.515, yishui: 10, tiaozhan: 1 },
   { name: "Umbrella Resonance (2 Echo)", count: 2, isDingyin: true, generalBonus: 0.515, yishui: 10, tiaozhan: 1 },
   { name: "Umbrella Resonance (4 Echo)", count: 2, isDingyin: true, generalBonus: 0.515, yishui: 10, tiaozhan: 1 },
   { name: "Umbrella Resonance (5 Echo + Blossom Song)", count: 7, isDingyin: true, generalBonus: 0.715, yishui: 10, tiaozhan: 1 },
   { name: "Umbrella Resonance (5 Echo)", count: 12, isDingyin: true, generalBonus: 0.515, yishui: 10, tiaozhan: 1 },
-  { name: "Dragon Rider Full Strike (5 Echo)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-  { name: "Rope Dart Q (5 Echo)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-  { name: "Rope Dart R1-3 (Boat 3 + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-  { name: "Rope Dart R4-5 (Boat 3 + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-  { name: "Rope Dart R6-7 (Boat 3 + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.365, yishui: 10, tiaozhan: 1 },
-  { name: "Flute Thousand Waves (AoE + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.265, yishui: 10, tiaozhan: 1 },
+  { name: "Dragon's Breath Full Strike (5 Echo)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Soul Sweep (5 Echo)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Rope Dart R1-3 (Dart Song 3tk + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Rope Dart R4-5 (Dart Song 3tk + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+  { name: "Rope Dart R6-7 (Dart Song 3tk + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.365, yishui: 10, tiaozhan: 1 },
+  { name: "Flute of the Tides (AoE + Soul Loss)", count: 1, isDingyin: false, generalBonus: 0.265, yishui: 10, tiaozhan: 1 },
   { name: "Thousand Camps Lv6 (Soul Loss)", count: 2, isDingyin: false, generalBonus: 0, yishui: 10, tiaozhan: 1 },
 ];
 
@@ -339,11 +339,11 @@ export const ROTATION_TIME = 78.5;
 export function getRotationForBuild(buildKey?: string): RotationItem[] {
   if (buildKey === "nine-nine" || buildKey === "Nine-Nine" || buildKey === "nine-nine-aoe") {
     return [
-      { name: "九枪重2蓄", count: 3, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "九剑Q", count: 4, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "九剑~", count: 12, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "九枪Q满", count: 2, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
-      { name: "九剑~流血", count: 8, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "ä¹æžªé‡2è“„", count: 3, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "ä¹å‰‘Q", count: 4, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "ä¹å‰‘~", count: 12, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "ä¹æžªQæ»¡", count: 2, isDingyin: true, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
+      { name: "ä¹å‰‘~æµè¡€", count: 8, isDingyin: false, generalBonus: 0.315, yishui: 10, tiaozhan: 1 },
     ];
   }
   return ROTATION;
@@ -483,7 +483,7 @@ export function calcSkill(
 }
 
 export function calcBaseline(tier: TierConstants) {
-  // Reference "graduation" build for Global T91 — sourced from wherewindsmeetcalculator.com
+  // Reference "graduation" build for Global T91 â€” sourced from wherewindsmeetcalculator.com
   // These are PANEL stats (what you see on character screen), NOT including food
   // Food is added separately below matching how the game works
   const ref: PanelStats = {
